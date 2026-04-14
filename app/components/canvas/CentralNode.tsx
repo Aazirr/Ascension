@@ -6,6 +6,7 @@ import gsap from "gsap";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import CentralModel from "./CentralModel";
 import { getNodeDefaultIconPath, getNodeIconPath } from "@/app/lib/nodeIcons";
 import type { GraphNode } from "@/types";
 
@@ -17,6 +18,8 @@ interface CentralNodeProps {
 }
 
 const BUBBLE_ACCESSORY_COLOR = "#D9CA80";
+const CENTRAL_MODEL_PATH = "/models/central-node.glb";
+const USE_CENTRAL_MODEL = true;
 
 export default function CentralNode({
   node,
@@ -172,23 +175,31 @@ export default function CentralNode({
           blending={THREE.AdditiveBlending}
         />
       </mesh>
-      <Html center transform distanceFactor={8} zIndexRange={[4, 0]} pointerEvents="none">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full">
-          <Image
-            src={iconPath}
-            alt={`${node.label} icon`}
-            width={32}
-            height={32}
-            className="h-8 w-8 object-contain"
-            onError={() => {
-              if (!triedDefaultIcon) {
-                setIconPath(defaultIconPath);
-                setTriedDefaultIcon(true);
-              }
-            }}
-          />
-        </div>
-      </Html>
+      {USE_CENTRAL_MODEL ? (
+        <CentralModel
+          modelPath={CENTRAL_MODEL_PATH}
+          reducedMotion={reducedMotion}
+          isActive={isActive}
+        />
+      ) : (
+        <Html center transform distanceFactor={8} zIndexRange={[4, 0]} pointerEvents="none">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full">
+            <Image
+              src={iconPath}
+              alt={`${node.label} icon`}
+              width={32}
+              height={32}
+              className="h-8 w-8 object-contain"
+              onError={() => {
+                if (!triedDefaultIcon) {
+                  setIconPath(defaultIconPath);
+                  setTriedDefaultIcon(true);
+                }
+              }}
+            />
+          </div>
+        </Html>
+      )}
       <Html
         position={[0, 2.0, 0]}
         center
