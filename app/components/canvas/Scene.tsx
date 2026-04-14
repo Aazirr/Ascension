@@ -66,7 +66,9 @@ export default function Scene({ graph }: SceneProps) {
             maxPolarAngle={1.4}
             minAzimuthAngle={-1.9}
             maxAzimuthAngle={1.9}
-            dollySpeed={0.6}
+            minDistance={7}
+            maxDistance={16}
+            dollySpeed={0}
             truckSpeed={0.8}
           />
 
