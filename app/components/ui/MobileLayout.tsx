@@ -110,80 +110,97 @@ export default function MobileLayout() {
           </div>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
-            {projects.map((project, index) => (
-              <motion.article
-                key={project.id}
-                className="overflow-hidden rounded-2xl border border-white/10 bg-white/5"
-                variants={itemVariants}
-                transition={{
-                  ...(reducedMotion ? { duration: 0 } : { duration: 0.35 }),
-                  delay: reducedMotion ? 0 : index * 0.06,
-                }}
-              >
-                <div className="relative aspect-[16/10] overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(127,119,221,0.28),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(29,158,117,0.18),transparent_36%),linear-gradient(135deg,rgba(8,8,24,0.98),rgba(18,17,39,0.96))]">
-                  <div className="absolute inset-0 flex flex-col justify-end p-5">
-                    <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
-                      Project preview
-                    </p>
-                    <h3 className="mt-2 text-xl font-semibold text-white">
-                      {project.title}
-                    </h3>
-                    <p className="mt-1 max-w-[18ch] text-sm text-slate-200/80">
-                      Screenshot placeholder until the final asset is added.
-                    </p>
-                  </div>
-                </div>
-                <div className="space-y-4 p-5">
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">
-                      {project.title}
-                    </h3>
-                    <p className="mt-1 text-sm italic text-slate-300/80">
-                      {project.tagline}
-                    </p>
-                  </div>
+            {projects.map((project, index) => {
+              const hasLiveUrl = project.liveUrl.trim().length > 0;
+              const hasGithubUrl = project.githubUrl.trim().length > 0;
 
-                  <div className="flex flex-wrap gap-2">
-                    {project.stack.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 text-xs font-medium text-cyan-100"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+              return (
+                <motion.article
+                  key={project.id}
+                  className="overflow-hidden rounded-2xl border border-white/10 bg-white/5"
+                  variants={itemVariants}
+                  transition={{
+                    ...(reducedMotion ? { duration: 0 } : { duration: 0.35 }),
+                    delay: reducedMotion ? 0 : index * 0.06,
+                  }}
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(127,119,221,0.28),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(29,158,117,0.18),transparent_36%),linear-gradient(135deg,rgba(8,8,24,0.98),rgba(18,17,39,0.96))]">
+                    <div className="absolute inset-0 flex flex-col justify-end p-5">
+                      <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
+                        Project preview
+                      </p>
+                      <h3 className="mt-2 text-xl font-semibold text-white">
+                        {project.title}
+                      </h3>
+                      <p className="mt-1 max-w-[18ch] text-sm text-slate-200/80">
+                        Screenshot placeholder until the final asset is added.
+                      </p>
+                    </div>
                   </div>
+                  <div className="space-y-4 p-5">
+                    <div>
+                      <h3 className="text-xl font-semibold text-white">
+                        {project.title}
+                      </h3>
+                      <p className="mt-1 text-sm italic text-slate-300/80">
+                        {project.tagline}
+                      </p>
+                    </div>
 
-                  <ul className="space-y-2 text-sm leading-6 text-slate-200/85">
-                    {project.bullets.map((bullet) => (
-                      <li key={bullet} className="flex gap-2">
-                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#7f77dd]" />
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
+                    <div className="flex flex-wrap gap-2">
+                      {project.stack.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 text-xs font-medium text-cyan-100"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
 
-                  <div className="flex flex-wrap gap-3">
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="rounded-full bg-[#7f77dd] px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110"
-                    >
-                      Live Demo
-                    </a>
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
-                    >
-                      GitHub
-                    </a>
+                    <ul className="space-y-2 text-sm leading-6 text-slate-200/85">
+                      {project.bullets.map((bullet) => (
+                        <li key={bullet} className="flex gap-2">
+                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#7f77dd]" />
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="flex flex-wrap gap-3">
+                      {hasLiveUrl ? (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="rounded-full bg-[#7f77dd] px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110"
+                        >
+                          Live Demo
+                        </a>
+                      ) : (
+                        <span className="cursor-not-allowed rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-500">
+                          Live Demo
+                        </span>
+                      )}
+                      {hasGithubUrl ? (
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+                        >
+                          GitHub
+                        </a>
+                      ) : (
+                        <span className="cursor-not-allowed rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-500">
+                          GitHub
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </motion.article>
-            ))}
+                </motion.article>
+              );
+            })}
           </div>
         </motion.section>
 

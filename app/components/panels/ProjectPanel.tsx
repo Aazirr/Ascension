@@ -5,6 +5,9 @@ interface ProjectPanelProps {
 }
 
 export default function ProjectPanel({ project }: ProjectPanelProps) {
+  const hasLiveUrl = project.liveUrl.trim().length > 0;
+  const hasGithubUrl = project.githubUrl.trim().length > 0;
+
   return (
     <section className="space-y-4">
       <div>
@@ -34,22 +37,34 @@ export default function ProjectPanel({ project }: ProjectPanelProps) {
       </ul>
 
       <div className="flex flex-wrap gap-3 pt-1">
-        <a
-          href={project.liveUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="rounded-full bg-[#7f77dd] px-4 py-2 text-sm font-semibold text-white hover:brightness-110"
-        >
-          Live Demo
-        </a>
-        <a
-          href={project.githubUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
-        >
-          GitHub
-        </a>
+        {hasLiveUrl ? (
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-full bg-[#7f77dd] px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110"
+          >
+            Live Demo
+          </a>
+        ) : (
+          <span className="cursor-not-allowed rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-500">
+            Live Demo
+          </span>
+        )}
+        {hasGithubUrl ? (
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+          >
+            GitHub
+          </a>
+        ) : (
+          <span className="cursor-not-allowed rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-500">
+            GitHub
+          </span>
+        )}
       </div>
     </section>
   );
