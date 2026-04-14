@@ -9,7 +9,7 @@ Use this sequence to reduce risk and avoid rework.
 - [x] Phase 3 - Device and motion gates
 - [x] Phase 4 - 3D graph skeleton
 - [x] Phase 5 - Panels and interactions
-- [ ] Phase 6 - Animation pass
+- [x] Phase 6 - Animation pass
 - [ ] Phase 7 - Polish and release
 
 ## Phase 1 - Foundation
@@ -81,18 +81,19 @@ Exit criteria:
 
 ## Phase 6 - Animation pass
 
-- [ ] Add central node pulse/rotation (disabled in reduced motion).
-- [ ] Add dashed line animation and active-line emphasis.
-- [ ] Add particle field drift (disabled in reduced motion).
-- [ ] Add GSAP intro timeline using refs.
+- [x] Add central node pulse/rotation (disabled in reduced motion).
+- [x] Add dashed line animation and active-line emphasis.
+- [x] Add particle field drift (disabled in reduced motion).
+- [x] Add GSAP intro timeline using refs.
 
 Exit criteria:
 
-- [ ] Motion feels intentional and smooth.
-- [ ] Reduced-motion mode remains fully usable and mostly static.
+- [x] Motion feels intentional and smooth.
+- [x] Reduced-motion mode remains fully usable and mostly static.
 
 ## Phase 7 - Polish and release
 
+- [ ] Fix welcome intro animation visibility (currently not appearing on initial load).
 - [ ] Verify metadata, OG image, and favicon.
 - [ ] Add screenshot assets.
 - [ ] Run Lighthouse checks and tune bottlenecks.

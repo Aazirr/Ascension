@@ -18,6 +18,7 @@ Use this checklist before shipping.
 - [ ] Mobile fallback renders for <=768px width.
 - [ ] Mobile fallback renders when WebGL is unavailable.
 - [ ] Reduced motion disables non-essential animation.
+- [ ] Welcome intro animation appears on initial load (currently needs fix).
 - [ ] Node click opens matching panel.
 - [ ] Escape key closes active panel.
 - [ ] Canvas outside click closes active panel.

@@ -9,6 +9,7 @@ import BranchNode from "./BranchNode";
 import CentralNode from "./CentralNode";
 import ConnectionLine from "./ConnectionLine";
 import ParticleField from "./ParticleField";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import type { NodeGraphState } from "@/hooks/useNodeGraph";
 
 interface SceneProps {
@@ -17,6 +18,7 @@ interface SceneProps {
 }
 
 export default function Scene({ graph, onBackgroundClick }: SceneProps) {
+  const reducedMotion = useReducedMotion();
   const controlsRef = useRef<CameraControlsImpl | null>(null);
   const previousActiveNodeIdRef = useRef<string | null>(graph.activeNodeId);
   const cameraBoundary = useMemo(
@@ -114,8 +116,22 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
         <pointLight position={[-8, -4, -8]} intensity={0.45} color="#7f77dd" />
 
         <Suspense fallback={null}>
-          <ParticleField count={320} size={0.02} color="#ffffff" spread={24} opacity={0.32} />
-          <ParticleField count={42} size={0.05} color="#ffffff" spread={20} opacity={0.7} />
+          <ParticleField
+            count={320}
+            size={0.02}
+            color="#ffffff"
+            spread={24}
+            opacity={0.32}
+            reducedMotion={reducedMotion}
+          />
+          <ParticleField
+            count={42}
+            size={0.05}
+            color="#ffffff"
+            spread={20}
+            opacity={0.7}
+            reducedMotion={reducedMotion}
+          />
           <DreiCameraControls
             ref={controlsRef}
             makeDefault
@@ -162,6 +178,7 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
                 end={toNode.position}
                 color={edge.color}
                 isHighlighted={isHighlighted}
+                reducedMotion={reducedMotion}
               />
             );
           })}
@@ -176,6 +193,7 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
                   key={node.id}
                   node={node}
                   isActive={isActive}
+                  reducedMotion={reducedMotion}
                   onSelect={handleSelectNode}
                 />
               );

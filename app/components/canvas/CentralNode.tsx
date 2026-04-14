@@ -2,31 +2,68 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import gsap from "gsap";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import type { GraphNode } from "@/types";
 
 interface CentralNodeProps {
   node: GraphNode;
   isActive: boolean;
+  reducedMotion: boolean;
   onSelect: (nodeId: string) => void;
 }
 
-export default function CentralNode({ node, isActive, onSelect }: CentralNodeProps) {
+export default function CentralNode({
+  node,
+  isActive,
+  reducedMotion,
+  onSelect,
+}: CentralNodeProps) {
   const groupRef = useRef<THREE.Group | null>(null);
   const meshRef = useRef<THREE.Mesh | null>(null);
+  const introPlayedRef = useRef(false);
+
+  useEffect(() => {
+    if (reducedMotion || introPlayedRef.current || !meshRef.current) {
+      return;
+    }
+
+    const mesh = meshRef.current;
+    introPlayedRef.current = true;
+
+    const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
+    timeline
+      .fromTo(
+        mesh.scale,
+        { x: 0.24, y: 0.24, z: 0.24 },
+        { x: 1.08, y: 1.08, z: 1.08, duration: 0.9 },
+      )
+      .fromTo(
+        mesh.rotation,
+        { y: -0.36 },
+        { y: 0.14, duration: 0.85 },
+        "<",
+      );
+
+    return () => {
+      timeline.kill();
+    };
+  }, [reducedMotion]);
 
   useFrame((state) => {
     if (!groupRef.current || !meshRef.current) {
       return;
     }
 
-    const targetScale = isActive ? 1.18 : 1.08;
+    const elapsed = state.clock.getElapsedTime();
+    const pulse = reducedMotion ? 0 : Math.sin(elapsed * 1.4) * 0.025;
+    const targetScale = (isActive ? 1.18 : 1.08) + pulse;
     const targetY = isActive ? 0.1 : 0;
 
     groupRef.current.rotation.y = THREE.MathUtils.lerp(
       groupRef.current.rotation.y,
-      0,
+      reducedMotion ? 0 : isActive ? elapsed * 0.07 : 0,
       0.04,
     );
     groupRef.current.position.y = THREE.MathUtils.lerp(
@@ -39,7 +76,7 @@ export default function CentralNode({ node, isActive, onSelect }: CentralNodePro
     const nextScale = THREE.MathUtils.lerp(currentScale, targetScale, 0.1);
     meshRef.current.scale.setScalar(nextScale);
 
-    if (isActive) {
+    if (isActive && !reducedMotion) {
       meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.15;
     }
   });
