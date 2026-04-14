@@ -59,6 +59,143 @@ export default function DesktopShell() {
       return null;
     }
 
+    // Tier 2 category overviews
+    if (activeNode.id === "branch-projects") {
+      return {
+        key: activeNode.id,
+        title: "Projects",
+        content: (
+          <section className="space-y-4">
+            <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+              <p className="text-2xl font-bold text-[#1d9e75]">{(projects as Project[]).length}</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-300/70">
+                Total Projects
+              </p>
+            </div>
+            <p className="leading-6 text-slate-200/85">
+              Click on any project node to explore case studies, tech stacks, and live demos.
+            </p>
+            <ul className="space-y-2">
+              {(projects as Project[]).slice(0, 5).map((project) => (
+                <li key={project.id} className="text-sm text-slate-300/80">
+                  • {project.title}
+                </li>
+              ))}
+              {(projects as Project[]).length > 5 && (
+                <li className="text-sm text-slate-400/60">
+                  + {(projects as Project[]).length - 5} more
+                </li>
+              )}
+            </ul>
+          </section>
+        ),
+      };
+    }
+
+    if (activeNode.id === "branch-skills") {
+      return {
+        key: activeNode.id,
+        title: "Skills",
+        content: (
+          <section className="space-y-4">
+            <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+              <p className="text-2xl font-bold text-[#378add]">{(skills as SkillCategory[]).length}</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-300/70">
+                Skill Categories
+              </p>
+            </div>
+            <p className="leading-6 text-slate-200/85">
+              Explore technical and professional skills organized by domain.
+            </p>
+            <ul className="space-y-2">
+              {(skills as SkillCategory[]).slice(0, 5).map((category) => (
+                <li key={category.id} className="text-sm text-slate-300/80">
+                  • {category.category}
+                </li>
+              ))}
+              {(skills as SkillCategory[]).length > 5 && (
+                <li className="text-sm text-slate-400/60">
+                  + {(skills as SkillCategory[]).length - 5} more
+                </li>
+              )}
+            </ul>
+          </section>
+        ),
+      };
+    }
+
+    if (activeNode.id === "branch-experience") {
+      return {
+        key: activeNode.id,
+        title: "Experience",
+        content: (
+          <section className="space-y-4">
+            <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+              <p className="text-2xl font-bold text-[#d85a30]">{(experience as ExperienceItem[]).length}</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-300/70">
+                Professional Roles
+              </p>
+            </div>
+            <p className="leading-6 text-slate-200/85">
+              View career history and professional achievements across different companies.
+            </p>
+            <ul className="space-y-2">
+              {(experience as ExperienceItem[]).slice(0, 5).map((item) => (
+                <li key={item.id} className="text-sm text-slate-300/80">
+                  • {item.role} at {item.company}
+                </li>
+              ))}
+              {(experience as ExperienceItem[]).length > 5 && (
+                <li className="text-sm text-slate-400/60">
+                  + {(experience as ExperienceItem[]).length - 5} more
+                </li>
+              )}
+            </ul>
+          </section>
+        ),
+      };
+    }
+
+    if (activeNode.id === "branch-certifications") {
+      return {
+        key: activeNode.id,
+        title: "Certifications",
+        content: (
+          <section className="space-y-4">
+            <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+              <p className="text-2xl font-bold text-[#c8a85d]">{(certifications as CertificationItem[]).length}</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-300/70">
+                Credentials
+              </p>
+            </div>
+            <p className="leading-6 text-slate-200/85">
+              Industry certifications and professional credentials earned over time.
+            </p>
+            <ul className="space-y-2">
+              {(certifications as CertificationItem[]).slice(0, 5).map((item) => (
+                <li key={item.id} className="text-sm text-slate-300/80">
+                  • {item.name}
+                </li>
+              ))}
+              {(certifications as CertificationItem[]).length > 5 && (
+                <li className="text-sm text-slate-400/60">
+                  + {(certifications as CertificationItem[]).length - 5} more
+                </li>
+              )}
+            </ul>
+          </section>
+        ),
+      };
+    }
+
+    if (activeNode.id === "branch-about") {
+      return {
+        key: activeNode.id,
+        title: "About",
+        content: <AboutPanel about={about as AboutData} />,
+      };
+    }
+
     if (activeNode.id.startsWith("project-")) {
       const projectId = activeNode.id.replace("project-", "");
       const project = projectMap.get(projectId);

@@ -187,6 +187,7 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
                 node={node}
                 isActive={isActive}
                 isHovered={isHovered}
+                activeNodeId={graph.activeNodeId}
                 onSelect={handleSelectNode}
                 onHover={graph.setHoveredNodeId}
               />

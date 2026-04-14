@@ -10,6 +10,7 @@ interface BranchNodeProps {
   node: GraphNode;
   isActive: boolean;
   isHovered: boolean;
+  activeNodeId: string | null;
   onSelect: (nodeId: string) => void;
   onHover: (nodeId: string | null) => void;
 }
@@ -18,11 +19,28 @@ export default function BranchNode({
   node,
   isActive,
   isHovered,
+  activeNodeId,
   onSelect,
   onHover,
 }: BranchNodeProps) {
   const groupRef = useRef<THREE.Group | null>(null);
   const meshRef = useRef<THREE.Mesh | null>(null);
+
+  // Determine label visibility for tier 3 (leaf) nodes
+  const leafLabelOpacity =
+    node.kind !== "leaf"
+      ? 1 // Always show tier 2 labels
+      : activeNodeId === null ||
+          activeNodeId === "central-you" ||
+          activeNodeId === "branch-projects" ||
+          activeNodeId === "branch-skills" ||
+          activeNodeId === "branch-experience" ||
+          activeNodeId === "branch-certifications" ||
+          activeNodeId === "branch-about"
+        ? 0 // Hide tier 3 labels by default
+        : activeNodeId === node.parentId || activeNodeId === node.id
+          ? 1 // Show full opacity if parent or self is active
+          : 0.08; // Fade to almost-vanished for other tier 3 items
 
   useEffect(() => {
     if (typeof document === "undefined") {
@@ -104,11 +122,12 @@ export default function BranchNode({
         pointerEvents="none"
       >
         <div
-          className={`max-w-[180px] rounded-full border px-3 py-1 text-center text-xs font-medium backdrop-blur-md ${
+          className={`max-w-[180px] rounded-full border px-3 py-1 text-center text-xs font-medium backdrop-blur-md transition-opacity duration-200 ${
             isActive || isHovered
               ? "border-white/20 bg-black/55 text-white"
               : "border-white/10 bg-black/35 text-slate-200/85"
           }`}
+          style={{ opacity: leafLabelOpacity }}
         >
           {node.label}
         </div>
