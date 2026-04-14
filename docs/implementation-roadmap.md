@@ -5,7 +5,7 @@ Use this sequence to reduce risk and avoid rework.
 ## Progress
 
 - [x] Phase 1 - Foundation
-- [ ] Phase 2 - Mobile fallback first
+- [x] Phase 2 - Mobile fallback first
 - [ ] Phase 3 - Device and motion gates
 - [ ] Phase 4 - 3D graph skeleton
 - [ ] Phase 5 - Panels and interactions
@@ -26,17 +26,17 @@ Exit criteria:
 
 ## Phase 2 - Mobile fallback first
 
-- [ ] Build hero section and availability badge.
-- [ ] Build projects cards grid.
-- [ ] Build grouped skills section.
-- [ ] Build experience timeline.
-- [ ] Build certifications and contact sections.
-- [ ] Add Framer Motion scroll reveal (respect reduced motion).
+- [x] Build hero section and availability badge.
+- [x] Build projects cards grid.
+- [x] Build grouped skills section.
+- [x] Build experience timeline.
+- [x] Build certifications and contact sections.
+- [x] Add Framer Motion scroll reveal (respect reduced motion).
 
 Exit criteria:
 
-- [ ] Full fallback is complete and visually coherent.
-- [ ] Content reads well on 390px and 768px widths.
+- [x] Full fallback is complete and visually coherent.
+- [x] Content reads well on 390px and 768px widths.
 
 ## Phase 3 - Device and motion gates
 

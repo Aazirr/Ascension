@@ -8,7 +8,7 @@ This guide bootstraps the project with the stack required by the spec.
 - [x] Core dependencies installed
 - [x] Fonts, metadata, and analytics wired
 - [x] Base theme tokens added
-- [ ] Mobile fallback scaffold created
+- [x] Mobile fallback scaffold created
 - [ ] Device and motion gates implemented
 - [ ] 3D graph structure built
 - [ ] Panels and interactions wired
@@ -82,7 +82,7 @@ Do not use `<link>` tags or self-hosting for this project.
 
 - [x] Add metadata and Open Graph config to `app/layout.tsx`.
 - [x] Add `<Analytics />` from `@vercel/analytics/react` in `app/layout.tsx`.
-- [ ] Build mobile fallback first before the 3D graph.
+- [x] Build mobile fallback first before the 3D graph.
 - [ ] Add WebGL detection and reduced-motion handling before animations.
 
 ## 6. First-run verification
