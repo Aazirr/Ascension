@@ -12,12 +12,19 @@ import ParticleField from "./ParticleField";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import type { NodeGraphState } from "@/hooks/useNodeGraph";
 
+export type CosmicBackgroundPreset = "cinematic" | "clean" | "bright";
+
 interface SceneProps {
   graph: NodeGraphState;
+  backgroundPreset: CosmicBackgroundPreset;
   onBackgroundClick?: () => void;
 }
 
-export default function Scene({ graph, onBackgroundClick }: SceneProps) {
+export default function Scene({
+  graph,
+  backgroundPreset,
+  onBackgroundClick,
+}: SceneProps) {
   const reducedMotion = useReducedMotion();
   const controlsRef = useRef<CameraControlsImpl | null>(null);
   const previousActiveNodeIdRef = useRef<string | null>(graph.activeNodeId);
@@ -101,8 +108,31 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
     graph.selectNode(nodeId);
   };
 
+  const particleConfig = useMemo(() => {
+    if (backgroundPreset === "clean") {
+      return {
+        far: { count: 160, spread: 28, opacity: 0.18 },
+        near: { count: 16, spread: 24, opacity: 0.44 },
+      };
+    }
+
+    if (backgroundPreset === "bright") {
+      return {
+        far: { count: 270, spread: 24, opacity: 0.3 },
+        near: { count: 36, spread: 20, opacity: 0.64 },
+      };
+    }
+
+    return {
+      far: { count: 240, spread: 26, opacity: 0.26 },
+      near: { count: 28, spread: 22, opacity: 0.56 },
+    };
+  }, [backgroundPreset]);
+
   return (
-    <div className="h-screen w-screen overflow-hidden bg-[radial-gradient(circle_at_center,rgba(127,119,221,0.09),transparent_45%),linear-gradient(180deg,rgba(8,8,24,0.92),rgba(5,5,16,0.98))]">
+    <div
+      className={`cosmic-backdrop cosmic-backdrop--${backgroundPreset} h-screen w-screen overflow-hidden`}
+    >
       <Canvas
         camera={{ position: [0, 0, 14], fov: 48 }}
         dpr={[1, 1.5]}
@@ -117,19 +147,19 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
 
         <Suspense fallback={null}>
           <ParticleField
-            count={320}
+            count={particleConfig.far.count}
             size={0.02}
             color="#ffffff"
-            spread={24}
-            opacity={0.32}
+            spread={particleConfig.far.spread}
+            opacity={particleConfig.far.opacity}
             reducedMotion={reducedMotion}
           />
           <ParticleField
-            count={42}
+            count={particleConfig.near.count}
             size={0.05}
             color="#ffffff"
-            spread={20}
-            opacity={0.7}
+            spread={particleConfig.near.spread}
+            opacity={particleConfig.near.opacity}
             reducedMotion={reducedMotion}
           />
           <DreiCameraControls

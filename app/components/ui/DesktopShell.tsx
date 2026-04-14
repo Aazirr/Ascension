@@ -7,7 +7,7 @@ import certifications from "../../../data/certifications.json";
 import experience from "../../../data/experience.json";
 import projects from "../../../data/projects.json";
 import skills from "../../../data/skills.json";
-import Scene from "../canvas/Scene";
+import Scene, { type CosmicBackgroundPreset } from "../canvas/Scene";
 import AboutPanel from "../panels/AboutPanel";
 import CertificationPanel from "../panels/CertificationPanel";
 import ExperiencePanel from "../panels/ExperiencePanel";
@@ -47,6 +47,8 @@ export default function DesktopShell() {
   const activeNode = graph.activeNode;
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [hasSeenIntro, setHasSeenIntro] = useState(false);
+  const [backgroundPreset, setBackgroundPreset] =
+    useState<CosmicBackgroundPreset>("cinematic");
   const introTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const projectMap = useMemo(
@@ -400,10 +402,36 @@ export default function DesktopShell() {
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const storedPreset = localStorage.getItem(
+      "ascension-cosmic-preset",
+    ) as CosmicBackgroundPreset | null;
+    if (
+      storedPreset === "cinematic" ||
+      storedPreset === "clean" ||
+      storedPreset === "bright"
+    ) {
+      setBackgroundPreset(storedPreset);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    localStorage.setItem("ascension-cosmic-preset", backgroundPreset);
+  }, [backgroundPreset]);
+
   return (
     <main className="relative h-screen w-screen overflow-hidden text-white">
       <Scene
         graph={graph}
+        backgroundPreset={backgroundPreset}
         onBackgroundClick={() => {
           graph.setActiveNodeId(null);
           graph.setHoveredNodeId(null);
@@ -448,6 +476,34 @@ export default function DesktopShell() {
         <div className="rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-xs text-slate-300/85 backdrop-blur-md">
           <p className="uppercase tracking-[0.2em]">Nodes</p>
           <p className="mt-1">{graph.nodes.length} total · {graph.edges.length} links</p>
+        </div>
+      </section>
+
+      <section className="absolute bottom-6 left-44 z-20 pointer-events-auto">
+        <div className="rounded-2xl border border-white/10 bg-black/35 px-3 py-2 backdrop-blur-md">
+          <p className="mb-2 text-[10px] uppercase tracking-[0.16em] text-slate-300/70">
+            Background
+          </p>
+          <div className="flex items-center gap-1.5">
+            {([
+              { id: "cinematic", label: "Cinematic" },
+              { id: "clean", label: "Clean" },
+              { id: "bright", label: "Bright" },
+            ] as const).map((preset) => (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={() => setBackgroundPreset(preset.id)}
+                className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                  backgroundPreset === preset.id
+                    ? "border-white/35 bg-white/15 text-white"
+                    : "border-white/10 bg-black/20 text-slate-300/80 hover:border-white/20 hover:bg-white/10"
+                }`}
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
