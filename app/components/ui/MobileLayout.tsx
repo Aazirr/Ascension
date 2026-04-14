@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { motion, type Transition } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import projects from "../../../data/projects.json";
@@ -63,12 +61,13 @@ export default function MobileLayout() {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link
+            <a
               href="/resume.pdf"
+              download
               className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
             >
               Download Resume
-            </Link>
+            </a>
             <a
               href={about.contact.github}
               target="_blank"
@@ -121,13 +120,18 @@ export default function MobileLayout() {
                   delay: reducedMotion ? 0 : index * 0.06,
                 }}
               >
-                <div className="relative aspect-[16/10] overflow-hidden bg-slate-900/80">
-                  <Image
-                    src={project.screenshot}
-                    alt={project.title}
-                    fill
-                    className="object-cover opacity-90"
-                  />
+                <div className="relative aspect-[16/10] overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(127,119,221,0.28),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(29,158,117,0.18),transparent_36%),linear-gradient(135deg,rgba(8,8,24,0.98),rgba(18,17,39,0.96))]">
+                  <div className="absolute inset-0 flex flex-col justify-end p-5">
+                    <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
+                      Project preview
+                    </p>
+                    <h3 className="mt-2 text-xl font-semibold text-white">
+                      {project.title}
+                    </h3>
+                    <p className="mt-1 max-w-[18ch] text-sm text-slate-200/80">
+                      Screenshot placeholder until the final asset is added.
+                    </p>
+                  </div>
                 </div>
                 <div className="space-y-4 p-5">
                   <div>

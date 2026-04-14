@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import about from "../../../data/about.json";
 import certifications from "../../../data/certifications.json";
 import experience from "../../../data/experience.json";
@@ -50,12 +49,13 @@ export default function DesktopShell() {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link
+            <a
               href="/resume.pdf"
+              download
               className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
             >
               Download Resume
-            </Link>
+            </a>
             <a
               href={about.contact.github}
               target="_blank"

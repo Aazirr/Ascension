@@ -1,6 +1,6 @@
 "use client";
 
-import { Text } from "@react-three/drei";
+import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from "three";
@@ -62,24 +62,16 @@ export default function CentralNode({ node, isActive, onSelect }: CentralNodePro
           metalness={0.7}
         />
       </mesh>
-      <Text
-        position={[0, 1.9, 0]}
-        fontSize={0.3}
-        color="#f8f7ff"
-        anchorX="center"
-        anchorY="middle"
-      >
-        {node.label}
-      </Text>
-      <Text
-        position={[0, -1.9, 0]}
-        fontSize={0.13}
-        color="#cbc8e6"
-        anchorX="center"
-        anchorY="middle"
-      >
-        {node.description}
-      </Text>
+      <Html position={[0, 2.0, 0]} center transform distanceFactor={9} pointerEvents="none">
+        <div className="rounded-full border border-white/10 bg-black/40 px-3 py-1 text-center text-sm font-semibold tracking-[0.18em] text-white shadow-lg backdrop-blur-md">
+          {node.label}
+        </div>
+      </Html>
+      <Html position={[0, -2.0, 0]} center transform distanceFactor={11} pointerEvents="none">
+        <div className="max-w-[220px] text-center text-xs leading-5 text-slate-300/90">
+          {node.description}
+        </div>
+      </Html>
       <pointLight color={node.color} intensity={1.8} distance={10} />
     </group>
   );

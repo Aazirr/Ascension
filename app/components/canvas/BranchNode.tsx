@@ -1,6 +1,6 @@
 "use client";
 
-import { Text } from "@react-three/drei";
+import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
@@ -95,15 +95,23 @@ export default function BranchNode({
           opacity={0.72}
         />
       </mesh>
-      <Text
-        position={[0, node.kind === "category" ? 1.2 : 0.9, 0]}
-        fontSize={node.kind === "category" ? 0.18 : 0.12}
-        color={isActive || isHovered ? "#ffffff" : "#c7c3df"}
-        anchorX="center"
-        anchorY="middle"
+      <Html
+        position={[0, node.kind === "category" ? 1.35 : 1.0, 0]}
+        center
+        transform
+        distanceFactor={11}
+        pointerEvents="none"
       >
-        {node.label}
-      </Text>
+        <div
+          className={`max-w-[180px] rounded-full border px-3 py-1 text-center text-xs font-medium backdrop-blur-md ${
+            isActive || isHovered
+              ? "border-white/20 bg-black/55 text-white"
+              : "border-white/10 bg-black/35 text-slate-200/85"
+          }`}
+        >
+          {node.label}
+        </div>
+      </Html>
       <pointLight color={node.color} intensity={isActive ? 1.1 : isHovered ? 0.8 : 0.45} distance={6} />
     </group>
   );
