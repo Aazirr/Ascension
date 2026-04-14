@@ -49,7 +49,7 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
   };
 
   return (
-    <div className="h-full min-h-[680px] w-full overflow-hidden rounded-[1.75rem] border border-white/10 bg-[radial-gradient(circle_at_center,rgba(127,119,221,0.09),transparent_45%),linear-gradient(180deg,rgba(8,8,24,0.92),rgba(5,5,16,0.96))]">
+    <div className="h-screen w-screen overflow-hidden bg-[radial-gradient(circle_at_center,rgba(127,119,221,0.09),transparent_45%),linear-gradient(180deg,rgba(8,8,24,0.92),rgba(5,5,16,0.98))]">
       <Canvas
         camera={{ position: [0, 0, 14], fov: 48 }}
         dpr={[1, 1.5]}
@@ -68,7 +68,7 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
           <DreiCameraControls
             ref={controlsRef}
             makeDefault
-            enabled={false}
+            enabled
             smoothTime={0.18}
             minPolarAngle={0.35}
             maxPolarAngle={1.4}
@@ -77,6 +77,7 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
             minDistance={7}
             maxDistance={16}
             dollySpeed={0}
+            truckSpeed={0.8}
           />
 
           {graph.edges.map((edge) => {
