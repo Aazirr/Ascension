@@ -10,7 +10,7 @@ This guide bootstraps the project with the stack required by the spec.
 - [x] Base theme tokens added
 - [x] Mobile fallback scaffold created
 - [x] Device and motion gates implemented
-- [ ] 3D graph structure built
+- [x] 3D graph structure built
 - [ ] Panels and interactions wired
 
 ## 1. Create app
@@ -29,7 +29,7 @@ Choose these values if prompted:
 ## 2. Install dependencies
 
 ```bash
-npm install @react-three/fiber @react-three/drei three framer-motion gsap simplex-noise @vercel/analytics
+npm install @react-three/fiber @react-three/drei three camera-controls framer-motion gsap simplex-noise @vercel/analytics
 npm install -D @types/three
 ```
 
@@ -38,6 +38,7 @@ npm install -D @types/three
 - [x] Three.js installed
 - [x] Framer Motion installed
 - [x] GSAP installed
+- [x] camera-controls installed
 - [x] simplex-noise installed
 - [x] Vercel Analytics installed
 - [x] Three.js types installed

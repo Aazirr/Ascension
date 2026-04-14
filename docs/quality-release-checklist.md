@@ -7,7 +7,7 @@ Use this checklist before shipping.
 - [x] Phase 1 foundation complete
 - [x] Phase 2 fallback complete
 - [x] Phase 3 device gates complete
-- [ ] Phase 4 graph skeleton complete
+- [x] Phase 4 graph skeleton complete
 - [ ] Phase 5 panels complete
 - [ ] Phase 6 animation pass complete
 - [ ] Phase 7 polish and release complete
@@ -65,3 +65,4 @@ Use this checklist before shipping.
 - [x] Foundation docs and starter data are in place.
 - [x] Mobile fallback layout is implemented.
 - [x] Device and motion gates are wired.
+- [x] Static graph skeleton is implemented.

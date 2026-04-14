@@ -6,8 +6,21 @@ import certifications from "../../../data/certifications.json";
 import experience from "../../../data/experience.json";
 import projects from "../../../data/projects.json";
 import skills from "../../../data/skills.json";
+import Scene from "../canvas/Scene";
+import { useNodeGraph } from "@/hooks/useNodeGraph";
+
+const branchLabels: Record<string, string> = {
+  projects: "Projects",
+  skills: "Skills",
+  experience: "Experience",
+  certifications: "Certifications",
+  about: "About",
+};
 
 export default function DesktopShell() {
+  const graph = useNodeGraph();
+  const activeNode = graph.activeNode ?? graph.nodes[0];
+
   return (
     <main className="min-h-screen px-6 py-8 text-white lg:px-8">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
@@ -15,7 +28,7 @@ export default function DesktopShell() {
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
               <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
-                Desktop preview mode
+                Desktop graph mode
               </p>
               <h1 className="mt-3 text-5xl font-bold leading-tight text-white xl:text-6xl">
                 Franz Jason Dolores
@@ -31,7 +44,7 @@ export default function DesktopShell() {
                 {about.availability}
               </div>
               <p className="mt-1 text-emerald-100/80">
-                Immersive graph arrives in Phase 4.
+                Phase 4 introduces the graph skeleton.
               </p>
             </div>
           </div>
@@ -62,132 +75,95 @@ export default function DesktopShell() {
           </div>
         </section>
 
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)]">
-          <section className="rounded-[2rem] border border-white/10 bg-black/20 p-6 backdrop-blur-sm">
-            <div className="flex items-center justify-between gap-4">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.42fr)_minmax(320px,0.58fr)]">
+          <section className="space-y-4 rounded-[2rem] border border-white/10 bg-black/20 p-4 backdrop-blur-sm sm:p-6">
+            <div className="flex items-center justify-between gap-4 px-1 pt-1">
               <div>
                 <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
-                  Projects
+                  Graph skeleton
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold text-white">
-                  Selected work
+                  Central node, branches, and leaves
                 </h2>
               </div>
               <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.2em] text-slate-300">
-                {projects.length} projects
+                {graph.nodes.length} nodes
               </span>
             </div>
 
-            <div className="mt-6 grid gap-4 lg:grid-cols-2">
-              {projects.map((project) => (
-                <article
-                  key={project.id}
-                  className="rounded-2xl border border-white/10 bg-white/5 p-4"
-                >
-                  <h3 className="text-lg font-semibold text-white">
-                    {project.title}
-                  </h3>
-                  <p className="mt-1 text-sm italic text-slate-300/80">
-                    {project.tagline}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {project.stack.slice(0, 4).map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 text-xs font-medium text-cyan-100"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <ul className="mt-4 space-y-2 text-sm leading-6 text-slate-200/85">
-                    {project.bullets.slice(0, 2).map((bullet) => (
-                      <li key={bullet} className="flex gap-2">
-                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#7f77dd]" />
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </article>
-              ))}
-            </div>
+            <Scene graph={graph} />
           </section>
 
           <aside className="space-y-6">
             <section className="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
               <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
-                Skills
+                Active node
               </p>
               <h2 className="mt-2 text-2xl font-semibold text-white">
-                Technical toolkit
+                {activeNode.label}
               </h2>
-              <div className="mt-5 space-y-4">
-                {skills.map((group) => (
-                  <div key={group.id} className="space-y-3">
-                    <h3 className="text-base font-semibold text-white">
-                      {group.category}
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {group.skills.map((skill) => (
-                        <span
-                          key={skill.name}
-                          className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-xs text-slate-100"
-                        >
-                          {skill.name}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+              <div className="mt-4 space-y-3 text-sm leading-6 text-slate-200/85">
+                <p>{activeNode.description ?? "No node description available."}</p>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-slate-300/85">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                    Section
+                  </p>
+                  <p className="mt-1 font-medium text-white">
+                    {branchLabels[activeNode.section] ?? activeNode.section}
+                  </p>
+                  <p className="mt-3 text-xs uppercase tracking-[0.2em] text-slate-400">
+                    Node type
+                  </p>
+                  <p className="mt-1 font-medium text-white">
+                    {activeNode.kind}
+                  </p>
+                </div>
+                <p className="text-slate-300/80">
+                  Click a node to move the camera and update this summary.
+                </p>
               </div>
             </section>
 
             <section className="rounded-[2rem] border border-white/10 bg-black/20 p-6 backdrop-blur-sm">
               <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
-                Experience
+                Legend
               </p>
               <h2 className="mt-2 text-2xl font-semibold text-white">
-                Work history
+                Branches
               </h2>
-              <div className="mt-5 space-y-4 border-l border-white/10 pl-4">
-                {experience.map((item) => (
-                  <article key={item.id} className="relative">
-                    <span className="absolute -left-[1.3rem] top-1 h-3 w-3 rounded-full border-2 border-[#7f77dd] bg-[#050510]" />
-                    <h3 className="text-base font-semibold text-white">
-                      {item.role}
-                    </h3>
-                    <p className="text-sm text-slate-300/80">
-                      {item.company} · {item.location}
-                    </p>
-                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-                      {item.dates}
-                    </p>
-                  </article>
-                ))}
+              <div className="mt-5 space-y-3 text-sm text-slate-200/85">
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <span>Projects</span>
+                  <span className="h-3 w-3 rounded-full bg-[#1d9e75]" />
+                </div>
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <span>Skills</span>
+                  <span className="h-3 w-3 rounded-full bg-[#378add]" />
+                </div>
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <span>Experience</span>
+                  <span className="h-3 w-3 rounded-full bg-[#d85a30]" />
+                </div>
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <span>Certifications</span>
+                  <span className="h-3 w-3 rounded-full bg-[#c8a85d]" />
+                </div>
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <span>About</span>
+                  <span className="h-3 w-3 rounded-full bg-[#888780]" />
+                </div>
               </div>
             </section>
 
             <section className="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
               <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
-                Certifications
+                Content map
               </p>
-              <h2 className="mt-2 text-2xl font-semibold text-white">
-                Credentials
-              </h2>
-              <div className="mt-5 space-y-3">
-                {certifications.map((cert) => (
-                  <div
-                    key={cert.id}
-                    className="rounded-2xl border border-white/10 bg-black/20 p-4"
-                  >
-                    <h3 className="text-sm font-semibold text-white">
-                      {cert.name}
-                    </h3>
-                    <p className="mt-1 text-sm text-slate-300/80">
-                      {cert.issuer} · {cert.date}
-                    </p>
-                  </div>
-                ))}
+              <div className="mt-5 space-y-3 text-sm text-slate-300/85">
+                <p>{projects.length} project leaves</p>
+                <p>{skills.reduce((total, group) => total + group.skills.length, 0)} skill leaves</p>
+                <p>{experience.length} experience nodes</p>
+                <p>{certifications.length} certification nodes</p>
               </div>
             </section>
           </aside>

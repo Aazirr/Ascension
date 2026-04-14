@@ -7,7 +7,7 @@ Use this sequence to reduce risk and avoid rework.
 - [x] Phase 1 - Foundation
 - [x] Phase 2 - Mobile fallback first
 - [x] Phase 3 - Device and motion gates
-- [ ] Phase 4 - 3D graph skeleton
+- [x] Phase 4 - 3D graph skeleton
 - [ ] Phase 5 - Panels and interactions
 - [ ] Phase 6 - Animation pass
 - [ ] Phase 7 - Polish and release
@@ -54,19 +54,19 @@ Exit criteria:
 
 ## Phase 4 - 3D graph skeleton
 
-- [ ] Build `Scene.tsx` with `CameraControls`.
-- [ ] Place central node and category nodes.
-- [ ] Add leaf nodes and static connection lines.
-- [ ] Wire `useNodeGraph` hook for active node state.
-- [ ] Add hover states - cursor pointer, scale feedback.
-- [ ] Add static `ParticleField`.
-- [ ] Add click handling and active node state.
+- [x] Build `Scene.tsx` with `CameraControls`.
+- [x] Place central node and category nodes.
+- [x] Add leaf nodes and static connection lines.
+- [x] Wire `useNodeGraph` hook for active node state.
+- [x] Add hover states - cursor pointer, scale feedback.
+- [x] Add static `ParticleField`.
+- [x] Add click handling and active node state.
 
 Exit criteria:
 
-- [ ] Nodes are spaced and clickable.
-- [ ] Camera can move toward clicked nodes.
-- [ ] Nodes respond visually to hover and click.
+- [x] Nodes are spaced and clickable.
+- [x] Camera can move toward clicked nodes.
+- [x] Nodes respond visually to hover and click.
 
 ## Phase 5 - Panels and interactions
 

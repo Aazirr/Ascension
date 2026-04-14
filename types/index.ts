@@ -53,3 +53,30 @@ export interface AboutData {
   availability: string;
   contact: AboutContact;
 }
+
+export type GraphNodeKind = "central" | "category" | "leaf";
+
+export type GraphSection =
+  | "projects"
+  | "skills"
+  | "experience"
+  | "certifications"
+  | "about";
+
+export interface GraphNode {
+  id: string;
+  label: string;
+  kind: GraphNodeKind;
+  section: GraphSection;
+  position: [number, number, number];
+  color: string;
+  description?: string;
+  parentId?: string;
+}
+
+export interface GraphEdge {
+  id: string;
+  from: string;
+  to: string;
+  color: string;
+}
