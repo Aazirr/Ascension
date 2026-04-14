@@ -17,6 +17,8 @@ interface BranchNodeProps {
   onHover: (nodeId: string | null) => void;
 }
 
+const BUBBLE_ACCESSORY_COLOR = "#D9CA80";
+
 export default function BranchNode({
   node,
   isActive,
@@ -88,12 +90,12 @@ export default function BranchNode({
       const time = performance.now() * 0.001;
       const sheenMaterial = sheenRef.current.material as THREE.MeshBasicMaterial;
       const hue =
-        (0.56 +
-          Math.sin(time * 0.42 + node.position[0] * 0.7) * 0.07 +
-          Math.cos(time * 0.25 + node.position[1] * 0.6) * 0.04 +
+        (0.135 +
+          Math.sin(time * 0.42 + node.position[0] * 0.7) * 0.018 +
+          Math.cos(time * 0.25 + node.position[1] * 0.6) * 0.01 +
           1) %
         1;
-      sheenMaterial.color.setHSL(hue, 0.68, 0.73);
+      sheenMaterial.color.setHSL(hue, 0.5, 0.72);
 
       const targetSheenOpacity = isActive
         ? 0.11 + Math.sin(time * 1.25) * 0.01
@@ -144,7 +146,7 @@ export default function BranchNode({
       >
         <sphereGeometry args={[node.kind === "category" ? 0.72 : 0.42, 28, 28]} />
         <meshPhysicalMaterial
-          color="#a7d8ff"
+          color="#f3ebc7"
           emissive={node.color}
           emissiveIntensity={0.03}
           roughness={0.03}
@@ -178,7 +180,7 @@ export default function BranchNode({
       >
         <sphereGeometry args={[node.kind === "category" ? 0.72 : 0.42, 28, 28]} />
         <meshBasicMaterial
-          color="#b7ddff"
+          color={BUBBLE_ACCESSORY_COLOR}
           transparent
           opacity={0.055}
           depthWrite={false}
@@ -227,6 +229,11 @@ export default function BranchNode({
         </div>
       </Html>
       <pointLight color={node.color} intensity={isActive ? 0.72 : isHovered ? 0.5 : 0.28} distance={6} />
+      <pointLight
+        color={isActive || isHovered ? BUBBLE_ACCESSORY_COLOR : node.color}
+        intensity={isActive ? 0.78 : isHovered ? 0.56 : 0.28}
+        distance={6}
+      />
     </group>
   );
 }

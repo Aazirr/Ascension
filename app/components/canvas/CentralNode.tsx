@@ -16,6 +16,8 @@ interface CentralNodeProps {
   onSelect: (nodeId: string) => void;
 }
 
+const BUBBLE_ACCESSORY_COLOR = "#D9CA80";
+
 export default function CentralNode({
   node,
   isActive,
@@ -94,12 +96,12 @@ export default function CentralNode({
     if (sheenRef.current) {
       const sheenMaterial = sheenRef.current.material as THREE.MeshBasicMaterial;
       const hue =
-        (0.54 +
-          Math.sin(elapsed * 0.33) * 0.08 +
-          Math.cos(elapsed * 0.17 + node.position[0]) * 0.04 +
+        (0.135 +
+          Math.sin(elapsed * 0.33) * 0.018 +
+          Math.cos(elapsed * 0.17 + node.position[0]) * 0.01 +
           1) %
         1;
-      sheenMaterial.color.setHSL(hue, 0.72, 0.74);
+      sheenMaterial.color.setHSL(hue, 0.52, 0.72);
 
       const targetOpacity = reducedMotion
         ? isActive
@@ -128,7 +130,7 @@ export default function CentralNode({
       >
         <sphereGeometry args={[1.2, 32, 32]} />
         <meshPhysicalMaterial
-          color="#a7d8ff"
+          color="#f3ebc7"
           transparent
           opacity={isActive ? 0.14 : 0.1}
           transmission={1}
@@ -154,7 +156,7 @@ export default function CentralNode({
       >
         <sphereGeometry args={[1.2, 32, 32]} />
         <meshBasicMaterial
-          color="#b7ddff"
+          color={BUBBLE_ACCESSORY_COLOR}
           transparent
           opacity={0.08}
           depthWrite={false}
@@ -203,7 +205,7 @@ export default function CentralNode({
           {node.description}
         </div>
       </Html>
-      <pointLight color={node.color} intensity={isActive ? 1.0 : 0.6} distance={10} />
+      <pointLight color={isActive ? BUBBLE_ACCESSORY_COLOR : node.color} intensity={isActive ? 1.05 : 0.6} distance={10} />
     </group>
   );
 }
