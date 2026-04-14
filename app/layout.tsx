@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import BackgroundMusic from "./components/ui/BackgroundMusic";
 import "./globals.css";
 
 const inter = Inter({
@@ -55,6 +56,7 @@ export default function RootLayout({
         className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased`}
       >
         {children}
+        <BackgroundMusic />
         <Analytics />
       </body>
     </html>
