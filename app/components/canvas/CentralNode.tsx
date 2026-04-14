@@ -24,6 +24,7 @@ export default function CentralNode({
 }: CentralNodeProps) {
   const groupRef = useRef<THREE.Group | null>(null);
   const meshRef = useRef<THREE.Mesh | null>(null);
+  const sheenRef = useRef<THREE.Mesh | null>(null);
   const introPlayedRef = useRef(false);
   const [iconPath, setIconPath] = useState(() => getNodeIconPath({ id: node.id, kind: node.kind }));
   const [triedDefaultIcon, setTriedDefaultIcon] = useState(false);
@@ -89,6 +90,31 @@ export default function CentralNode({
     if (isActive && !reducedMotion) {
       meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.15;
     }
+
+    if (sheenRef.current) {
+      const sheenMaterial = sheenRef.current.material as THREE.MeshBasicMaterial;
+      const hue =
+        (0.54 +
+          Math.sin(elapsed * 0.33) * 0.08 +
+          Math.cos(elapsed * 0.17 + node.position[0]) * 0.04 +
+          1) %
+        1;
+      sheenMaterial.color.setHSL(hue, 0.72, 0.74);
+
+      const targetOpacity = reducedMotion
+        ? isActive
+          ? 0.08
+          : 0.05
+        : isActive
+          ? 0.13 + Math.sin(elapsed * 1.1) * 0.014
+          : 0.09 + Math.sin(elapsed * 0.8) * 0.01;
+
+      sheenMaterial.opacity = THREE.MathUtils.lerp(
+        sheenMaterial.opacity,
+        targetOpacity,
+        0.08,
+      );
+    }
   });
 
   return (
@@ -102,24 +128,25 @@ export default function CentralNode({
       >
         <sphereGeometry args={[1.2, 32, 32]} />
         <meshPhysicalMaterial
-          color="#d8ecff"
+          color="#a7d8ff"
           transparent
-          opacity={isActive ? 0.24 : 0.18}
+          opacity={isActive ? 0.14 : 0.1}
           transmission={1}
-          thickness={0.42}
-          ior={1.07}
-          roughness={0.08}
-          metalness={0.03}
+          thickness={0.24}
+          ior={1.02}
+          roughness={0.03}
+          metalness={0}
           clearcoat={1}
-          clearcoatRoughness={0.04}
+          clearcoatRoughness={0.02}
           emissive={node.color}
-          emissiveIntensity={reducedMotion ? (isActive ? 0.14 : 0.08) : isActive ? 0.28 : 0.12}
-          reflectivity={0.65}
+          emissiveIntensity={reducedMotion ? (isActive ? 0.06 : 0.03) : isActive ? 0.1 : 0.05}
+          reflectivity={0.88}
           depthWrite={false}
         />
       </mesh>
       <mesh
-        scale={isActive ? 1.035 : 1.02}
+        ref={sheenRef}
+        scale={1.028}
         onClick={(event) => {
           event.stopPropagation();
           onSelect(node.id);
@@ -127,14 +154,16 @@ export default function CentralNode({
       >
         <sphereGeometry args={[1.2, 32, 32]} />
         <meshBasicMaterial
-          color="#e9f6ff"
+          color="#b7ddff"
           transparent
-          opacity={isActive ? 0.22 : 0.14}
-          wireframe
+          opacity={0.08}
+          depthWrite={false}
+          side={THREE.DoubleSide}
+          blending={THREE.AdditiveBlending}
         />
       </mesh>
       <Html center transform distanceFactor={8} zIndexRange={[4, 0]} pointerEvents="none">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/10 shadow-[0_0_28px_rgba(180,220,255,0.2)] backdrop-blur-md">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full">
           <Image
             src={iconPath}
             alt={`${node.label} icon`}

@@ -27,6 +27,7 @@ export default function BranchNode({
 }: BranchNodeProps) {
   const groupRef = useRef<THREE.Group | null>(null);
   const meshRef = useRef<THREE.Mesh | null>(null);
+  const sheenRef = useRef<THREE.Mesh | null>(null);
   const [iconPath, setIconPath] = useState(() => getNodeIconPath({ id: node.id, kind: node.kind }));
   const [triedDefaultIcon, setTriedDefaultIcon] = useState(false);
   const defaultIconPath = useMemo(() => getNodeDefaultIconPath(node.kind), [node.kind]);
@@ -73,7 +74,7 @@ export default function BranchNode({
     }
 
     const targetScale = isActive ? 1.35 : isHovered ? 1.2 : 1;
-    const targetOpacity = isActive ? 0.3 : isHovered ? 0.24 : 0.18;
+    const targetOpacity = isActive ? 0.2 : isHovered ? 0.15 : 0.11;
     const currentScale = meshRef.current.scale.x;
     const nextScale = THREE.MathUtils.lerp(currentScale, targetScale, 0.12);
     meshRef.current.scale.setScalar(nextScale);
@@ -81,7 +82,31 @@ export default function BranchNode({
     const material = meshRef.current.material as THREE.MeshPhysicalMaterial;
     material.opacity = THREE.MathUtils.lerp(material.opacity, targetOpacity, 0.15);
     material.transparent = true;
-    material.emissiveIntensity = isActive ? 0.26 : isHovered ? 0.16 : 0.08;
+    material.emissiveIntensity = isActive ? 0.08 : isHovered ? 0.05 : 0.03;
+
+    if (sheenRef.current) {
+      const time = performance.now() * 0.001;
+      const sheenMaterial = sheenRef.current.material as THREE.MeshBasicMaterial;
+      const hue =
+        (0.56 +
+          Math.sin(time * 0.42 + node.position[0] * 0.7) * 0.07 +
+          Math.cos(time * 0.25 + node.position[1] * 0.6) * 0.04 +
+          1) %
+        1;
+      sheenMaterial.color.setHSL(hue, 0.68, 0.73);
+
+      const targetSheenOpacity = isActive
+        ? 0.11 + Math.sin(time * 1.25) * 0.01
+        : isHovered
+          ? 0.08 + Math.sin(time * 1.05) * 0.008
+          : 0.055 + Math.sin(time * 0.8) * 0.006;
+
+      sheenMaterial.opacity = THREE.MathUtils.lerp(
+        sheenMaterial.opacity,
+        targetSheenOpacity,
+        0.1,
+      );
+    }
 
     groupRef.current.position.x = THREE.MathUtils.lerp(
       groupRef.current.position.x,
@@ -119,24 +144,25 @@ export default function BranchNode({
       >
         <sphereGeometry args={[node.kind === "category" ? 0.72 : 0.42, 28, 28]} />
         <meshPhysicalMaterial
-          color="#d8ecff"
+          color="#a7d8ff"
           emissive={node.color}
-          emissiveIntensity={0.08}
-          roughness={0.1}
-          metalness={0.02}
-          opacity={0.18}
+          emissiveIntensity={0.03}
+          roughness={0.03}
+          metalness={0}
+          opacity={0.11}
           transmission={1}
-          thickness={0.28}
-          ior={1.07}
+          thickness={0.2}
+          ior={1.02}
           clearcoat={1}
-          clearcoatRoughness={0.04}
-          reflectivity={0.6}
+          clearcoatRoughness={0.02}
+          reflectivity={0.86}
           transparent
           depthWrite={false}
         />
       </mesh>
       <mesh
-        scale={isActive ? 1.06 : 1.04}
+        ref={sheenRef}
+        scale={1.03}
         onClick={(event) => {
           event.stopPropagation();
           onSelect(node.id);
@@ -152,15 +178,17 @@ export default function BranchNode({
       >
         <sphereGeometry args={[node.kind === "category" ? 0.72 : 0.42, 28, 28]} />
         <meshBasicMaterial
-          color="#e8f5ff"
+          color="#b7ddff"
           transparent
-          opacity={isActive ? 0.2 : isHovered ? 0.15 : 0.1}
-          wireframe
+          opacity={0.055}
+          depthWrite={false}
+          side={THREE.DoubleSide}
+          blending={THREE.AdditiveBlending}
         />
       </mesh>
       <Html center transform distanceFactor={11} zIndexRange={[4, 0]} pointerEvents="none">
         <div
-          className={`flex items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md ${
+          className={`flex items-center justify-center rounded-full ${
             node.kind === "category" ? "h-10 w-10" : "h-8 w-8"
           }`}
         >
