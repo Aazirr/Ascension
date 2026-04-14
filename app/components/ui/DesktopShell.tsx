@@ -148,7 +148,10 @@ export default function DesktopShell() {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        graph.setActiveNodeId(null);
+        const movedBack = graph.goBack();
+        if (!movedBack) {
+          graph.setActiveNodeId(null);
+        }
       }
     };
 

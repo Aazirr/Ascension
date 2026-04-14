@@ -16,8 +16,11 @@ export interface NodeGraphState {
   hoveredNodeId: string | null;
   activeNode: GraphNode | null;
   hoveredNode: GraphNode | null;
+  canGoBack: boolean;
   setActiveNodeId: (nodeId: string | null) => void;
   setHoveredNodeId: (nodeId: string | null) => void;
+  selectNode: (nodeId: string) => void;
+  goBack: () => boolean;
 }
 
 const centralColor = "#7f77dd";
@@ -29,38 +32,68 @@ const branchColors = {
   about: "#888780",
 };
 
-const branchAnchors: Record<GraphNode["section"], [number, number, number]> = {
-  projects: [3.8, 1.0, 0.4],
-  skills: [0.4, 3.6, -0.1],
-  experience: [-3.8, 0.7, 0.2],
-  certifications: [0.8, -3.4, 0.25],
-  about: [0.0, -0.5, -3.7],
-};
+const center: [number, number, number] = [0, 0, 0];
 
-function ringPositions(
-  center: [number, number, number],
+const sectionOrder: GraphNode["section"][] = [
+  "projects",
+  "skills",
+  "experience",
+  "certifications",
+  "about",
+];
+
+function makeBranchAnchors(
+  sections: GraphNode["section"][],
+  radius: number,
+): Record<GraphNode["section"], [number, number, number]> {
+  const anchors = {} as Record<GraphNode["section"], [number, number, number]>;
+  const startAngle = -Math.PI / 2;
+  const step = (Math.PI * 2) / sections.length;
+
+  sections.forEach((section, index) => {
+    const angle = startAngle + step * index;
+    const x = Math.cos(angle) * radius;
+    const y = Math.sin(angle) * radius;
+    const z = Math.sin(angle * 1.1) * 0.45;
+    anchors[section] = [x, y, z];
+  });
+
+  return anchors;
+}
+
+const branchAnchors = makeBranchAnchors(sectionOrder, 4.6);
+
+function makeChildClusterPositions(
+  parent: [number, number, number],
   count: number,
   radius: number,
-  angleOffset = 0,
 ): Array<[number, number, number]> {
-  if (count === 0) {
+  if (count <= 0) {
     return [];
   }
 
+  const outwardAngle = Math.atan2(parent[1] - center[1], parent[0] - center[0]);
+
+  if (count === 1) {
+    return [
+      [
+        parent[0] + Math.cos(outwardAngle) * radius,
+        parent[1] + Math.sin(outwardAngle) * radius,
+        parent[2],
+      ],
+    ];
+  }
+
+  const span = Math.min(1.45, 0.34 * (count - 1) + 0.36);
+
   return Array.from({ length: count }, (_, index) => {
-    const angle = angleOffset + (Math.PI * 2 * index) / count;
-    const x = center[0] + Math.cos(angle) * radius;
-    const y = center[1] + Math.sin(angle) * radius * 0.72;
-    const z = center[2] + Math.sin(angle * 1.3) * radius * 0.18;
+    const t = count === 1 ? 0 : index / (count - 1);
+    const angle = outwardAngle - span / 2 + span * t;
+    const x = parent[0] + Math.cos(angle) * radius;
+    const y = parent[1] + Math.sin(angle) * radius;
+    const z = parent[2] + Math.sin(angle * 1.3) * 0.22;
     return [x, y, z];
   });
-}
-
-function slugify(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
 }
 
 function buildGraphNodes() {
@@ -137,12 +170,19 @@ function buildGraphNodes() {
   }
 
   for (const project of projects as Project[]) {
+    const projectPositions = makeChildClusterPositions(
+      branchAnchors.projects,
+      (projects as Project[]).length,
+      2.35,
+    );
+
+    const projectIndex = (projects as Project[]).findIndex((item) => item.id === project.id);
     const projectNode: GraphNode = {
       id: `project-${project.id}`,
       label: project.title,
       kind: "leaf",
       section: "projects",
-      position: project.nodePosition,
+      position: projectPositions[projectIndex] ?? project.nodePosition,
       color: branchColors.projects,
       description: project.tagline,
       parentId: "branch-projects",
@@ -158,12 +198,22 @@ function buildGraphNodes() {
   }
 
   for (const skillGroup of skills as SkillCategory[]) {
+    const skillCategoryPositions = makeChildClusterPositions(
+      branchAnchors.skills,
+      (skills as SkillCategory[]).length,
+      2.15,
+    );
+
+    const categoryIndex = (skills as SkillCategory[]).findIndex(
+      (item) => item.id === skillGroup.id,
+    );
+
     const skillGroupNode: GraphNode = {
       id: `skill-group-${skillGroup.id}`,
       label: skillGroup.category,
-      kind: "category",
+      kind: "leaf",
       section: "skills",
-      position: skillGroup.nodePosition,
+      position: skillCategoryPositions[categoryIndex] ?? skillGroup.nodePosition,
       color: branchColors.skills,
       description: `${skillGroup.skills.length} skills`,
       parentId: "branch-skills",
@@ -176,39 +226,21 @@ function buildGraphNodes() {
       to: skillGroupNode.id,
       color: branchColors.skills,
     });
-
-    const groupPositions = ringPositions(skillGroup.nodePosition, skillGroup.skills.length, 1.2, Math.PI / 5);
-
-    skillGroup.skills.forEach((skill, index) => {
-      const position = groupPositions[index] ?? skillGroup.nodePosition;
-      const skillNode: GraphNode = {
-        id: `skill-${skillGroup.id}-${slugify(skill.name)}`,
-        label: skill.name,
-        kind: "leaf",
-        section: "skills",
-        position,
-        color: branchColors.skills,
-        description: skill.context,
-        parentId: skillGroupNode.id,
-      };
-
-      graphNodes.push(skillNode);
-      graphEdges.push({
-        id: `edge-${skillGroupNode.id}-${skillNode.id}`,
-        from: skillGroupNode.id,
-        to: skillNode.id,
-        color: branchColors.skills,
-      });
-    });
   }
 
-  for (const item of experience as ExperienceItem[]) {
+  const experiencePositions = makeChildClusterPositions(
+    branchAnchors.experience,
+    (experience as ExperienceItem[]).length,
+    2.3,
+  );
+
+  (experience as ExperienceItem[]).forEach((item, index) => {
     const experienceNode: GraphNode = {
       id: `experience-${item.id}`,
       label: item.role,
       kind: "leaf",
       section: "experience",
-      position: item.nodePosition,
+      position: experiencePositions[index] ?? item.nodePosition,
       color: branchColors.experience,
       description: `${item.company} · ${item.dates}`,
       parentId: "branch-experience",
@@ -221,15 +253,21 @@ function buildGraphNodes() {
       to: experienceNode.id,
       color: branchColors.experience,
     });
-  }
+  });
 
-  for (const item of certifications as CertificationItem[]) {
+  const certificationPositions = makeChildClusterPositions(
+    branchAnchors.certifications,
+    (certifications as CertificationItem[]).length,
+    2.25,
+  );
+
+  (certifications as CertificationItem[]).forEach((item, index) => {
     const certificationNode: GraphNode = {
       id: `certification-${item.id}`,
       label: item.name,
       kind: "leaf",
       section: "certifications",
-      position: item.nodePosition,
+      position: certificationPositions[index] ?? item.nodePosition,
       color: branchColors.certifications,
       description: item.issuer,
       parentId: "branch-certifications",
@@ -242,7 +280,7 @@ function buildGraphNodes() {
       to: certificationNode.id,
       color: branchColors.certifications,
     });
-  }
+  });
 
   const aboutContent: Array<{ id: string; label: string; description: string }> = [
     {
@@ -262,7 +300,11 @@ function buildGraphNodes() {
     },
   ];
 
-  const aboutPositions = ringPositions(branchAnchors.about, aboutContent.length, 1.2, Math.PI / 3);
+  const aboutPositions = makeChildClusterPositions(
+    branchAnchors.about,
+    aboutContent.length,
+    2.1,
+  );
 
   aboutContent.forEach((item, index) => {
     const position = aboutPositions[index] ?? branchAnchors.about;
@@ -298,6 +340,30 @@ export function useNodeGraph(): NodeGraphState {
   const activeNode = nodes.find((node) => node.id === activeNodeId) ?? null;
   const hoveredNode = nodes.find((node) => node.id === hoveredNodeId) ?? null;
 
+  const canGoBack = Boolean(activeNode && activeNode.id !== "central-you");
+
+  const selectNode = (nodeId: string) => {
+    setActiveNodeId(nodeId);
+  };
+
+  const goBack = (): boolean => {
+    if (!activeNode) {
+      return false;
+    }
+
+    if (activeNode.parentId) {
+      setActiveNodeId(activeNode.parentId);
+      return true;
+    }
+
+    if (activeNode.id !== "central-you") {
+      setActiveNodeId("central-you");
+      return true;
+    }
+
+    return false;
+  };
+
   return {
     nodes,
     edges,
@@ -305,7 +371,10 @@ export function useNodeGraph(): NodeGraphState {
     hoveredNodeId,
     activeNode,
     hoveredNode,
+    canGoBack,
     setActiveNodeId,
     setHoveredNodeId,
+    selectNode,
+    goBack,
   };
 }

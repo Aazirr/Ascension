@@ -3,7 +3,7 @@
 import { CameraControls as DreiCameraControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import CameraControlsImpl from "camera-controls";
-import { Suspense, useMemo, useRef } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef } from "react";
 import type { GraphNode } from "@/types";
 import BranchNode from "./BranchNode";
 import CentralNode from "./CentralNode";
@@ -17,35 +17,55 @@ interface SceneProps {
 }
 
 function getFocusPosition(node: GraphNode): [number, number, number] {
-  return [node.position[0] + 4.2, node.position[1] + 2.4, node.position[2] + 6.2];
+  const zByKind = node.kind === "leaf" ? 7 : node.kind === "category" ? 9 : 12;
+  return [node.position[0], node.position[1], zByKind];
 }
 
 export default function Scene({ graph, onBackgroundClick }: SceneProps) {
   const controlsRef = useRef<CameraControlsImpl | null>(null);
+  const lastWheelBackRef = useRef(0);
 
   const nodeMap = useMemo(
     () => new Map(graph.nodes.map((node) => [node.id, node])),
     [graph.nodes],
   );
 
+  const focusNode = useCallback(
+    (nodeId: string | null, animate = true) => {
+      if (!controlsRef.current) {
+        return;
+      }
+
+      if (!nodeId) {
+        controlsRef.current.setLookAt(0, 0, 14, 0, 0, 0, animate);
+        return;
+      }
+
+      const node = nodeMap.get(nodeId);
+      if (!node) {
+        return;
+      }
+
+      const [cameraX, cameraY, cameraZ] = getFocusPosition(node);
+      controlsRef.current.setLookAt(
+        cameraX,
+        cameraY,
+        cameraZ,
+        node.position[0],
+        node.position[1],
+        node.position[2],
+        animate,
+      );
+    },
+    [nodeMap],
+  );
+
+  useEffect(() => {
+    focusNode(graph.activeNodeId, true);
+  }, [focusNode, graph.activeNodeId]);
+
   const handleSelectNode = (nodeId: string) => {
-    graph.setActiveNodeId(nodeId);
-
-    const selectedNode = nodeMap.get(nodeId);
-    if (!selectedNode) {
-      return;
-    }
-
-    const [cameraX, cameraY, cameraZ] = getFocusPosition(selectedNode);
-    controlsRef.current?.setLookAt(
-      cameraX,
-      cameraY,
-      cameraZ,
-      selectedNode.position[0],
-      selectedNode.position[1],
-      selectedNode.position[2],
-      true,
-    );
+    graph.selectNode(nodeId);
   };
 
   return (
@@ -53,6 +73,21 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
       <Canvas
         camera={{ position: [0, 0, 14], fov: 48 }}
         dpr={[1, 1.5]}
+        onWheel={(event) => {
+          if (event.deltaY <= 0 || !graph.canGoBack) {
+            return;
+          }
+
+          const now = performance.now();
+          if (now - lastWheelBackRef.current < 220) {
+            return;
+          }
+
+          lastWheelBackRef.current = now;
+          event.preventDefault();
+          event.stopPropagation();
+          graph.goBack();
+        }}
         onPointerMissed={() => {
           onBackgroundClick?.();
         }}
@@ -70,10 +105,8 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
             makeDefault
             enabled
             smoothTime={0.18}
-            minPolarAngle={0.35}
-            maxPolarAngle={1.4}
-            minAzimuthAngle={-1.9}
-            maxAzimuthAngle={1.9}
+            azimuthRotateSpeed={0}
+            polarRotateSpeed={0}
             minDistance={7}
             maxDistance={16}
             dollySpeed={0}
