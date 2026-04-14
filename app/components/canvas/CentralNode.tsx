@@ -94,9 +94,10 @@ export default function CentralNode({
         <meshStandardMaterial
           color={node.color}
           emissive={node.color}
-          emissiveIntensity={isActive ? 0.65 : 0.35}
+          emissiveIntensity={reducedMotion ? (isActive ? 0.75 : 0.5) : isActive ? 1.45 : 1.0}
           roughness={0.25}
           metalness={0.7}
+          toneMapped={false}
         />
       </mesh>
       <Html

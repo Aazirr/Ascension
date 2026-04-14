@@ -2,6 +2,7 @@
 
 import { CameraControls as DreiCameraControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import CameraControlsImpl from "camera-controls";
 import { Box3, Vector3 } from "three";
 import { Suspense, useCallback, useEffect, useMemo, useRef } from "react";
@@ -136,11 +137,14 @@ export default function Scene({
       <Canvas
         camera={{ position: [0, 0, 14], fov: 48 }}
         dpr={[1, 1.5]}
+        gl={{ alpha: true, antialias: true }}
+        onCreated={({ gl }) => {
+          gl.setClearColor("#000000", 0);
+        }}
         onPointerMissed={() => {
           onBackgroundClick?.();
         }}
       >
-        <color attach="background" args={["#050510"]} />
         <ambientLight intensity={0.65} />
         <directionalLight position={[6, 8, 10]} intensity={1.1} color="#d8d6ff" />
         <pointLight position={[-8, -4, -8]} intensity={0.45} color="#7f77dd" />
@@ -214,6 +218,15 @@ export default function Scene({
               />
             );
           })}
+
+          <EffectComposer>
+            <Bloom
+              mipmapBlur
+              intensity={backgroundPreset === "bright" ? 0.95 : 0.72}
+              luminanceThreshold={1}
+              luminanceSmoothing={0.08}
+            />
+          </EffectComposer>
 
           {graph.nodes.map((node) => {
             const isActive = graph.activeNodeId === node.id;

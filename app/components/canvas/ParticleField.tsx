@@ -90,6 +90,8 @@ export default function ParticleField({
         transparent
         opacity={opacity}
         sizeAttenuation
+        toneMapped={false}
+        depthWrite={false}
       />
     </points>
   );

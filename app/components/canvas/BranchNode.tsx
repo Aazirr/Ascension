@@ -71,7 +71,7 @@ export default function BranchNode({
     const material = meshRef.current.material as THREE.MeshStandardMaterial;
     material.opacity = THREE.MathUtils.lerp(material.opacity, targetOpacity, 0.15);
     material.transparent = true;
-    material.emissiveIntensity = isActive ? 0.55 : isHovered ? 0.35 : 0.18;
+    material.emissiveIntensity = isActive ? 1.1 : isHovered ? 0.72 : 0.42;
 
     groupRef.current.position.x = THREE.MathUtils.lerp(
       groupRef.current.position.x,
@@ -111,10 +111,11 @@ export default function BranchNode({
         <meshStandardMaterial
           color={node.color}
           emissive={node.color}
-          emissiveIntensity={0.2}
+          emissiveIntensity={0.42}
           roughness={0.3}
           metalness={0.35}
           opacity={0.72}
+          toneMapped={false}
         />
       </mesh>
       <Html
