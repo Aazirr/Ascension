@@ -61,6 +61,7 @@ export default function Scene({ graph }: SceneProps) {
           <DreiCameraControls
             ref={controlsRef}
             makeDefault
+            enabled={false}
             smoothTime={0.18}
             minPolarAngle={0.35}
             maxPolarAngle={1.4}
@@ -69,7 +70,6 @@ export default function Scene({ graph }: SceneProps) {
             minDistance={7}
             maxDistance={16}
             dollySpeed={0}
-            truckSpeed={0.8}
           />
 
           {graph.edges.map((edge) => {
