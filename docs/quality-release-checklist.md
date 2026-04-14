@@ -2,6 +2,16 @@
 
 Use this checklist before shipping.
 
+## Progress
+
+- [x] Phase 1 foundation complete
+- [ ] Phase 2 fallback complete
+- [ ] Phase 3 device gates complete
+- [ ] Phase 4 graph skeleton complete
+- [ ] Phase 5 panels complete
+- [ ] Phase 6 animation pass complete
+- [ ] Phase 7 polish and release complete
+
 ## Functional checks
 
 - [ ] Desktop graph mode renders with central, category, and leaf nodes.
@@ -47,3 +57,9 @@ Use this checklist before shipping.
 - [ ] Vercel deployment succeeds.
 - [ ] Custom domain resolves (if configured).
 - [ ] Analytics events are visible in Vercel dashboard.
+
+## Current status
+
+- [x] Lint passes locally.
+- [x] Production build passes locally.
+- [x] Foundation docs and starter data are in place.

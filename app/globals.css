@@ -3,27 +3,47 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+  --color-bg: #050510;
+  --color-text: #e7eaf6;
+  --color-muted: #a6acc5;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  --color-central-node: #7f77dd;
+  --color-project-node: #1d9e75;
+  --color-skill-node: #378add;
+  --color-experience-node: #d85a30;
+  --color-about-node: #888780;
+
+  --line-idle: rgba(127, 119, 221, 0.3);
+  --line-active: rgba(127, 119, 221, 0.9);
+  --panel-bg: rgba(5, 5, 16, 0.92);
+  --panel-border: rgba(127, 119, 221, 0.25);
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  margin: 0;
+  color: var(--color-text);
+  background:
+    radial-gradient(circle at 15% 20%, rgba(55, 138, 221, 0.16), transparent 40%),
+    radial-gradient(circle at 82% 5%, rgba(127, 119, 221, 0.2), transparent 42%),
+    radial-gradient(circle at 50% 110%, rgba(216, 90, 48, 0.12), transparent 35%),
+    var(--color-bg);
+  font-family: var(--font-body), sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display), sans-serif;
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono), monospace;
 }
 
 @layer utilities {
