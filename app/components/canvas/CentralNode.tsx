@@ -70,9 +70,13 @@ export default function CentralNode({
     }
 
     const elapsed = state.clock.getElapsedTime();
-    const pulse = reducedMotion ? 0 : Math.sin(elapsed * 1.4) * 0.025;
-    const targetScale = (isActive ? 1.18 : 1.08) + pulse;
+    const baseScale = isActive ? 1.22 : 1.12;
+    const pulseAmplitude = 0.08 + (isActive ? 0.04 : 0.02);
+    const pulse1 = Math.sin(elapsed * 1.3) * pulseAmplitude;
+    const pulse2 = Math.cos(elapsed * 0.8) * (pulseAmplitude * 0.5);
+    const targetScale = reducedMotion ? baseScale : baseScale + pulse1 + pulse2;
     const targetY = isActive ? 0.1 : 0;
+    const breathY = reducedMotion ? 0 : Math.sin(elapsed * 0.9) * (isActive ? 0.08 : 0.04);
 
     groupRef.current.rotation.y = THREE.MathUtils.lerp(
       groupRef.current.rotation.y,
@@ -81,13 +85,17 @@ export default function CentralNode({
     );
     groupRef.current.position.y = THREE.MathUtils.lerp(
       groupRef.current.position.y,
-      node.position[1] + targetY,
+      node.position[1] + targetY + breathY,
       0.08,
     );
 
     const currentScale = meshRef.current.scale.x;
-    const nextScale = THREE.MathUtils.lerp(currentScale, targetScale, 0.1);
+    const nextScale = THREE.MathUtils.lerp(currentScale, targetScale, 0.12);
     meshRef.current.scale.setScalar(nextScale);
+
+    if (sheenRef.current) {
+      sheenRef.current.scale.setScalar(nextScale * 0.857);
+    }
 
     if (isActive && !reducedMotion) {
       meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.15;
