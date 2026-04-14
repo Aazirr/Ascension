@@ -47,6 +47,7 @@ export default function DesktopShell() {
   const activeNode = graph.activeNode;
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [hasSeenIntro, setHasSeenIntro] = useState(false);
+  const [isHeaderHovered, setIsHeaderHovered] = useState(false);
   const [backgroundPreset, setBackgroundPreset] =
     useState<CosmicBackgroundPreset>("cinematic");
   const introTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -439,7 +440,11 @@ export default function DesktopShell() {
       />
 
       <section className="pointer-events-none absolute left-6 top-6 z-20 max-w-2xl">
-        <div className="rounded-2xl border border-white/10 bg-black/35 p-5 backdrop-blur-md">
+        <div
+          className="pointer-events-auto rounded-2xl border border-white/10 bg-black/35 p-5 backdrop-blur-md"
+          onMouseEnter={() => setIsHeaderHovered(true)}
+          onMouseLeave={() => setIsHeaderHovered(false)}
+        >
           <div className="mb-3">
             <Breadcrumb
               path={graph.getBreadcrumbPath()}
@@ -450,10 +455,21 @@ export default function DesktopShell() {
             Cosmic Neural Network
           </p>
           <h1 className="mt-2 text-3xl font-bold text-white">Franz Jason Dolores</h1>
-          <p className="mt-2 text-sm leading-6 text-slate-300/85">
-            Click nodes to explore projects, skills, experience, and certifications.
-            Press Escape or click empty space to close panels.
-          </p>
+          <AnimatePresence>
+            {isHeaderHovered && (
+              <motion.p
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="mt-2 text-sm leading-6 text-slate-300/85"
+              >
+                Click nodes to explore projects, skills, experience, and certifications.
+                Press Ctrl+K to search nodes, and press Escape or click empty space
+                to close panels.
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
 
         <AnimatePresence>

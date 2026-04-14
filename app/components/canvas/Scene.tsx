@@ -21,6 +21,9 @@ interface SceneProps {
   onBackgroundClick?: () => void;
 }
 
+const CENTRAL_NODE_SFX_PATH = "/sfx/node-central.wav";
+const DEFAULT_NODE_SFX_PATH = "/sfx/node-default.wav";
+
 export default function Scene({
   graph,
   backgroundPreset,
@@ -29,10 +32,39 @@ export default function Scene({
   const reducedMotion = useReducedMotion();
   const controlsRef = useRef<CameraControlsImpl | null>(null);
   const previousActiveNodeIdRef = useRef<string | null>(graph.activeNodeId);
+  const centralNodeSfxRef = useRef<HTMLAudioElement | null>(null);
+  const defaultNodeSfxRef = useRef<HTMLAudioElement | null>(null);
   const cameraBoundary = useMemo(
     () => new Box3(new Vector3(-11, -9, -1), new Vector3(11, 9, 1)),
     [],
   );
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    centralNodeSfxRef.current = new Audio(CENTRAL_NODE_SFX_PATH);
+    centralNodeSfxRef.current.preload = "auto";
+    centralNodeSfxRef.current.volume = 0.21;
+
+    defaultNodeSfxRef.current = new Audio(DEFAULT_NODE_SFX_PATH);
+    defaultNodeSfxRef.current.preload = "auto";
+    defaultNodeSfxRef.current.volume = 0.15;
+
+    return () => {
+      if (centralNodeSfxRef.current) {
+        centralNodeSfxRef.current.pause();
+      }
+
+      if (defaultNodeSfxRef.current) {
+        defaultNodeSfxRef.current.pause();
+      }
+
+      centralNodeSfxRef.current = null;
+      defaultNodeSfxRef.current = null;
+    };
+  }, []);
 
   useEffect(() => {
     if (!controlsRef.current) {
@@ -105,9 +137,39 @@ export default function Scene({
     previousActiveNodeIdRef.current = graph.activeNodeId;
   }, [graph.activeNodeId, focusNodeWithContext]);
 
-  const handleSelectNode = (nodeId: string) => {
+  const playNodeClickSfx = useCallback((nodeId: string) => {
+    const node = nodeMap.get(nodeId);
+    if (!node) {
+      return;
+    }
+
+    const sound = node.kind === "central" ? centralNodeSfxRef.current : defaultNodeSfxRef.current;
+    if (!sound) {
+      return;
+    }
+
+    try {
+      if (centralNodeSfxRef.current) {
+        centralNodeSfxRef.current.pause();
+        centralNodeSfxRef.current.currentTime = 0;
+      }
+
+      if (defaultNodeSfxRef.current) {
+        defaultNodeSfxRef.current.pause();
+        defaultNodeSfxRef.current.currentTime = 0;
+      }
+
+      sound.currentTime = 0;
+      void sound.play();
+    } catch {
+      // Ignore playback failures (missing file or browser autoplay restrictions).
+    }
+  }, [nodeMap]);
+
+  const handleSelectNode = useCallback((nodeId: string) => {
+    playNodeClickSfx(nodeId);
     graph.selectNode(nodeId);
-  };
+  }, [graph, playNodeClickSfx]);
 
   const particleConfig = useMemo(() => {
     if (backgroundPreset === "clean") {
