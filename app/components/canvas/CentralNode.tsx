@@ -3,8 +3,10 @@
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import gsap from "gsap";
-import { useEffect, useRef } from "react";
+import Image from "next/image";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { getNodeDefaultIconPath, getNodeIconPath } from "@/app/lib/nodeIcons";
 import type { GraphNode } from "@/types";
 
 interface CentralNodeProps {
@@ -23,6 +25,14 @@ export default function CentralNode({
   const groupRef = useRef<THREE.Group | null>(null);
   const meshRef = useRef<THREE.Mesh | null>(null);
   const introPlayedRef = useRef(false);
+  const [iconPath, setIconPath] = useState(() => getNodeIconPath({ id: node.id, kind: node.kind }));
+  const [triedDefaultIcon, setTriedDefaultIcon] = useState(false);
+  const defaultIconPath = useMemo(() => getNodeDefaultIconPath(node.kind), [node.kind]);
+
+  useEffect(() => {
+    setIconPath(getNodeIconPath({ id: node.id, kind: node.kind }));
+    setTriedDefaultIcon(false);
+  }, [node.id, node.kind]);
 
   useEffect(() => {
     if (reducedMotion || introPlayedRef.current || !meshRef.current) {
@@ -91,15 +101,55 @@ export default function CentralNode({
         }}
       >
         <sphereGeometry args={[1.2, 32, 32]} />
-        <meshStandardMaterial
-          color={node.color}
+        <meshPhysicalMaterial
+          color="#d8ecff"
+          transparent
+          opacity={isActive ? 0.24 : 0.18}
+          transmission={1}
+          thickness={0.42}
+          ior={1.07}
+          roughness={0.08}
+          metalness={0.03}
+          clearcoat={1}
+          clearcoatRoughness={0.04}
           emissive={node.color}
-          emissiveIntensity={reducedMotion ? (isActive ? 0.75 : 0.5) : isActive ? 1.45 : 1.0}
-          roughness={0.25}
-          metalness={0.7}
-          toneMapped={false}
+          emissiveIntensity={reducedMotion ? (isActive ? 0.14 : 0.08) : isActive ? 0.28 : 0.12}
+          reflectivity={0.65}
+          depthWrite={false}
         />
       </mesh>
+      <mesh
+        scale={isActive ? 1.035 : 1.02}
+        onClick={(event) => {
+          event.stopPropagation();
+          onSelect(node.id);
+        }}
+      >
+        <sphereGeometry args={[1.2, 32, 32]} />
+        <meshBasicMaterial
+          color="#e9f6ff"
+          transparent
+          opacity={isActive ? 0.22 : 0.14}
+          wireframe
+        />
+      </mesh>
+      <Html center transform distanceFactor={8} zIndexRange={[4, 0]} pointerEvents="none">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/10 shadow-[0_0_28px_rgba(180,220,255,0.2)] backdrop-blur-md">
+          <Image
+            src={iconPath}
+            alt={`${node.label} icon`}
+            width={32}
+            height={32}
+            className="h-8 w-8 object-contain"
+            onError={() => {
+              if (!triedDefaultIcon) {
+                setIconPath(defaultIconPath);
+                setTriedDefaultIcon(true);
+              }
+            }}
+          />
+        </div>
+      </Html>
       <Html
         position={[0, 2.0, 0]}
         center
@@ -124,7 +174,7 @@ export default function CentralNode({
           {node.description}
         </div>
       </Html>
-      <pointLight color={node.color} intensity={1.8} distance={10} />
+      <pointLight color={node.color} intensity={isActive ? 1.0 : 0.6} distance={10} />
     </group>
   );
 }
