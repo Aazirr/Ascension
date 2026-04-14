@@ -21,6 +21,10 @@ export interface NodeGraphState {
   setHoveredNodeId: (nodeId: string | null) => void;
   selectNode: (nodeId: string) => void;
   goBack: () => boolean;
+  getBreadcrumbPath: () => Array<{ id: string; label: string }>;
+  getSiblingNodes: () => GraphNode[];
+  getSearchableNodes: () => Array<{ id: string; label: string; section: string }>;
+  jumpToCategory: (categoryKey: keyof typeof branchColors) => void;
 }
 
 const centralColor = "#7f77dd";
@@ -364,6 +368,59 @@ export function useNodeGraph(): NodeGraphState {
     return false;
   };
 
+  const getBreadcrumbPath = (): Array<{ id: string; label: string }> => {
+    if (!activeNodeId || activeNodeId === "central-you") {
+      return [{ id: "central-you", label: "YOU" }];
+    }
+
+    const path: Array<{ id: string; label: string }> = [{ id: "central-you", label: "YOU" }];
+    let current = activeNode;
+
+    while (current) {
+      path.push({ id: current.id, label: current.label });
+      if (!current.parentId) {
+        break;
+      }
+      const parent = nodes.find((n) => n.id === current!.parentId);
+      current = parent ?? null;
+    }
+
+    return path.reverse();
+  };
+
+  const getSiblingNodes = (): GraphNode[] => {
+    if (!activeNode || activeNode.kind === "central") {
+      return [];
+    }
+
+    const parentId = activeNode.parentId || "central-you";
+    return nodes.filter(
+      (node) =>
+        (node.parentId === parentId || (parentId === "central-you" && node.kind === "category")) &&
+        node.id !== activeNode.id,
+    );
+  };
+
+  const getSearchableNodes = (): Array<{ id: string; label: string; section: string }> => {
+    return nodes
+      .filter((n) => n.kind !== "central")
+      .map((n) => ({
+        id: n.id,
+        label: n.label,
+        section: n.section,
+      }));
+  };
+
+  const jumpToCategory = (
+    categoryKey: keyof typeof branchColors,
+  ): void => {
+    const categoryId = `branch-${categoryKey}`;
+    const category = nodes.find((n) => n.id === categoryId);
+    if (category) {
+      setActiveNodeId(categoryId);
+    }
+  };
+
   return {
     nodes,
     edges,
@@ -376,5 +433,9 @@ export function useNodeGraph(): NodeGraphState {
     setHoveredNodeId,
     selectNode,
     goBack,
+    getBreadcrumbPath,
+    getSiblingNodes,
+    getSearchableNodes,
+    jumpToCategory,
   };
 }

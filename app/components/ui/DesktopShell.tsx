@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import about from "../../../data/about.json";
 import certifications from "../../../data/certifications.json";
 import experience from "../../../data/experience.json";
@@ -13,6 +13,8 @@ import CertificationPanel from "../panels/CertificationPanel";
 import ExperiencePanel from "../panels/ExperiencePanel";
 import ProjectPanel from "../panels/ProjectPanel";
 import SkillPanel from "../panels/SkillPanel";
+import Breadcrumb from "./Breadcrumb";
+import SearchModal from "./SearchModal";
 import { useNodeGraph } from "@/hooks/useNodeGraph";
 import type {
   AboutData,
@@ -30,9 +32,22 @@ const branchLabels: Record<string, string> = {
   about: "About",
 };
 
+const branchColors = {
+  projects: "#1d9e75",
+  skills: "#378add",
+  experience: "#d85a30",
+  certifications: "#c8a85d",
+  about: "#888780",
+} as const;
+
+type BranchColor = keyof typeof branchColors;
+
 export default function DesktopShell() {
   const graph = useNodeGraph();
   const activeNode = graph.activeNode;
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [hasSeenIntro, setHasSeenIntro] = useState(false);
+  const introTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const projectMap = useMemo(
     () => new Map((projects as Project[]).map((project) => [project.id, project])),
@@ -284,17 +299,106 @@ export default function DesktopShell() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      const isMeta = event.metaKey || event.ctrlKey;
+
       if (event.key === "Escape") {
-        const movedBack = graph.goBack();
-        if (!movedBack) {
-          graph.setActiveNodeId(null);
+        if (isSearchOpen) {
+          setIsSearchOpen(false);
+        } else {
+          const movedBack = graph.goBack();
+          if (!movedBack) {
+            graph.setActiveNodeId(null);
+          }
         }
+      }
+
+      // Ctrl+K or Cmd+K: Open search
+      if (isMeta && event.key === "k") {
+        event.preventDefault();
+        setIsSearchOpen(true);
+      }
+
+      // ?: Show help (would open a help modal in future)
+      if (event.key === "?") {
+        event.preventDefault();
+        alert(
+          "Keyboard Shortcuts:\n" +
+            "Arrow Keys / WASD - Navigate siblings\n" +
+            "1-5 - Jump to category\n" +
+            "Ctrl+K / Cmd+K - Search\n" +
+            "? - Show help\n" +
+            "Esc - Go back or close panel",
+        );
+      }
+
+      // Arrow Keys or WASD: Navigate siblings
+      const siblings = graph.getSiblingNodes();
+      if (siblings.length > 0 && graph.activeNode && graph.activeNode.kind !== "central") {
+        const currentIndex = siblings.findIndex((n) => n.id === graph.activeNode!.id);
+
+        if (
+          event.key === "ArrowRight" ||
+          event.key === "ArrowDown" ||
+          event.key === "d" ||
+          event.key === "s"
+        ) {
+          event.preventDefault();
+          const nextIndex = (currentIndex + 1) % siblings.length;
+          graph.selectNode(siblings[nextIndex].id);
+        }
+
+        if (
+          event.key === "ArrowLeft" ||
+          event.key === "ArrowUp" ||
+          event.key === "a" ||
+          event.key === "w"
+        ) {
+          event.preventDefault();
+          const prevIndex = currentIndex === 0 ? siblings.length - 1 : currentIndex - 1;
+          graph.selectNode(siblings[prevIndex].id);
+        }
+      }
+
+      // Number keys 1-5: Jump to categories
+      const categoryMap: Record<string, BranchColor> = {
+        "1": "projects",
+        "2": "skills",
+        "3": "experience",
+        "4": "certifications",
+        "5": "about",
+      };
+
+      if (categoryMap[event.key]) {
+        event.preventDefault();
+        graph.jumpToCategory(categoryMap[event.key]);
       }
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [graph]);
+  }, [graph, isSearchOpen]);
+
+  // Intro animation on first load
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const hasSeenIntroLocal = localStorage.getItem("ascension-seen-intro");
+    if (!hasSeenIntroLocal) {
+      setHasSeenIntro(true);
+      localStorage.setItem("ascension-seen-intro", "true");
+
+      // Auto-hide intro message after 4 seconds
+      introTimeoutRef.current = setTimeout(() => {
+        setHasSeenIntro(false);
+      }, 4000);
+    }
+
+    return () => {
+      if (introTimeoutRef.current) {
+        clearTimeout(introTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <main className="relative h-screen w-screen overflow-hidden text-white">
@@ -308,6 +412,12 @@ export default function DesktopShell() {
 
       <section className="pointer-events-none absolute left-6 top-6 z-20 max-w-2xl">
         <div className="rounded-2xl border border-white/10 bg-black/35 p-5 backdrop-blur-md">
+          <div className="mb-3">
+            <Breadcrumb
+              path={graph.getBreadcrumbPath()}
+              onNavigate={(nodeId) => graph.setActiveNodeId(nodeId)}
+            />
+          </div>
           <p className="text-xs uppercase tracking-[0.24em] text-slate-300/70">
             Cosmic Neural Network
           </p>
@@ -317,6 +427,21 @@ export default function DesktopShell() {
             Press Escape or click empty space to close panels.
           </p>
         </div>
+
+        <AnimatePresence>
+          {hasSeenIntro && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="mt-3 rounded-2xl border border-green-400/30 bg-green-900/20 p-3 text-xs text-green-100/90"
+            >
+              🎮 Press <kbd className="rounded bg-black/30 px-1.5 py-0.5 font-mono text-[0.75em]">Ctrl+K</kbd> to search,{" "}
+              <kbd className="rounded bg-black/30 px-1.5 py-0.5 font-mono text-[0.75em]">?</kbd> for shortcuts
+            </motion.div>
+          )}
+        </AnimatePresence>
       </section>
 
       <section className="pointer-events-none absolute bottom-6 left-6 z-20">
@@ -375,6 +500,16 @@ export default function DesktopShell() {
           )}
         </AnimatePresence>
       </aside>
+
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSelect={(nodeId) => {
+          graph.selectNode(nodeId);
+          setIsSearchOpen(false);
+        }}
+        searchableNodes={graph.getSearchableNodes()}
+      />
     </main>
   );
 }
