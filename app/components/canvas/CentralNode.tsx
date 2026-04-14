@@ -183,7 +183,7 @@ export default function CentralNode({
         <meshPhysicalMaterial
           color="#f3ebc7"
           transparent
-          opacity={isActive ? 0.14 : 0.1}
+          opacity={isActive ? 0.07 : 0.045}
           transmission={1}
           thickness={0.24}
           ior={1.02}
