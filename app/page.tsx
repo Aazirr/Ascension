@@ -1,5 +1,5 @@
-import MobileLayout from "./components/ui/MobileLayout";
+import ResponsiveHome from "./components/ResponsiveHome";
 
 export default function Home() {
-  return <MobileLayout />;
+  return <ResponsiveHome />;
 }

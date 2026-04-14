@@ -9,7 +9,7 @@ This guide bootstraps the project with the stack required by the spec.
 - [x] Fonts, metadata, and analytics wired
 - [x] Base theme tokens added
 - [x] Mobile fallback scaffold created
-- [ ] Device and motion gates implemented
+- [x] Device and motion gates implemented
 - [ ] 3D graph structure built
 - [ ] Panels and interactions wired
 
@@ -29,7 +29,7 @@ Choose these values if prompted:
 ## 2. Install dependencies
 
 ```bash
-npm install @react-three/fiber @react-three/drei three framer-motion gsap @vercel/analytics
+npm install @react-three/fiber @react-three/drei three framer-motion gsap simplex-noise @vercel/analytics
 npm install -D @types/three
 ```
 
@@ -38,6 +38,7 @@ npm install -D @types/three
 - [x] Three.js installed
 - [x] Framer Motion installed
 - [x] GSAP installed
+- [x] simplex-noise installed
 - [x] Vercel Analytics installed
 - [x] Three.js types installed
 
@@ -83,7 +84,7 @@ Do not use `<link>` tags or self-hosting for this project.
 - [x] Add metadata and Open Graph config to `app/layout.tsx`.
 - [x] Add `<Analytics />` from `@vercel/analytics/react` in `app/layout.tsx`.
 - [x] Build mobile fallback first before the 3D graph.
-- [ ] Add WebGL detection and reduced-motion handling before animations.
+- [x] Add WebGL detection and reduced-motion handling before animations.
 
 ## 6. First-run verification
 

@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion, type Transition } from "framer-motion";
+import { motion, type Transition } from "framer-motion";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import projects from "../../../data/projects.json";
 import skills from "../../../data/skills.json";
 import experience from "../../../data/experience.json";
