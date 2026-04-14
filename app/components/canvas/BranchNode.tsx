@@ -100,6 +100,7 @@ export default function BranchNode({
         center
         transform
         distanceFactor={11}
+        zIndexRange={[4, 0]}
         pointerEvents="none"
       >
         <div

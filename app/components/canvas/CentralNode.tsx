@@ -62,12 +62,26 @@ export default function CentralNode({ node, isActive, onSelect }: CentralNodePro
           metalness={0.7}
         />
       </mesh>
-      <Html position={[0, 2.0, 0]} center transform distanceFactor={9} pointerEvents="none">
+      <Html
+        position={[0, 2.0, 0]}
+        center
+        transform
+        distanceFactor={9}
+        zIndexRange={[4, 0]}
+        pointerEvents="none"
+      >
         <div className="rounded-full border border-white/10 bg-black/40 px-3 py-1 text-center text-sm font-semibold tracking-[0.18em] text-white shadow-lg backdrop-blur-md">
           {node.label}
         </div>
       </Html>
-      <Html position={[0, -2.0, 0]} center transform distanceFactor={11} pointerEvents="none">
+      <Html
+        position={[0, -2.0, 0]}
+        center
+        transform
+        distanceFactor={11}
+        zIndexRange={[4, 0]}
+        pointerEvents="none"
+      >
         <div className="max-w-[220px] text-center text-xs leading-5 text-slate-300/90">
           {node.description}
         </div>

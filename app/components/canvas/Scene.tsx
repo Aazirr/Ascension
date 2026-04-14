@@ -4,7 +4,7 @@ import { CameraControls as DreiCameraControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import CameraControlsImpl from "camera-controls";
 import { Box3, Vector3 } from "three";
-import { Suspense, useEffect, useMemo, useRef } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef } from "react";
 import BranchNode from "./BranchNode";
 import CentralNode from "./CentralNode";
 import ConnectionLine from "./ConnectionLine";
@@ -18,6 +18,7 @@ interface SceneProps {
 
 export default function Scene({ graph, onBackgroundClick }: SceneProps) {
   const controlsRef = useRef<CameraControlsImpl | null>(null);
+  const previousActiveNodeIdRef = useRef<string | null>(graph.activeNodeId);
   const cameraBoundary = useMemo(
     () => new Box3(new Vector3(-11, -9, -1), new Vector3(11, 9, 1)),
     [],
@@ -35,6 +36,64 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
     () => new Map(graph.nodes.map((node) => [node.id, node])),
     [graph.nodes],
   );
+
+  const focusNodeWithContext = useCallback(
+    (nodeId: string | null, previousNodeId: string | null, animate = true) => {
+      if (!nodeId || !controlsRef.current) {
+        return;
+      }
+
+      const node = nodeMap.get(nodeId);
+      if (!node) {
+        return;
+      }
+
+      const previousNode = previousNodeId ? nodeMap.get(previousNodeId) : null;
+      const parentNode = node.parentId ? nodeMap.get(node.parentId) : null;
+
+      let targetX = node.position[0];
+      let targetY = node.position[1];
+      const targetZ = node.position[2];
+
+      let distance =
+        node.kind === "central" ? 14 : node.kind === "category" ? 10.8 : 8.8;
+
+      // For leaf nodes, blend toward their tier-2 parent for smoother, contextual travel.
+      if (node.kind === "leaf" && parentNode) {
+        const hasParentContext = previousNode?.id === parentNode.id;
+        const leafWeight = hasParentContext ? 0.82 : 0.68;
+        const parentWeight = 1 - leafWeight;
+
+        targetX = parentNode.position[0] * parentWeight + node.position[0] * leafWeight;
+        targetY = parentNode.position[1] * parentWeight + node.position[1] * leafWeight;
+        distance = hasParentContext ? 8.2 : 8.9;
+      }
+
+      if (node.kind === "category") {
+        distance = previousNode?.kind === "leaf" ? 10.2 : 11.2;
+      }
+
+      distance = Math.max(7, Math.min(18, distance));
+
+      controlsRef.current.setLookAt(
+        targetX,
+        targetY,
+        targetZ + distance,
+        targetX,
+        targetY,
+        targetZ,
+        animate,
+      );
+
+      return;
+    },
+    [nodeMap],
+  );
+
+  useEffect(() => {
+    focusNodeWithContext(graph.activeNodeId, previousActiveNodeIdRef.current, true);
+    previousActiveNodeIdRef.current = graph.activeNodeId;
+  }, [graph.activeNodeId, focusNodeWithContext]);
 
   const handleSelectNode = (nodeId: string) => {
     graph.selectNode(nodeId);
@@ -67,7 +126,7 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
             minDistance={7}
             maxDistance={18}
             dollySpeed={0.75}
-            truckSpeed={0.95}
+            truckSpeed={1.26}
             boundaryEnclosesCamera
             mouseButtons={{
               left: CameraControlsImpl.ACTION.TRUCK,

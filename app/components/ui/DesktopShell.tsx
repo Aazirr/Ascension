@@ -189,6 +189,8 @@ export default function DesktopShell() {
         </div>
       </section>
 
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-[min(520px,44vw)] bg-gradient-to-l from-[rgba(5,5,16,0.82)] via-[rgba(5,5,16,0.58)] to-transparent" />
+
       <aside className="pointer-events-none absolute right-4 top-4 z-30 h-[calc(100vh-2rem)] w-[min(420px,35vw)] min-w-[320px]">
         <AnimatePresence mode="wait">
           {selectedPanel ? (
@@ -198,7 +200,7 @@ export default function DesktopShell() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 24 }}
               transition={{ duration: 0.28, ease: "easeOut" }}
-              className="pointer-events-auto h-full overflow-y-auto rounded-3xl border border-white/10 bg-[rgba(5,5,16,0.92)] p-6 shadow-2xl shadow-black/30 backdrop-blur-xl"
+              className="pointer-events-auto h-full overflow-y-auto rounded-3xl border border-white/10 bg-[rgba(5,5,16,0.97)] p-6 shadow-2xl shadow-black/40 backdrop-blur-xl"
             >
               <div className="mb-4 flex items-center justify-between gap-3">
                 <p className="text-xs uppercase tracking-[0.24em] text-slate-300/70">
@@ -222,7 +224,7 @@ export default function DesktopShell() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 12 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="pointer-events-auto rounded-3xl border border-white/10 bg-[rgba(5,5,16,0.88)] p-6 backdrop-blur-xl"
+              className="pointer-events-auto rounded-3xl border border-white/10 bg-[rgba(5,5,16,0.95)] p-6 backdrop-blur-xl"
             >
               <p className="text-xs uppercase tracking-[0.24em] text-slate-300/70">
                 Detail panel
