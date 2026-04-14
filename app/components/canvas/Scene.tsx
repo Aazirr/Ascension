@@ -147,6 +147,7 @@ export default function Scene({
 
         <Suspense fallback={null}>
           <ParticleField
+            key={`particles-far-${backgroundPreset}-${particleConfig.far.count}-${particleConfig.far.spread}`}
             count={particleConfig.far.count}
             size={0.02}
             color="#ffffff"
@@ -155,6 +156,7 @@ export default function Scene({
             reducedMotion={reducedMotion}
           />
           <ParticleField
+            key={`particles-near-${backgroundPreset}-${particleConfig.near.count}-${particleConfig.near.spread}`}
             count={particleConfig.near.count}
             size={0.05}
             color="#ffffff"
