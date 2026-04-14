@@ -1,0 +1,26 @@
+[
+  {
+    "id": "hcip-storage-v5",
+    "name": "Huawei HCIP-Storage V5.0",
+    "issuer": "Huawei",
+    "date": "2025",
+    "credentialUrl": "",
+    "nodePosition": [-3.6, 1.5, -0.2]
+  },
+  {
+    "id": "hcia-storage-v45",
+    "name": "Huawei HCIA-Storage V4.5",
+    "issuer": "Huawei",
+    "date": "2024",
+    "credentialUrl": "",
+    "nodePosition": [-4.7, 0.9, -1.1]
+  },
+  {
+    "id": "hcie-storage-v25",
+    "name": "Huawei HCIE-Storage V2.5",
+    "issuer": "Huawei",
+    "date": "2026",
+    "credentialUrl": "",
+    "nodePosition": [-5.5, 0.2, -0.4]
+  }
+]

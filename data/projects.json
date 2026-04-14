@@ -1,0 +1,104 @@
+[
+  {
+    "id": "glenda-residences",
+    "title": "Glenda Residences",
+    "tagline": "Apartment billing system with Telegram bot and SMS automation",
+    "stack": [
+      "Node.js",
+      "React",
+      "Express",
+      "PostgreSQL",
+      "Telegram API",
+      "pdfkit"
+    ],
+    "bullets": [
+      "Manages full tenant lifecycle from registration to payment tracking",
+      "Telegram bot and admin app share one database for operational redundancy",
+      "Deployed with automatic schema migrations during startup"
+    ],
+    "liveUrl": "https://example-live-url.com",
+    "githubUrl": "https://github.com/your-username/glenda-residences",
+    "screenshot": "/screenshots/glenda.png",
+    "nodePosition": [4.7, 1.1, -0.8]
+  },
+  {
+    "id": "dripmon",
+    "title": "DripMon",
+    "tagline": "Community-driven battle tracker and roster utility",
+    "stack": [
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "PostgreSQL"
+    ],
+    "bullets": [
+      "Helps players track team composition and matchup trends",
+      "Balances quick data entry with clean tournament-ready views",
+      "Built to support recurring community events"
+    ],
+    "liveUrl": "https://example-live-url.com",
+    "githubUrl": "https://github.com/your-username/dripmon",
+    "screenshot": "/screenshots/dripmon.png",
+    "nodePosition": [5.2, 0.4, -1.9]
+  },
+  {
+    "id": "daarkin",
+    "title": "Daarkin",
+    "tagline": "Production web app with polished UX and real deployment flow",
+    "stack": [
+      "Next.js",
+      "TypeScript",
+      "Framer Motion",
+      "Vercel"
+    ],
+    "bullets": [
+      "Focused on smooth UX transitions and strong interaction feedback",
+      "Uses typed data contracts for predictable rendering",
+      "Deployed with repeatable CI and preview workflow"
+    ],
+    "liveUrl": "https://example-live-url.com",
+    "githubUrl": "https://github.com/your-username/daarkin",
+    "screenshot": "/screenshots/daarkin.png",
+    "nodePosition": [4.4, -0.9, -2.4]
+  },
+  {
+    "id": "vgc-puzzle-trainer",
+    "title": "VGC Puzzle Trainer",
+    "tagline": "Scenario-based battle puzzle trainer for competitive players",
+    "stack": [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "PokeAPI"
+    ],
+    "bullets": [
+      "Presents short tactical puzzles with clear win conditions",
+      "Transforms match concepts into repeatable training loops",
+      "Designed for mobile-first practice sessions"
+    ],
+    "liveUrl": "https://example-live-url.com",
+    "githubUrl": "https://github.com/your-username/vgc-puzzle-trainer",
+    "screenshot": "/screenshots/vgc-puzzle-trainer.png",
+    "nodePosition": [3.8, -1.6, -0.9]
+  },
+  {
+    "id": "speakforge",
+    "title": "SpeakForge",
+    "tagline": "Language and communication tool focused on iterative learning",
+    "stack": [
+      "React",
+      "Node.js",
+      "Express",
+      "PostgreSQL"
+    ],
+    "bullets": [
+      "Guides users through structured speaking and review loops",
+      "Emphasizes fast feedback and lightweight interaction",
+      "Built for maintainability with modular service boundaries"
+    ],
+    "liveUrl": "https://example-live-url.com",
+    "githubUrl": "https://github.com/your-username/speakforge",
+    "screenshot": "/screenshots/speakforge.png",
+    "nodePosition": [5.4, -0.3, 0.2]
+  }
+]

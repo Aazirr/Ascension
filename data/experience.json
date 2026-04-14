@@ -1,0 +1,28 @@
+[
+  {
+    "id": "ollopa-corporation",
+    "role": "IT Intern (OJT)",
+    "company": "Ollopa Corporation",
+    "location": "Quezon City",
+    "dates": "Sep 2025 - Dec 2025",
+    "nodePosition": [-4.8, 0.5, 1.2],
+    "bullets": [
+      "Provided IT and system-related support for sales operations",
+      "Identified and documented website issues during review cycles",
+      "Coordinated updates with team members under production timelines"
+    ]
+  },
+  {
+    "id": "freelance-gas-developer",
+    "role": "Freelance Google Apps Script Developer",
+    "company": "Independent",
+    "location": "Remote",
+    "dates": "2024 - Present",
+    "nodePosition": [-5.3, -0.7, 2.0],
+    "bullets": [
+      "Built lightweight automations to reduce repetitive admin work",
+      "Integrated Sheets-based workflows with custom scripts",
+      "Delivered practical solutions with fast feedback loops"
+    ]
+  }
+]

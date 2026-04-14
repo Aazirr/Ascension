@@ -1,0 +1,94 @@
+[
+  {
+    "id": "frontend",
+    "category": "Frontend",
+    "nodePosition": [2.0, -1.0, 2.0],
+    "skills": [
+      {
+        "name": "React",
+        "context": "Built production UIs across multiple portfolio projects"
+      },
+      {
+        "name": "Next.js",
+        "context": "Used App Router architecture for modern full-stack workflows"
+      },
+      {
+        "name": "TypeScript",
+        "context": "Primary language for predictable component and API contracts"
+      },
+      {
+        "name": "Tailwind CSS",
+        "context": "Rapid UI implementation with consistent design tokens"
+      }
+    ]
+  },
+  {
+    "id": "backend",
+    "category": "Backend",
+    "nodePosition": [3.6, -0.2, 2.4],
+    "skills": [
+      {
+        "name": "Node.js",
+        "context": "Built API-driven features and automation services"
+      },
+      {
+        "name": "Express",
+        "context": "Implemented REST endpoints and middleware-based routing"
+      },
+      {
+        "name": "PostgreSQL",
+        "context": "Designed schemas, relationships, and migration flows"
+      },
+      {
+        "name": "REST APIs",
+        "context": "Designed clear endpoint contracts for web and bot clients"
+      }
+    ]
+  },
+  {
+    "id": "integrations",
+    "category": "Integrations",
+    "nodePosition": [4.8, 0.4, 1.6],
+    "skills": [
+      {
+        "name": "Telegram",
+        "context": "Delivered bot-based command and notification workflows"
+      },
+      {
+        "name": "Discord.js",
+        "context": "Built community tooling and event support utilities"
+      },
+      {
+        "name": "PokeAPI",
+        "context": "Used external game data for trainer and puzzle features"
+      },
+      {
+        "name": "Anthropic API",
+        "context": "Experimented with AI-assisted feature augmentation"
+      }
+    ]
+  },
+  {
+    "id": "tooling",
+    "category": "Tooling",
+    "nodePosition": [3.2, 1.2, 3.1],
+    "skills": [
+      {
+        "name": "Railway",
+        "context": "Managed app deployments and environment configuration"
+      },
+      {
+        "name": "Vercel",
+        "context": "Used preview deployments and production release workflows"
+      },
+      {
+        "name": "GitHub",
+        "context": "Version control, PR workflows, and project organization"
+      },
+      {
+        "name": "Google Apps Script",
+        "context": "Automated business tasks and spreadsheet integrations"
+      }
+    ]
+  }
+]
