@@ -27,8 +27,10 @@ export default function BranchNode({
   const meshRef = useRef<THREE.Mesh | null>(null);
 
   // Determine label visibility for tier 3 (leaf) nodes
-  const leafLabelOpacity =
-    node.kind !== "leaf"
+  // Hover always shows label, otherwise use context-based visibility
+  const leafLabelOpacity = isHovered
+    ? 1 // Show on hover
+    : node.kind !== "leaf"
       ? 1 // Always show tier 2 labels
       : activeNodeId === null ||
           activeNodeId === "central-you" ||
@@ -38,9 +40,11 @@ export default function BranchNode({
           activeNodeId === "branch-certifications" ||
           activeNodeId === "branch-about"
         ? 0 // Hide tier 3 labels by default
-        : activeNodeId === node.parentId || activeNodeId === node.id
-          ? 1 // Show full opacity if parent or self is active
-          : 0.08; // Fade to almost-vanished for other tier 3 items
+        : activeNodeId === node.id
+          ? 1 // Show full opacity if self is active
+          : activeNodeId === node.parentId
+            ? 0.08 // Almost vanished when parent tier 2 is active
+            : 0.08; // Fade to almost-vanished for other tier 3 items
 
   useEffect(() => {
     if (typeof document === "undefined") {
