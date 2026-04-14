@@ -94,13 +94,32 @@ export default function BackgroundMusic() {
 
       const [deck0, deck1] = deckRef.current;
       const activeDeck = activeDeckIndexRef.current === 0 ? deck0 : deck1;
-      if (!activeDeck || !Number.isFinite(activeDeck.duration)) {
+      if (!activeDeck) {
         return;
       }
 
+      if (!Number.isFinite(activeDeck.duration) || activeDeck.duration <= 0) {
+        const retryWhenReady = () => {
+          if (disposed) {
+            return;
+          }
+
+          const [current0, current1] = deckRef.current;
+          const currentActive = activeDeckIndexRef.current === 0 ? current0 : current1;
+          if (currentActive === activeDeck) {
+            scheduleNextCrossfade();
+          }
+        };
+
+        activeDeck.addEventListener("loadedmetadata", retryWhenReady, { once: true });
+        return;
+      }
+
+      const remainingSecondsUntilCrossfade =
+        activeDeck.duration - activeDeck.currentTime - CROSSFADE_DURATION_SECONDS;
       const restartLeadMs = Math.max(
         0,
-        (activeDeck.duration - CROSSFADE_DURATION_SECONDS) * 1000,
+        remainingSecondsUntilCrossfade * 1000,
       );
 
       loopTimeoutRef.current = window.setTimeout(() => {
@@ -257,7 +276,7 @@ export default function BackgroundMusic() {
       onClick={toggleMute}
       aria-pressed={isMuted}
       aria-label={isMuted ? "Unmute background music" : "Mute background music"}
-      className="fixed bottom-4 left-4 z-[70] rounded-full border border-white/20 bg-black/55 px-3 py-1.5 text-xs font-medium tracking-[0.12em] text-white backdrop-blur-md transition hover:bg-black/70"
+      className="fixed bottom-4 right-4 z-[70] rounded-full border border-white/20 bg-black/55 px-3 py-1.5 text-xs font-medium tracking-[0.12em] text-white backdrop-blur-md transition hover:bg-black/70"
     >
       {isMuted ? "Music Off" : "Music On"}
     </button>
