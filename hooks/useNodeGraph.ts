@@ -105,6 +105,7 @@ function buildGraphNodes() {
     {
       id: "central-you",
       label: "YOU",
+      displayLabel: "HIRE ME",
       kind: "central",
       section: "about",
       position: [0, 0, 0],

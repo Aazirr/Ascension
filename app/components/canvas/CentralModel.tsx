@@ -9,6 +9,7 @@ interface CentralModelProps {
   modelPath: string;
   reducedMotion: boolean;
   isActive: boolean;
+  onSelect: () => void;
 }
 
 const MODEL_FIT_SIZE = 1.5;
@@ -17,6 +18,7 @@ export default function CentralModel({
   modelPath,
   reducedMotion,
   isActive,
+  onSelect,
 }: CentralModelProps) {
   const groupRef = useRef<THREE.Group | null>(null);
   const { scene } = useGLTF(modelPath);
@@ -74,7 +76,14 @@ export default function CentralModel({
   });
 
   return (
-    <group ref={groupRef} position={[0, 0, 0.12]}>
+    <group
+      ref={groupRef}
+      position={[0, 0, 0.12]}
+      onClick={(event) => {
+        event.stopPropagation();
+        onSelect();
+      }}
+    >
       <primitive object={modelScene} />
     </group>
   );

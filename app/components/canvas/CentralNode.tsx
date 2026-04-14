@@ -15,6 +15,7 @@ interface CentralNodeProps {
   isActive: boolean;
   reducedMotion: boolean;
   onSelect: (nodeId: string) => void;
+  onPitchRequest: () => void;
 }
 
 const BUBBLE_ACCESSORY_COLOR = "#D9CA80";
@@ -66,6 +67,7 @@ export default function CentralNode({
   isActive,
   reducedMotion,
   onSelect,
+  onPitchRequest,
 }: CentralNodeProps) {
   const groupRef = useRef<THREE.Group | null>(null);
   const meshRef = useRef<THREE.Mesh | null>(null);
@@ -170,13 +172,22 @@ export default function CentralNode({
     }
   });
 
+  const handleCentralSelect = () => {
+    if (isActive) {
+      onPitchRequest();
+      return;
+    }
+
+    onSelect(node.id);
+  };
+
   return (
     <group ref={groupRef} position={node.position}>
       <mesh
         ref={meshRef}
         onClick={(event) => {
           event.stopPropagation();
-          onSelect(node.id);
+          handleCentralSelect();
         }}
       >
         <sphereGeometry args={[1.2, 32, 32]} />
@@ -202,7 +213,7 @@ export default function CentralNode({
         scale={1.028}
         onClick={(event) => {
           event.stopPropagation();
-          onSelect(node.id);
+          handleCentralSelect();
         }}
       >
         <sphereGeometry args={[1.2, 32, 32]} />
@@ -221,6 +232,7 @@ export default function CentralNode({
             modelPath={CENTRAL_MODEL_PATH}
             reducedMotion={reducedMotion}
             isActive={isActive}
+            onSelect={handleCentralSelect}
           />
         </Suspense>
       ) : (
@@ -251,7 +263,7 @@ export default function CentralNode({
         pointerEvents="none"
       >
         <div className="rounded-full border border-white/10 bg-black/40 px-3 py-1 text-center text-sm font-semibold tracking-[0.18em] text-white shadow-lg backdrop-blur-md">
-          {node.label}
+          {node.displayLabel ?? node.label}
         </div>
       </Html>
       <Html

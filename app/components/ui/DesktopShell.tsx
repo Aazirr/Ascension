@@ -14,6 +14,7 @@ import ExperiencePanel from "../panels/ExperiencePanel";
 import ProjectPanel from "../panels/ProjectPanel";
 import SkillPanel from "../panels/SkillPanel";
 import Breadcrumb from "./Breadcrumb";
+import HireMeModal from "./HireMeModal";
 import SearchModal from "./SearchModal";
 import { useNodeGraph } from "@/hooks/useNodeGraph";
 import type {
@@ -46,6 +47,7 @@ export default function DesktopShell() {
   const graph = useNodeGraph();
   const activeNode = graph.activeNode;
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isHireMeOpen, setIsHireMeOpen] = useState(false);
   const [hasSeenIntro, setHasSeenIntro] = useState(false);
   const [isHeaderHovered, setIsHeaderHovered] = useState(false);
   const [backgroundPreset, setBackgroundPreset] =
@@ -305,7 +307,9 @@ export default function DesktopShell() {
       const isMeta = event.metaKey || event.ctrlKey;
 
       if (event.key === "Escape") {
-        if (isSearchOpen) {
+        if (isHireMeOpen) {
+          setIsHireMeOpen(false);
+        } else if (isSearchOpen) {
           setIsSearchOpen(false);
         } else {
           const movedBack = graph.goBack();
@@ -379,7 +383,7 @@ export default function DesktopShell() {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [graph, isSearchOpen]);
+  }, [graph, isHireMeOpen, isSearchOpen]);
 
   // Intro animation on first load
   useEffect(() => {
@@ -433,7 +437,9 @@ export default function DesktopShell() {
       <Scene
         graph={graph}
         backgroundPreset={backgroundPreset}
+        onCentralPitchRequest={() => setIsHireMeOpen(true)}
         onBackgroundClick={() => {
+          setIsHireMeOpen(false);
           graph.setActiveNodeId(null);
           graph.setHoveredNodeId(null);
         }}
@@ -581,6 +587,12 @@ export default function DesktopShell() {
           setIsSearchOpen(false);
         }}
         searchableNodes={graph.getSearchableNodes()}
+      />
+
+      <HireMeModal
+        about={about as AboutData}
+        isOpen={isHireMeOpen}
+        onClose={() => setIsHireMeOpen(false)}
       />
     </main>
   );

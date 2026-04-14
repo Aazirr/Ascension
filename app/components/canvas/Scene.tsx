@@ -19,6 +19,7 @@ interface SceneProps {
   graph: NodeGraphState;
   backgroundPreset: CosmicBackgroundPreset;
   onBackgroundClick?: () => void;
+  onCentralPitchRequest: () => void;
 }
 
 const CENTRAL_NODE_SFX_PATH = "/sfx/node-central.wav";
@@ -28,6 +29,7 @@ export default function Scene({
   graph,
   backgroundPreset,
   onBackgroundClick,
+  onCentralPitchRequest,
 }: SceneProps) {
   const reducedMotion = useReducedMotion();
   const controlsRef = useRef<CameraControlsImpl | null>(null);
@@ -301,6 +303,7 @@ export default function Scene({
                 isActive={isActive}
                 reducedMotion={reducedMotion}
                 onSelect={handleSelectNode}
+                onPitchRequest={onCentralPitchRequest}
               />
             );
           }

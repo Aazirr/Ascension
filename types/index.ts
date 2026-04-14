@@ -66,6 +66,7 @@ export type GraphSection =
 export interface GraphNode {
   id: string;
   label: string;
+  displayLabel?: string;
   kind: GraphNodeKind;
   section: GraphSection;
   position: [number, number, number];
