@@ -8,7 +8,7 @@ Use this sequence to reduce risk and avoid rework.
 - [x] Phase 2 - Mobile fallback first
 - [x] Phase 3 - Device and motion gates
 - [x] Phase 4 - 3D graph skeleton
-- [ ] Phase 5 - Panels and interactions
+- [x] Phase 5 - Panels and interactions
 - [ ] Phase 6 - Animation pass
 - [ ] Phase 7 - Polish and release
 
@@ -70,14 +70,14 @@ Exit criteria:
 
 ## Phase 5 - Panels and interactions
 
-- [ ] Build all section panels.
-- [ ] Connect panel data to active node.
-- [ ] Add Escape key close.
-- [ ] Add canvas `onPointerMissed` close.
+- [x] Build all section panels.
+- [x] Connect panel data to active node.
+- [x] Add Escape key close.
+- [x] Add canvas `onPointerMissed` close.
 
 Exit criteria:
 
-- [ ] Any node can open/close the expected panel content.
+- [x] Any node can open/close the expected panel content.
 
 ## Phase 6 - Animation pass
 

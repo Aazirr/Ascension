@@ -13,13 +13,14 @@ import type { NodeGraphState } from "@/hooks/useNodeGraph";
 
 interface SceneProps {
   graph: NodeGraphState;
+  onBackgroundClick?: () => void;
 }
 
 function getFocusPosition(node: GraphNode): [number, number, number] {
   return [node.position[0] + 4.2, node.position[1] + 2.4, node.position[2] + 6.2];
 }
 
-export default function Scene({ graph }: SceneProps) {
+export default function Scene({ graph, onBackgroundClick }: SceneProps) {
   const controlsRef = useRef<CameraControlsImpl | null>(null);
 
   const nodeMap = useMemo(
@@ -49,7 +50,13 @@ export default function Scene({ graph }: SceneProps) {
 
   return (
     <div className="h-full min-h-[680px] w-full overflow-hidden rounded-[1.75rem] border border-white/10 bg-[radial-gradient(circle_at_center,rgba(127,119,221,0.09),transparent_45%),linear-gradient(180deg,rgba(8,8,24,0.92),rgba(5,5,16,0.96))]">
-      <Canvas camera={{ position: [0, 0, 14], fov: 48 }} dpr={[1, 1.5]}>
+      <Canvas
+        camera={{ position: [0, 0, 14], fov: 48 }}
+        dpr={[1, 1.5]}
+        onPointerMissed={() => {
+          onBackgroundClick?.();
+        }}
+      >
         <color attach="background" args={["#050510"]} />
         <ambientLight intensity={0.65} />
         <directionalLight position={[6, 8, 10]} intensity={1.1} color="#d8d6ff" />

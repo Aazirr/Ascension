@@ -1,12 +1,20 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useMemo } from "react";
 import about from "../../../data/about.json";
 import certifications from "../../../data/certifications.json";
 import experience from "../../../data/experience.json";
 import projects from "../../../data/projects.json";
 import skills from "../../../data/skills.json";
+import AboutPanel from "../panels/AboutPanel";
+import CertificationPanel from "../panels/CertificationPanel";
+import ExperiencePanel from "../panels/ExperiencePanel";
+import ProjectPanel from "../panels/ProjectPanel";
+import SkillPanel from "../panels/SkillPanel";
 import Scene from "../canvas/Scene";
 import { useNodeGraph } from "@/hooks/useNodeGraph";
+import type { AboutData, CertificationItem, ExperienceItem, Project, SkillCategory } from "@/types";
 
 const branchLabels: Record<string, string> = {
   projects: "Projects",
@@ -18,7 +26,130 @@ const branchLabels: Record<string, string> = {
 
 export default function DesktopShell() {
   const graph = useNodeGraph();
-  const activeNode = graph.activeNode ?? graph.nodes[0];
+
+  const activeNode = graph.activeNode;
+
+  const projectMap = useMemo(
+    () => new Map((projects as Project[]).map((project) => [project.id, project])),
+    [],
+  );
+  const skillMap = useMemo(
+    () => new Map((skills as SkillCategory[]).map((skill) => [skill.id, skill])),
+    [],
+  );
+  const experienceMap = useMemo(
+    () => new Map((experience as ExperienceItem[]).map((item) => [item.id, item])),
+    [],
+  );
+  const certificationMap = useMemo(
+    () =>
+      new Map(
+        (certifications as CertificationItem[]).map((item) => [item.id, item]),
+      ),
+    [],
+  );
+
+  const selectedPanel = useMemo(() => {
+    if (!activeNode || activeNode.id === "central-you") {
+      return null;
+    }
+
+    if (activeNode.id.startsWith("project-")) {
+      const projectId = activeNode.id.replace("project-", "");
+      const project = projectMap.get(projectId);
+      if (project) {
+        return {
+          key: activeNode.id,
+          title: activeNode.label,
+          content: <ProjectPanel project={project} />,
+        };
+      }
+    }
+
+    if (activeNode.id.startsWith("skill-group-")) {
+      const categoryId = activeNode.id.replace("skill-group-", "");
+      const category = skillMap.get(categoryId);
+      if (category) {
+        return {
+          key: activeNode.id,
+          title: activeNode.label,
+          content: <SkillPanel category={category} />,
+        };
+      }
+    }
+
+    if (activeNode.id.startsWith("skill-")) {
+      const allCategories = skills as SkillCategory[];
+      for (const category of allCategories) {
+        const selectedSkill = category.skills.find(
+          (skill) => activeNode.label === skill.name,
+        );
+        if (selectedSkill) {
+          return {
+            key: activeNode.id,
+            title: `${category.category} · ${selectedSkill.name}`,
+            content: <SkillPanel category={category} />,
+          };
+        }
+      }
+    }
+
+    if (activeNode.id.startsWith("experience-")) {
+      const itemId = activeNode.id.replace("experience-", "");
+      const item = experienceMap.get(itemId);
+      if (item) {
+        return {
+          key: activeNode.id,
+          title: activeNode.label,
+          content: <ExperiencePanel item={item} />,
+        };
+      }
+    }
+
+    if (activeNode.id.startsWith("certification-")) {
+      const itemId = activeNode.id.replace("certification-", "");
+      const item = certificationMap.get(itemId);
+      if (item) {
+        return {
+          key: activeNode.id,
+          title: activeNode.label,
+          content: <CertificationPanel item={item} />,
+        };
+      }
+    }
+
+    if (activeNode.section === "about") {
+      return {
+        key: activeNode.id,
+        title: activeNode.label,
+        content: <AboutPanel about={about as AboutData} />,
+      };
+    }
+
+    return {
+      key: activeNode.id,
+      title: activeNode.label,
+      content: (
+        <section className="space-y-3 text-sm text-slate-200/85">
+          <p>{activeNode.description ?? "No details available yet."}</p>
+          <p className="text-slate-300/70">
+            Section: {branchLabels[activeNode.section] ?? activeNode.section}
+          </p>
+        </section>
+      ),
+    };
+  }, [activeNode, certificationMap, experienceMap, projectMap, skillMap]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        graph.setActiveNodeId(null);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [graph]);
 
   return (
     <main className="min-h-screen px-6 py-8 text-white lg:px-8">
@@ -91,38 +222,61 @@ export default function DesktopShell() {
               </span>
             </div>
 
-            <Scene graph={graph} />
+            <Scene
+              graph={graph}
+              onBackgroundClick={() => {
+                graph.setActiveNodeId(null);
+                graph.setHoveredNodeId(null);
+              }}
+            />
           </section>
 
           <aside className="space-y-6">
-            <section className="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
-              <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
-                Active node
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold text-white">
-                {activeNode.label}
-              </h2>
-              <div className="mt-4 space-y-3 text-sm leading-6 text-slate-200/85">
-                <p>{activeNode.description ?? "No node description available."}</p>
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-slate-300/85">
-                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-                    Section
+            <AnimatePresence mode="wait">
+              {selectedPanel ? (
+                <motion.section
+                  key={selectedPanel.key}
+                  initial={{ opacity: 0, x: 36 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 24 }}
+                  transition={{ duration: 0.28, ease: "easeOut" }}
+                  className="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
+                >
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
+                      Detail panel
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => graph.setActiveNodeId(null)}
+                      className="rounded-full border border-white/15 px-3 py-1 text-xs text-white hover:bg-white/10"
+                    >
+                      Close
+                    </button>
+                  </div>
+                  <h2 className="text-xl font-semibold text-white">{selectedPanel.title}</h2>
+                  <div className="mt-4">{selectedPanel.content}</div>
+                </motion.section>
+              ) : (
+                <motion.section
+                  key="panel-hint"
+                  initial={{ opacity: 0, x: 18 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 12 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
+                >
+                  <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
+                    Detail panel
                   </p>
-                  <p className="mt-1 font-medium text-white">
-                    {branchLabels[activeNode.section] ?? activeNode.section}
+                  <h2 className="mt-2 text-2xl font-semibold text-white">Select a node</h2>
+                  <p className="mt-4 text-sm leading-6 text-slate-300/85">
+                    Click any non-central node to open its section panel. Press Escape
+                    or click outside the graph nodes to close.
                   </p>
-                  <p className="mt-3 text-xs uppercase tracking-[0.2em] text-slate-400">
-                    Node type
-                  </p>
-                  <p className="mt-1 font-medium text-white">
-                    {activeNode.kind}
-                  </p>
-                </div>
-                <p className="text-slate-300/80">
-                  Click a node to move the camera and update this summary.
-                </p>
-              </div>
-            </section>
+                </motion.section>
+              )}
+            </AnimatePresence>
 
             <section className="rounded-[2rem] border border-white/10 bg-black/20 p-6 backdrop-blur-sm">
               <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">

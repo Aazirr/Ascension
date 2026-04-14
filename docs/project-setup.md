@@ -11,7 +11,7 @@ This guide bootstraps the project with the stack required by the spec.
 - [x] Mobile fallback scaffold created
 - [x] Device and motion gates implemented
 - [x] 3D graph structure built
-- [ ] Panels and interactions wired
+- [x] Panels and interactions wired
 
 ## 1. Create app
 
