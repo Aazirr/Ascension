@@ -156,11 +156,11 @@ export default function CentralNode({
 
       const targetOpacity = reducedMotion
         ? isActive
-          ? 0.08
-          : 0.05
+          ? 0.028
+          : 0.016
         : isActive
-          ? 0.13 + Math.sin(elapsed * 1.1) * 0.014
-          : 0.09 + Math.sin(elapsed * 0.8) * 0.01;
+          ? 0.038 + Math.sin(elapsed * 1.1) * 0.006
+          : 0.024 + Math.sin(elapsed * 0.8) * 0.005;
 
       sheenMaterial.opacity = THREE.MathUtils.lerp(
         sheenMaterial.opacity,
@@ -183,7 +183,7 @@ export default function CentralNode({
         <meshPhysicalMaterial
           color="#f3ebc7"
           transparent
-          opacity={isActive ? 0.03 : 0.018}
+          opacity={isActive ? 0.018 : 0.01}
           transmission={1}
           thickness={0.24}
           ior={1.02}
@@ -192,7 +192,7 @@ export default function CentralNode({
           clearcoat={1}
           clearcoatRoughness={0.02}
           emissive={node.color}
-          emissiveIntensity={reducedMotion ? (isActive ? 0.06 : 0.03) : isActive ? 0.1 : 0.05}
+          emissiveIntensity={reducedMotion ? (isActive ? 0.02 : 0.01) : isActive ? 0.03 : 0.015}
           reflectivity={0.88}
           depthWrite={false}
         />
@@ -209,7 +209,7 @@ export default function CentralNode({
         <meshBasicMaterial
           color={BUBBLE_ACCESSORY_COLOR}
           transparent
-          opacity={0.08}
+          opacity={0.028}
           depthWrite={false}
           side={THREE.DoubleSide}
           blending={THREE.AdditiveBlending}
