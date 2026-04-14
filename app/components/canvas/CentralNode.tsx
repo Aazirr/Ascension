@@ -4,7 +4,7 @@ import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import gsap from "gsap";
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import CentralModel from "./CentralModel";
 import { getNodeDefaultIconPath, getNodeIconPath } from "@/app/lib/nodeIcons";
@@ -20,6 +20,46 @@ interface CentralNodeProps {
 const BUBBLE_ACCESSORY_COLOR = "#D9CA80";
 const CENTRAL_MODEL_PATH = "/models/central-node.glb";
 const USE_CENTRAL_MODEL = true;
+
+function CentralModelLoader() {
+  const loaderRef = useRef<THREE.Group | null>(null);
+
+  useFrame((state) => {
+    if (!loaderRef.current) {
+      return;
+    }
+
+    const elapsed = state.clock.getElapsedTime();
+    loaderRef.current.rotation.z = elapsed * 1.8;
+    loaderRef.current.rotation.x = Math.sin(elapsed * 0.9) * 0.08;
+    loaderRef.current.rotation.y = Math.cos(elapsed * 0.8) * 0.08;
+  });
+
+  return (
+    <group ref={loaderRef} position={[0, 0, 0.14]} scale={0.58}>
+      <mesh>
+        <torusGeometry args={[0.92, 0.1, 18, 48]} />
+        <meshBasicMaterial
+          color={BUBBLE_ACCESSORY_COLOR}
+          transparent
+          opacity={0.85}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.68, 0.045, 14, 36]} />
+        <meshBasicMaterial
+          color="#ffffff"
+          transparent
+          opacity={0.55}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+    </group>
+  );
+}
 
 export default function CentralNode({
   node,
@@ -176,11 +216,13 @@ export default function CentralNode({
         />
       </mesh>
       {USE_CENTRAL_MODEL ? (
-        <CentralModel
-          modelPath={CENTRAL_MODEL_PATH}
-          reducedMotion={reducedMotion}
-          isActive={isActive}
-        />
+        <Suspense fallback={<CentralModelLoader />}>
+          <CentralModel
+            modelPath={CENTRAL_MODEL_PATH}
+            reducedMotion={reducedMotion}
+            isActive={isActive}
+          />
+        </Suspense>
       ) : (
         <Html center transform distanceFactor={8} zIndexRange={[4, 0]} pointerEvents="none">
           <div className="flex h-14 w-14 items-center justify-center rounded-full">

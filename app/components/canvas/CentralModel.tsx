@@ -11,6 +11,8 @@ interface CentralModelProps {
   isActive: boolean;
 }
 
+const MODEL_FIT_SIZE = 1.5;
+
 export default function CentralModel({
   modelPath,
   reducedMotion,
@@ -21,6 +23,19 @@ export default function CentralModel({
 
   const modelScene = useMemo(() => {
     const clone = scene.clone(true);
+    const bounds = new THREE.Box3().setFromObject(clone);
+    const size = new THREE.Vector3();
+    const center = new THREE.Vector3();
+
+    bounds.getSize(size);
+    bounds.getCenter(center);
+
+    const maxDimension = Math.max(size.x, size.y, size.z);
+    const fitScale = maxDimension > 0 ? MODEL_FIT_SIZE / maxDimension : 1;
+
+    clone.position.sub(center);
+    clone.scale.setScalar(fitScale);
+
     clone.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
@@ -59,8 +74,10 @@ export default function CentralModel({
   });
 
   return (
-    <group ref={groupRef} scale={0.55} position={[0, 0, 0.12]}>
+    <group ref={groupRef} position={[0, 0, 0.12]}>
       <primitive object={modelScene} />
     </group>
   );
 }
+
+useGLTF.preload("/models/central-node.glb");

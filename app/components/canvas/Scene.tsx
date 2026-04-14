@@ -5,7 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import CameraControlsImpl from "camera-controls";
 import { Box3, Vector3 } from "three";
-import { Suspense, useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import BranchNode from "./BranchNode";
 import CentralNode from "./CentralNode";
 import ConnectionLine from "./ConnectionLine";
@@ -211,114 +211,112 @@ export default function Scene({
         <directionalLight position={[6, 8, 10]} intensity={1.1} color="#d8d6ff" />
         <pointLight position={[-8, -4, -8]} intensity={0.45} color="#7f77dd" />
 
-        <Suspense fallback={null}>
-          <ParticleField
-            key={`particles-far-${backgroundPreset}-${particleConfig.far.count}-${particleConfig.far.spread}`}
-            count={particleConfig.far.count}
-            size={0.02}
-            color="#ffffff"
-            spread={particleConfig.far.spread}
-            opacity={particleConfig.far.opacity}
-            reducedMotion={reducedMotion}
-          />
-          <ParticleField
-            key={`particles-near-${backgroundPreset}-${particleConfig.near.count}-${particleConfig.near.spread}`}
-            count={particleConfig.near.count}
-            size={0.05}
-            color="#ffffff"
-            spread={particleConfig.near.spread}
-            opacity={particleConfig.near.opacity}
-            reducedMotion={reducedMotion}
-          />
-          <DreiCameraControls
-            ref={controlsRef}
-            makeDefault
-            enabled
-            smoothTime={0.2}
-            azimuthRotateSpeed={0}
-            polarRotateSpeed={0}
-            minDistance={7}
-            maxDistance={18}
-            dollySpeed={0.75}
-            truckSpeed={1.26}
-            boundaryEnclosesCamera
-            mouseButtons={{
-              left: CameraControlsImpl.ACTION.TRUCK,
-              middle: CameraControlsImpl.ACTION.DOLLY,
-              right: CameraControlsImpl.ACTION.NONE,
-              wheel: CameraControlsImpl.ACTION.DOLLY,
-            }}
-            touches={{
-              one: CameraControlsImpl.ACTION.TOUCH_TRUCK,
-              two: CameraControlsImpl.ACTION.TOUCH_DOLLY_TRUCK,
-              three: CameraControlsImpl.ACTION.NONE,
-            }}
-          />
+        <ParticleField
+          key={`particles-far-${backgroundPreset}-${particleConfig.far.count}-${particleConfig.far.spread}`}
+          count={particleConfig.far.count}
+          size={0.02}
+          color="#ffffff"
+          spread={particleConfig.far.spread}
+          opacity={particleConfig.far.opacity}
+          reducedMotion={reducedMotion}
+        />
+        <ParticleField
+          key={`particles-near-${backgroundPreset}-${particleConfig.near.count}-${particleConfig.near.spread}`}
+          count={particleConfig.near.count}
+          size={0.05}
+          color="#ffffff"
+          spread={particleConfig.near.spread}
+          opacity={particleConfig.near.opacity}
+          reducedMotion={reducedMotion}
+        />
+        <DreiCameraControls
+          ref={controlsRef}
+          makeDefault
+          enabled
+          smoothTime={0.2}
+          azimuthRotateSpeed={0}
+          polarRotateSpeed={0}
+          minDistance={7}
+          maxDistance={18}
+          dollySpeed={0.75}
+          truckSpeed={1.26}
+          boundaryEnclosesCamera
+          mouseButtons={{
+            left: CameraControlsImpl.ACTION.TRUCK,
+            middle: CameraControlsImpl.ACTION.DOLLY,
+            right: CameraControlsImpl.ACTION.NONE,
+            wheel: CameraControlsImpl.ACTION.DOLLY,
+          }}
+          touches={{
+            one: CameraControlsImpl.ACTION.TOUCH_TRUCK,
+            two: CameraControlsImpl.ACTION.TOUCH_DOLLY_TRUCK,
+            three: CameraControlsImpl.ACTION.NONE,
+          }}
+        />
 
-          {graph.edges.map((edge) => {
-            const fromNode = nodeMap.get(edge.from);
-            const toNode = nodeMap.get(edge.to);
+        {graph.edges.map((edge) => {
+          const fromNode = nodeMap.get(edge.from);
+          const toNode = nodeMap.get(edge.to);
 
-            if (!fromNode || !toNode) {
-              return null;
-            }
+          if (!fromNode || !toNode) {
+            return null;
+          }
 
-            const isHighlighted =
-              graph.activeNodeId === edge.from ||
-              graph.activeNodeId === edge.to ||
-              graph.hoveredNodeId === edge.from ||
-              graph.hoveredNodeId === edge.to;
+          const isHighlighted =
+            graph.activeNodeId === edge.from ||
+            graph.activeNodeId === edge.to ||
+            graph.hoveredNodeId === edge.from ||
+            graph.hoveredNodeId === edge.to;
 
-            return (
-              <ConnectionLine
-                key={edge.id}
-                start={fromNode.position}
-                end={toNode.position}
-                color={edge.color}
-                isHighlighted={isHighlighted}
-                reducedMotion={reducedMotion}
-              />
-            );
-          })}
-
-          <EffectComposer>
-            <Bloom
-              mipmapBlur
-              intensity={backgroundPreset === "bright" ? 0.95 : 0.72}
-              luminanceThreshold={1}
-              luminanceSmoothing={0.08}
+          return (
+            <ConnectionLine
+              key={edge.id}
+              start={fromNode.position}
+              end={toNode.position}
+              color={edge.color}
+              isHighlighted={isHighlighted}
+              reducedMotion={reducedMotion}
             />
-          </EffectComposer>
+          );
+        })}
 
-          {graph.nodes.map((node) => {
-            const isActive = graph.activeNodeId === node.id;
-            const isHovered = graph.hoveredNodeId === node.id;
+        <EffectComposer>
+          <Bloom
+            mipmapBlur
+            intensity={backgroundPreset === "bright" ? 0.95 : 0.72}
+            luminanceThreshold={1}
+            luminanceSmoothing={0.08}
+          />
+        </EffectComposer>
 
-            if (node.kind === "central") {
-              return (
-                <CentralNode
-                  key={node.id}
-                  node={node}
-                  isActive={isActive}
-                  reducedMotion={reducedMotion}
-                  onSelect={handleSelectNode}
-                />
-              );
-            }
+        {graph.nodes.map((node) => {
+          const isActive = graph.activeNodeId === node.id;
+          const isHovered = graph.hoveredNodeId === node.id;
 
+          if (node.kind === "central") {
             return (
-              <BranchNode
+              <CentralNode
                 key={node.id}
                 node={node}
                 isActive={isActive}
-                isHovered={isHovered}
-                activeNodeId={graph.activeNodeId}
+                reducedMotion={reducedMotion}
                 onSelect={handleSelectNode}
-                onHover={graph.setHoveredNodeId}
               />
             );
-          })}
-        </Suspense>
+          }
+
+          return (
+            <BranchNode
+              key={node.id}
+              node={node}
+              isActive={isActive}
+              isHovered={isHovered}
+              activeNodeId={graph.activeNodeId}
+              onSelect={handleSelectNode}
+              onHover={graph.setHoveredNodeId}
+            />
+          );
+        })}
       </Canvas>
     </div>
   );
