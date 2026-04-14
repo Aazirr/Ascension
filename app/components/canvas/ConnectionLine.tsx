@@ -20,17 +20,21 @@ export default function ConnectionLine({
   isHighlighted,
   reducedMotion,
 }: ConnectionLineProps) {
-  const materialRef = useRef<THREE.LineDashedMaterial | null>(null);
+  const lineRef = useRef<{
+    material?: THREE.LineDashedMaterial & { dashOffset?: number };
+  } | null>(null);
 
   useFrame((_, delta) => {
-    if (!materialRef.current || reducedMotion) {
+    if (!lineRef.current || reducedMotion) {
       return;
     }
 
     const speed = isHighlighted ? 0.58 : 0.28;
-    const materialWithDash = materialRef.current as THREE.LineDashedMaterial & {
-      dashOffset?: number;
-    };
+    const materialWithDash = lineRef.current.material;
+
+    if (!materialWithDash) {
+      return;
+    }
 
     materialWithDash.dashOffset = (materialWithDash.dashOffset ?? 0) - delta * speed;
   });
@@ -45,7 +49,11 @@ export default function ConnectionLine({
       lineWidth={1}
       transparent
       opacity={isHighlighted ? 0.94 : 0.24}
-      material-ref={materialRef}
+      onUpdate={(self) => {
+        lineRef.current = self as {
+          material?: THREE.LineDashedMaterial & { dashOffset?: number };
+        };
+      }}
     />
   );
 }
