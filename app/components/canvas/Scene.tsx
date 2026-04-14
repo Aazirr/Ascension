@@ -3,8 +3,8 @@
 import { CameraControls as DreiCameraControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import CameraControlsImpl from "camera-controls";
-import { Suspense, useCallback, useEffect, useMemo, useRef } from "react";
-import type { GraphNode } from "@/types";
+import { Box3, Vector3 } from "three";
+import { Suspense, useEffect, useMemo, useRef } from "react";
 import BranchNode from "./BranchNode";
 import CentralNode from "./CentralNode";
 import ConnectionLine from "./ConnectionLine";
@@ -16,53 +16,25 @@ interface SceneProps {
   onBackgroundClick?: () => void;
 }
 
-function getFocusPosition(node: GraphNode): [number, number, number] {
-  const zByKind = node.kind === "leaf" ? 7 : node.kind === "category" ? 9 : 12;
-  return [node.position[0], node.position[1], zByKind];
-}
-
 export default function Scene({ graph, onBackgroundClick }: SceneProps) {
   const controlsRef = useRef<CameraControlsImpl | null>(null);
-  const lastWheelBackRef = useRef(0);
+  const cameraBoundary = useMemo(
+    () => new Box3(new Vector3(-11, -9, -1), new Vector3(11, 9, 1)),
+    [],
+  );
+
+  useEffect(() => {
+    if (!controlsRef.current) {
+      return;
+    }
+
+    controlsRef.current.setBoundary(cameraBoundary);
+  }, [cameraBoundary]);
 
   const nodeMap = useMemo(
     () => new Map(graph.nodes.map((node) => [node.id, node])),
     [graph.nodes],
   );
-
-  const focusNode = useCallback(
-    (nodeId: string | null, animate = true) => {
-      if (!controlsRef.current) {
-        return;
-      }
-
-      if (!nodeId) {
-        controlsRef.current.setLookAt(0, 0, 14, 0, 0, 0, animate);
-        return;
-      }
-
-      const node = nodeMap.get(nodeId);
-      if (!node) {
-        return;
-      }
-
-      const [cameraX, cameraY, cameraZ] = getFocusPosition(node);
-      controlsRef.current.setLookAt(
-        cameraX,
-        cameraY,
-        cameraZ,
-        node.position[0],
-        node.position[1],
-        node.position[2],
-        animate,
-      );
-    },
-    [nodeMap],
-  );
-
-  useEffect(() => {
-    focusNode(graph.activeNodeId, true);
-  }, [focusNode, graph.activeNodeId]);
 
   const handleSelectNode = (nodeId: string) => {
     graph.selectNode(nodeId);
@@ -73,21 +45,6 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
       <Canvas
         camera={{ position: [0, 0, 14], fov: 48 }}
         dpr={[1, 1.5]}
-        onWheel={(event) => {
-          if (event.deltaY <= 0 || !graph.canGoBack) {
-            return;
-          }
-
-          const now = performance.now();
-          if (now - lastWheelBackRef.current < 220) {
-            return;
-          }
-
-          lastWheelBackRef.current = now;
-          event.preventDefault();
-          event.stopPropagation();
-          graph.goBack();
-        }}
         onPointerMissed={() => {
           onBackgroundClick?.();
         }}
@@ -104,13 +61,25 @@ export default function Scene({ graph, onBackgroundClick }: SceneProps) {
             ref={controlsRef}
             makeDefault
             enabled
-            smoothTime={0.18}
+            smoothTime={0.2}
             azimuthRotateSpeed={0}
             polarRotateSpeed={0}
             minDistance={7}
-            maxDistance={16}
-            dollySpeed={0}
-            truckSpeed={0.8}
+            maxDistance={18}
+            dollySpeed={0.75}
+            truckSpeed={0.95}
+            boundaryEnclosesCamera
+            mouseButtons={{
+              left: CameraControlsImpl.ACTION.TRUCK,
+              middle: CameraControlsImpl.ACTION.DOLLY,
+              right: CameraControlsImpl.ACTION.NONE,
+              wheel: CameraControlsImpl.ACTION.DOLLY,
+            }}
+            touches={{
+              one: CameraControlsImpl.ACTION.TOUCH_TRUCK,
+              two: CameraControlsImpl.ACTION.TOUCH_DOLLY_TRUCK,
+              three: CameraControlsImpl.ACTION.NONE,
+            }}
           />
 
           {graph.edges.map((edge) => {
