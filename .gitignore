@@ -17,6 +17,7 @@
 /build
 
 # misc
+/console_logs
 .DS_Store
 *.pem
 

@@ -17,7 +17,7 @@
       "Deployed with automatic schema migrations during startup"
     ],
     "liveUrl": "https://example-live-url.com",
-    "githubUrl": "https://github.com/your-username/glenda-residences",
+    "githubUrl": "https://github.com/Aazirr/Glenda_Residences",
     "screenshot": "/screenshots/glenda.png",
     "nodePosition": [4.7, 1.1, -0.8]
   },
@@ -37,7 +37,7 @@
       "Built to support recurring community events"
     ],
     "liveUrl": "https://example-live-url.com",
-    "githubUrl": "https://github.com/your-username/dripmon",
+    "githubUrl": "https://github.com/Aazirr/DripMon---NeoForge",
     "screenshot": "/screenshots/dripmon.png",
     "nodePosition": [5.2, 0.4, -1.9]
   },
@@ -57,7 +57,7 @@
       "Deployed with repeatable CI and preview workflow"
     ],
     "liveUrl": "https://example-live-url.com",
-    "githubUrl": "https://github.com/your-username/daarkin",
+    "githubUrl": "https://github.com/Aazirr/Daarkin",
     "screenshot": "/screenshots/daarkin.png",
     "nodePosition": [4.4, -0.9, -2.4]
   },
@@ -74,10 +74,10 @@
     "bullets": [
       "Presents short tactical puzzles with clear win conditions",
       "Transforms match concepts into repeatable training loops",
-      "Designed for mobile-first practice sessions"
+      "Designed for practice sessions"
     ],
     "liveUrl": "https://example-live-url.com",
-    "githubUrl": "https://github.com/your-username/vgc-puzzle-trainer",
+    "githubUrl": "https://github.com/Aazirr/vgc-puzzle-trainer",
     "screenshot": "/screenshots/vgc-puzzle-trainer.png",
     "nodePosition": [3.8, -1.6, -0.9]
   },
@@ -96,8 +96,8 @@
       "Emphasizes fast feedback and lightweight interaction",
       "Built for maintainability with modular service boundaries"
     ],
-    "liveUrl": "https://example-live-url.com",
-    "githubUrl": "https://github.com/your-username/speakforge",
+    "liveUrl": "https://speakforge-capstone2.netlify.app",
+    "githubUrl": "https://github.com/Aazirr/speakforge",
     "screenshot": "/screenshots/speakforge.png",
     "nodePosition": [5.4, -0.3, 0.2]
   }
