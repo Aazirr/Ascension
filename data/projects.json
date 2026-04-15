@@ -16,7 +16,7 @@
       "Telegram bot and admin app share one database for operational redundancy",
       "Deployed with automatic schema migrations during startup"
     ],
-    "liveUrl": "https://example-live-url.com",
+    "liveUrl": "",
     "githubUrl": "https://github.com/Aazirr/Glenda_Residences",
     "screenshot": "/screenshots/glenda.png",
     "nodePosition": [4.7, 1.1, -0.8]
@@ -36,7 +36,7 @@
       "Balances quick data entry with clean tournament-ready views",
       "Built to support recurring community events"
     ],
-    "liveUrl": "https://example-live-url.com",
+    "liveUrl": "",
     "githubUrl": "https://github.com/Aazirr/DripMon---NeoForge",
     "screenshot": "/screenshots/dripmon.png",
     "nodePosition": [5.2, 0.4, -1.9]
@@ -56,7 +56,7 @@
       "Uses typed data contracts for predictable rendering",
       "Deployed with repeatable CI and preview workflow"
     ],
-    "liveUrl": "https://example-live-url.com",
+    "liveUrl": "",
     "githubUrl": "https://github.com/Aazirr/Daarkin",
     "screenshot": "/screenshots/daarkin.png",
     "nodePosition": [4.4, -0.9, -2.4]
@@ -76,7 +76,7 @@
       "Transforms match concepts into repeatable training loops",
       "Designed for practice sessions"
     ],
-    "liveUrl": "https://example-live-url.com",
+    "liveUrl": "",
     "githubUrl": "https://github.com/Aazirr/vgc-puzzle-trainer",
     "screenshot": "/screenshots/vgc-puzzle-trainer.png",
     "nodePosition": [3.8, -1.6, -0.9]
@@ -97,7 +97,7 @@
       "Built for maintainability with modular service boundaries"
     ],
     "liveUrl": "https://speakforge-capstone2.netlify.app",
-    "githubUrl": "https://github.com/Aazirr/speakforge",
+    "githubUrl": "",
     "screenshot": "/screenshots/speakforge.png",
     "nodePosition": [5.4, -0.3, 0.2]
   }
