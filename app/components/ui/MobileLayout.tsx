@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, type Transition } from "framer-motion";
+import TechIcon from "./TechIcon";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import projects from "../../../data/projects.json";
 import skills from "../../../data/skills.json";
@@ -151,8 +152,9 @@ export default function MobileLayout() {
                       {project.stack.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 text-xs font-medium text-cyan-100"
+                          className="inline-flex items-center gap-1.5 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 text-xs font-medium text-cyan-100"
                         >
+                          <TechIcon name={tag} size={14} className="h-3.5 w-3.5" />
                           {tag}
                         </span>
                       ))}

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import TechIcon from "../ui/TechIcon";
 import type { Project } from "@/types";
 
 interface ProjectPanelProps {
@@ -26,8 +27,9 @@ export default function ProjectPanel({ project }: ProjectPanelProps) {
         {project.stack.map((tech) => (
           <span
             key={tech}
-            className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 text-xs text-cyan-100"
+            className="inline-flex items-center gap-1.5 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 text-xs text-cyan-100"
           >
+            <TechIcon name={tech} size={14} className="h-3.5 w-3.5" />
             {tech}
           </span>
         ))}

@@ -1,4 +1,5 @@
 import type { GraphNode, GraphNodeKind } from "@/types";
+import { getSkillGroupIconPath } from "./techIcons";
 
 export type NodeTier = 1 | 2 | 3;
 
@@ -25,6 +26,13 @@ export function getNodeIconFolder(kind: GraphNodeKind): string {
 }
 
 export function getNodeIconPath(node: Pick<GraphNode, "id" | "kind">): string {
+  if (node.kind === "leaf") {
+    const skillGroupIcon = getSkillGroupIconPath(node.id);
+    if (skillGroupIcon) {
+      return skillGroupIcon;
+    }
+  }
+
   return `/icons/${getNodeIconFolder(node.kind)}/${node.id}.svg`;
 }
 
