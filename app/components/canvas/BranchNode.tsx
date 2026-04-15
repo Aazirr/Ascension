@@ -218,10 +218,10 @@ export default function BranchNode({
         pointerEvents="none"
       >
         <div
-          className={`max-w-[180px] rounded-full border px-3 py-1 text-center text-xs font-medium backdrop-blur-md transition-opacity duration-200 ${
+          className={`isolate max-w-[180px] rounded-full border px-3 py-1 text-center text-xs font-medium shadow-[0_10px_30px_rgba(0,0,0,0.4)] transition-opacity duration-200 ${
             isActive || isHovered
-              ? "border-white/20 bg-black/55 text-white"
-              : "border-white/10 bg-black/35 text-slate-200/85"
+              ? "border-white/22 bg-[rgba(8,10,24,0.92)] text-white"
+              : "border-white/12 bg-[rgba(6,8,20,0.88)] text-slate-200/90"
           }`}
           style={{ opacity: leafLabelOpacity }}
         >
