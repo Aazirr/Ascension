@@ -14,12 +14,20 @@ export default function ProjectPanel({ project }: ProjectPanelProps) {
   const hasGithubUrl = project.githubUrl.trim().length > 0;
   const hasScreenshot = project.screenshot.trim().length > 0;
   const [imageFailed, setImageFailed] = useState(false);
+  const isInProgress = project.status === "in-progress";
 
   return (
     <section className="space-y-4">
       <div>
         <p className="text-xs uppercase tracking-[0.22em] text-slate-300/70">Project</p>
-        <h3 className="mt-2 text-2xl font-semibold text-white">{project.title}</h3>
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <h3 className="text-2xl font-semibold text-white">{project.title}</h3>
+          {isInProgress && (
+            <span className="rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-200">
+              In Progress
+            </span>
+          )}
+        </div>
         <p className="mt-2 text-sm italic text-slate-300/80">{project.tagline}</p>
       </div>
 

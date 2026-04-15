@@ -188,7 +188,7 @@ export default function BranchNode({
           blending={THREE.AdditiveBlending}
         />
       </mesh>
-      <Html center transform distanceFactor={11} zIndexRange={[4, 0]} pointerEvents="none">
+      <Html center transform distanceFactor={11} zIndexRange={[2, 0]} pointerEvents="none">
         <div
           className={`flex items-center justify-center rounded-full ${
             node.kind === "category" ? "h-10 w-10" : "h-8 w-8"
@@ -210,11 +210,11 @@ export default function BranchNode({
         </div>
       </Html>
       <Html
-        position={[0, node.kind === "category" ? 1.35 : 1.0, 0]}
+        position={[0, node.kind === "category" ? 1.35 : 1.22, 0]}
         center
         transform
         distanceFactor={11}
-        zIndexRange={[4, 0]}
+        zIndexRange={[6, 0]}
         pointerEvents="none"
       >
         <div

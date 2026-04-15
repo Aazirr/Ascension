@@ -3,6 +3,7 @@
     "id": "glenda-residences",
     "title": "Glenda Residences",
     "tagline": "Apartment management and utility billing system with admin webapp and Telegram support bot",
+    "status": "shipped",
     "stack": [
       "Node.js",
       "React",
@@ -26,6 +27,7 @@
     "id": "dripmon",
     "title": "DripMon",
     "tagline": "Community tooling ecosystem built as a Discord bot and a NeoForge mod for the DripTeam server",
+    "status": "shipped",
     "stack": [
       "JavaScript",
       "Discord.js",
@@ -46,6 +48,7 @@
     "id": "daarkin",
     "title": "Daarkin",
     "tagline": "Full-stack job application tracker for managing hiring pipelines across desktop and mobile",
+    "status": "shipped",
     "stack": [
       "React",
       "Vite",
@@ -68,6 +71,7 @@
     "id": "vgc-puzzle-trainer",
     "title": "VGC Puzzle Trainer",
     "tagline": "Deterministic battle puzzle trainer for competitive VGC players",
+    "status": "in-progress",
     "stack": [
       "Next.js",
       "React",
@@ -90,6 +94,7 @@
     "id": "speakforge",
     "title": "SpeakForge",
     "tagline": "Language and communication tool focused on iterative learning",
+    "status": "shipped",
     "stack": [
       "React",
       "Node.js",

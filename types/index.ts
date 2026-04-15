@@ -2,6 +2,7 @@ export interface Project {
   id: string;
   title: string;
   tagline: string;
+  status?: "in-progress" | "shipped";
   stack: string[];
   bullets: string[];
   liveUrl: string;
