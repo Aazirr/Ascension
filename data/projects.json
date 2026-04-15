@@ -2,19 +2,20 @@
   {
     "id": "glenda-residences",
     "title": "Glenda Residences",
-    "tagline": "Apartment billing system with Telegram bot and SMS automation",
+    "tagline": "Apartment management and utility billing system with admin webapp and Telegram support bot",
     "stack": [
       "Node.js",
       "React",
       "Express",
       "PostgreSQL",
       "Telegram API",
-      "pdfkit"
+      "pdfkit",
+      "Railway"
     ],
     "bullets": [
-      "Manages full tenant lifecycle from registration to payment tracking",
-      "Telegram bot and admin app share one database for operational redundancy",
-      "Deployed with automatic schema migrations during startup"
+      "Covers tenant management, meter readings, bill generation, payment tracking, and reminder workflows through a React admin webapp",
+      "Uses a Telegram bot as a secondary operational interface with shared billing data and PDF bill generation",
+      "Supports PostgreSQL in production with startup migrations and includes SMS reminder delivery for billing operations"
     ],
     "liveUrl": "",
     "githubUrl": "https://github.com/Aazirr/Glenda_Residences",
@@ -24,17 +25,17 @@
   {
     "id": "dripmon",
     "title": "DripMon",
-    "tagline": "Community-driven battle tracker and roster utility",
+    "tagline": "Community tooling ecosystem built as a Discord bot and a NeoForge mod for the DripTeam server",
     "stack": [
-      "Next.js",
-      "TypeScript",
-      "Tailwind CSS",
-      "PostgreSQL"
+      "JavaScript",
+      "Discord.js",
+      "Java",
+      "NeoForge"
     ],
     "bullets": [
-      "Helps players track team composition and matchup trends",
-      "Balances quick data entry with clean tournament-ready views",
-      "Built to support recurring community events"
+      "Includes a dedicated Discord bot repository for DripMon community interactions and server-side utility flows",
+      "Includes a separate NeoForge mod repository built for the DripTeam Minecraft server",
+      "Represents a multi-surface community project spanning both chat tooling and in-game mod support"
     ],
     "liveUrl": "",
     "githubUrl": "https://github.com/Aazirr/DripMon---NeoForge",
@@ -44,17 +45,19 @@
   {
     "id": "daarkin",
     "title": "Daarkin",
-    "tagline": "Production web app with polished UX and real deployment flow",
+    "tagline": "Full-stack job application tracker for managing hiring pipelines across desktop and mobile",
     "stack": [
-      "Next.js",
+      "React",
+      "Vite",
       "TypeScript",
-      "Framer Motion",
-      "Vercel"
+      "Node.js",
+      "Express",
+      "PostgreSQL"
     ],
     "bullets": [
-      "Focused on smooth UX transitions and strong interaction feedback",
-      "Uses typed data contracts for predictable rendering",
-      "Deployed with repeatable CI and preview workflow"
+      "Built to help job seekers create, update, search, and track applications through clear hiring stages",
+      "Uses a split React frontend and Express API with PostgreSQL migrations plus JWT-based authentication",
+      "Structured as a monorepo with separate web and API apps and a Vercel deployment path for the frontend surface"
     ],
     "liveUrl": "https://daarkin.vercel.app/",
     "githubUrl": "https://github.com/Aazirr/Daarkin",
@@ -64,17 +67,19 @@
   {
     "id": "vgc-puzzle-trainer",
     "title": "VGC Puzzle Trainer",
-    "tagline": "Scenario-based battle puzzle trainer for competitive players",
+    "tagline": "Deterministic battle puzzle trainer for competitive VGC players",
     "stack": [
       "Next.js",
       "React",
-      "TypeScript",
-      "PokeAPI"
+      "Node.js",
+      "Express",
+      "PostgreSQL",
+      "Anthropic API"
     ],
     "bullets": [
-      "Presents short tactical puzzles with clear win conditions",
-      "Transforms match concepts into repeatable training loops",
-      "Designed for practice sessions"
+      "Builds web-based VGC puzzles around provable answers like speed checks, KO thresholds, and deterministic field interactions",
+      "Plans puzzle generation through simulation, replay imports, and moderated community submissions sharing one database",
+      "Separates the app into independently deployable web, API, and pipeline components with room for AI-enriched explanations later"
     ],
     "liveUrl": "",
     "githubUrl": "https://github.com/Aazirr/vgc-puzzle-trainer",
