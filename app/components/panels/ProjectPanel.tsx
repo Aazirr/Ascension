@@ -1,3 +1,7 @@
+"use client";
+
+import Image from "next/image";
+import { useState } from "react";
 import type { Project } from "@/types";
 
 interface ProjectPanelProps {
@@ -7,6 +11,8 @@ interface ProjectPanelProps {
 export default function ProjectPanel({ project }: ProjectPanelProps) {
   const hasLiveUrl = project.liveUrl.trim().length > 0;
   const hasGithubUrl = project.githubUrl.trim().length > 0;
+  const hasScreenshot = project.screenshot.trim().length > 0;
+  const [imageFailed, setImageFailed] = useState(false);
 
   return (
     <section className="space-y-4">
@@ -26,6 +32,26 @@ export default function ProjectPanel({ project }: ProjectPanelProps) {
           </span>
         ))}
       </div>
+
+      {hasScreenshot && !imageFailed ? (
+        <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5">
+          <div className="relative aspect-[16/10]">
+            <Image
+              src={project.screenshot}
+              alt={`${project.title} screenshot`}
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 420px"
+              onError={() => setImageFailed(true)}
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgba(5,5,16,0.28)] via-transparent to-transparent" />
+          </div>
+        </div>
+      ) : (
+        <div className="rounded-3xl border border-dashed border-white/10 bg-white/5 p-5 text-sm text-slate-400/80">
+          Screenshot not added yet.
+        </div>
+      )}
 
       <ul className="space-y-2 text-sm leading-6 text-slate-200/85">
         {project.bullets.map((bullet) => (
