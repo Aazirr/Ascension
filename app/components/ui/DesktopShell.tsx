@@ -43,7 +43,11 @@ const branchColors = {
 
 type BranchColor = keyof typeof branchColors;
 
-export default function DesktopShell() {
+interface DesktopShellProps {
+  isCompact?: boolean;
+}
+
+export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
   const graph = useNodeGraph();
   const activeNode = graph.activeNode;
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -79,7 +83,6 @@ export default function DesktopShell() {
       return null;
     }
 
-    // Tier 2 category overviews
     if (activeNode.id === "branch-projects") {
       return {
         key: activeNode.id,
@@ -93,7 +96,9 @@ export default function DesktopShell() {
               </p>
             </div>
             <p className="leading-6 text-slate-200/85">
-              Click on any project node to explore case studies, tech stacks, and live demos.
+              {isCompact
+                ? "Tap any project node to open the project sheet and review screenshots, stack, and links."
+                : "Click on any project node to explore case studies, tech stacks, and live demos."}
             </p>
             <ul className="space-y-2">
               {(projects as Project[]).slice(0, 5).map((project) => (
@@ -300,7 +305,7 @@ export default function DesktopShell() {
         </section>
       ),
     };
-  }, [activeNode, certificationMap, experienceMap, projectMap, skillMap]);
+  }, [activeNode, certificationMap, experienceMap, isCompact, projectMap, skillMap]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -319,14 +324,12 @@ export default function DesktopShell() {
         }
       }
 
-      // Ctrl+K or Cmd+K: Open search
       if (isMeta && event.key === "k") {
         event.preventDefault();
         setIsSearchOpen(true);
       }
 
-      // ?: Show help (would open a help modal in future)
-      if (event.key === "?") {
+      if (!isCompact && event.key === "?") {
         event.preventDefault();
         alert(
           "Keyboard Shortcuts:\n" +
@@ -338,7 +341,6 @@ export default function DesktopShell() {
         );
       }
 
-      // Arrow Keys or WASD: Navigate siblings
       const siblings = graph.getSiblingNodes();
       if (siblings.length > 0 && graph.activeNode && graph.activeNode.kind !== "central") {
         const currentIndex = siblings.findIndex((n) => n.id === graph.activeNode!.id);
@@ -366,7 +368,6 @@ export default function DesktopShell() {
         }
       }
 
-      // Number keys 1-5: Jump to categories
       const categoryMap: Record<string, BranchColor> = {
         "1": "projects",
         "2": "skills",
@@ -375,7 +376,7 @@ export default function DesktopShell() {
         "5": "about",
       };
 
-      if (categoryMap[event.key]) {
+      if (!isCompact && categoryMap[event.key]) {
         event.preventDefault();
         graph.jumpToCategory(categoryMap[event.key]);
       }
@@ -383,9 +384,8 @@ export default function DesktopShell() {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [graph, isHireMeOpen, isSearchOpen]);
+  }, [graph, isCompact, isHireMeOpen, isSearchOpen]);
 
-  // Intro animation on first load
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -394,10 +394,9 @@ export default function DesktopShell() {
       setHasSeenIntro(true);
       localStorage.setItem("ascension-seen-intro", "true");
 
-      // Auto-hide intro message after 4 seconds
       introTimeoutRef.current = setTimeout(() => {
         setHasSeenIntro(false);
-      }, 4000);
+      }, isCompact ? 3200 : 4000);
     }
 
     return () => {
@@ -405,7 +404,7 @@ export default function DesktopShell() {
         clearTimeout(introTimeoutRef.current);
       }
     };
-  }, []);
+  }, [isCompact]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -432,11 +431,16 @@ export default function DesktopShell() {
     localStorage.setItem("ascension-cosmic-preset", backgroundPreset);
   }, [backgroundPreset]);
 
+  const showHeaderHint = isCompact || isHeaderHovered;
+  const panelTransition = { duration: 0.28, ease: "easeOut" as const };
+  const isPanelOpen = Boolean(selectedPanel);
+
   return (
     <main className="relative h-screen w-screen overflow-hidden text-white">
       <Scene
         graph={graph}
         backgroundPreset={backgroundPreset}
+        isCompact={isCompact}
         onCentralPitchRequest={() => setIsHireMeOpen(true)}
         onBackgroundClick={() => {
           setIsHireMeOpen(false);
@@ -445,12 +449,19 @@ export default function DesktopShell() {
         }}
       />
 
-      <section className="pointer-events-none absolute left-6 top-6 z-20 max-w-2xl">
+      <section
+        className={`pointer-events-none absolute z-20 ${
+          isCompact ? "left-3 right-3 top-3" : "left-6 top-6 max-w-2xl"
+        }`}
+      >
         <div
-          className="pointer-events-auto rounded-2xl border border-white/10 bg-black/35 p-5 backdrop-blur-md"
-          onMouseEnter={() => setIsHeaderHovered(true)}
-          onMouseLeave={() => setIsHeaderHovered(false)}
-        >
+          className={`pointer-events-auto rounded-2xl border border-white/10 bg-black/35 backdrop-blur-md ${
+            isCompact ? "p-4" : "p-5"
+          }`}
+        onMouseEnter={() => setIsHeaderHovered(true)}
+        onMouseLeave={() => setIsHeaderHovered(false)}
+        style={isCompact ? { paddingTop: "max(1rem, env(safe-area-inset-top))" } : undefined}
+      >
           <div className="mb-3">
             <Breadcrumb
               path={graph.getBreadcrumbPath()}
@@ -460,9 +471,33 @@ export default function DesktopShell() {
           <p className="text-xs uppercase tracking-[0.24em] text-slate-300/70">
             Cosmic Neural Network
           </p>
-          <h1 className="mt-2 text-3xl font-bold text-white">Franz Jason Dolores</h1>
+          <div className={`mt-2 ${isCompact ? "space-y-3" : "flex items-start justify-between gap-4"}`}>
+            <h1 className={`${isCompact ? "text-2xl" : "text-3xl"} font-bold text-white`}>
+              Franz Jason Dolores
+            </h1>
+            <div className="pointer-events-auto flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setIsSearchOpen(true)}
+                className="min-h-10 rounded-full border border-white/15 px-4 py-2 text-xs font-medium text-white transition hover:bg-white/10"
+              >
+                Search
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsHireMeOpen(false);
+                  graph.setActiveNodeId(null);
+                  graph.setHoveredNodeId(null);
+                }}
+                className="min-h-10 rounded-full border border-white/15 px-4 py-2 text-xs font-medium text-white transition hover:bg-white/10"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
           <AnimatePresence>
-            {isHeaderHovered && (
+            {showHeaderHint && (
               <motion.p
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -470,9 +505,9 @@ export default function DesktopShell() {
                 transition={{ duration: 0.2, ease: "easeOut" }}
                 className="mt-2 text-sm leading-6 text-slate-300/85"
               >
-                Click nodes to explore projects, skills, experience, and certifications.
-                Press Ctrl+K to search nodes, and press Escape or click empty space
-                to close panels.
+                {isCompact
+                  ? "Tap nodes to explore projects, skills, experience, and certifications. Drag to pan the graph, pinch to zoom, and use Search for faster jumps."
+                  : "Click nodes to explore projects, skills, experience, and certifications. Press Ctrl+K to search nodes, and press Escape or click empty space to close panels."}
               </motion.p>
             )}
           </AnimatePresence>
@@ -485,71 +520,111 @@ export default function DesktopShell() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="mt-3 rounded-2xl border border-green-400/30 bg-green-900/20 p-3 text-xs text-green-100/90"
+              className={`mt-3 rounded-2xl border p-3 text-xs ${
+                isCompact
+                  ? "border-cyan-400/25 bg-cyan-900/20 text-cyan-100/90"
+                  : "border-green-400/30 bg-green-900/20 text-green-100/90"
+              }`}
             >
-              🎮 Press <kbd className="rounded bg-black/30 px-1.5 py-0.5 font-mono text-[0.75em]">Ctrl+K</kbd> to search,{" "}
-              <kbd className="rounded bg-black/30 px-1.5 py-0.5 font-mono text-[0.75em]">?</kbd> for shortcuts
+              {isCompact ? "Tap nodes to open details and drag the graph to explore." : (
+                <>
+                  Press <kbd className="rounded bg-black/30 px-1.5 py-0.5 font-mono text-[0.75em]">Ctrl+K</kbd> to search,{" "}
+                  <kbd className="rounded bg-black/30 px-1.5 py-0.5 font-mono text-[0.75em]">?</kbd> for shortcuts
+                </>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
       </section>
 
-      <section className="pointer-events-none absolute bottom-6 left-6 z-20">
-        <div className="rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-xs text-slate-300/85 backdrop-blur-md">
-          <p className="uppercase tracking-[0.2em]">Nodes</p>
-          <p className="mt-1">{graph.nodes.length} total · {graph.edges.length} links</p>
-        </div>
-      </section>
-
-      <section className="absolute bottom-6 left-44 z-20 pointer-events-auto">
-        <div className="rounded-2xl border border-white/10 bg-black/35 px-3 py-2 backdrop-blur-md">
-          <p className="mb-2 text-[10px] uppercase tracking-[0.16em] text-slate-300/70">
-            Background
-          </p>
-          <div className="flex items-center gap-1.5">
-            {([
-              { id: "cinematic", label: "Cinematic" },
-              { id: "clean", label: "Clean" },
-              { id: "bright", label: "Bright" },
-            ] as const).map((preset) => (
-              <button
-                key={preset.id}
-                type="button"
-                onClick={() => setBackgroundPreset(preset.id)}
-                className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                  backgroundPreset === preset.id
-                    ? "border-white/35 bg-white/15 text-white"
-                    : "border-white/10 bg-black/20 text-slate-300/80 hover:border-white/20 hover:bg-white/10"
-                }`}
-              >
-                {preset.label}
-              </button>
-            ))}
+      {(!isCompact || !isPanelOpen) && (
+        <section
+          className={`pointer-events-none absolute z-20 ${
+            isCompact ? "bottom-4 left-3" : "bottom-6 left-6"
+          }`}
+          style={isCompact ? { paddingBottom: "max(0rem, env(safe-area-inset-bottom))" } : undefined}
+        >
+          <div className="rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-xs text-slate-300/85 backdrop-blur-md">
+            <p className="uppercase tracking-[0.2em]">Nodes</p>
+            <p className="mt-1">{graph.nodes.length} total - {graph.edges.length} links</p>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-[min(520px,44vw)] bg-gradient-to-l from-[rgba(5,5,16,0.82)] via-[rgba(5,5,16,0.58)] to-transparent" />
+      {(!isCompact || !isPanelOpen) && (
+        <section
+          className={`absolute z-20 pointer-events-auto ${
+            isCompact ? "bottom-4 right-3" : "bottom-6 left-44"
+          }`}
+          style={isCompact ? { paddingBottom: "max(0rem, env(safe-area-inset-bottom))" } : undefined}
+        >
+          <div className="rounded-2xl border border-white/10 bg-black/35 px-3 py-2 backdrop-blur-md">
+            <p className="mb-2 text-[10px] uppercase tracking-[0.16em] text-slate-300/70">
+              Background
+            </p>
+            <div className="flex items-center gap-1.5">
+              {([
+                { id: "cinematic", label: "Cinematic" },
+                { id: "clean", label: "Clean" },
+                { id: "bright", label: "Bright" },
+              ] as const).map((preset) => (
+                <button
+                  key={preset.id}
+                  type="button"
+                  onClick={() => setBackgroundPreset(preset.id)}
+                  className={`min-h-9 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                    backgroundPreset === preset.id
+                      ? "border-white/35 bg-white/15 text-white"
+                      : "border-white/10 bg-black/20 text-slate-300/80 hover:border-white/20 hover:bg-white/10"
+                  }`}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
-      <aside className="pointer-events-none absolute right-4 top-4 z-30 h-[calc(100vh-2rem)] w-[min(420px,35vw)] min-w-[320px]">
+      <div
+        className={`pointer-events-none absolute z-20 ${
+          isCompact
+            ? "inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[rgba(5,5,16,0.9)] via-[rgba(5,5,16,0.58)] to-transparent"
+            : "inset-y-0 right-0 w-[min(520px,44vw)] bg-gradient-to-l from-[rgba(5,5,16,0.82)] via-[rgba(5,5,16,0.58)] to-transparent"
+        }`}
+      />
+
+      <aside
+        className={`pointer-events-none absolute z-30 ${
+          isCompact
+            ? "inset-x-0 bottom-0 px-3 pb-3"
+            : "right-4 top-4 h-[calc(100vh-2rem)] w-[min(420px,35vw)] min-w-[320px]"
+        }`}
+      >
         <AnimatePresence mode="wait">
           {selectedPanel ? (
             <motion.section
               key={selectedPanel.key}
-              initial={{ opacity: 0, x: 36 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 24 }}
-              transition={{ duration: 0.28, ease: "easeOut" }}
-              className="pointer-events-auto h-full overflow-y-auto rounded-3xl border border-white/10 bg-[rgba(5,5,16,0.97)] p-6 shadow-2xl shadow-black/40 backdrop-blur-xl"
+              initial={isCompact ? { opacity: 0, y: 28 } : { opacity: 0, x: 36 }}
+              animate={isCompact ? { opacity: 1, y: 0 } : { opacity: 1, x: 0 }}
+              exit={isCompact ? { opacity: 0, y: 20 } : { opacity: 0, x: 24 }}
+              transition={panelTransition}
+              className={`pointer-events-auto overflow-y-auto rounded-3xl border border-white/10 bg-[rgba(5,5,16,0.97)] shadow-2xl shadow-black/40 backdrop-blur-xl ${
+                isCompact ? "max-h-[64vh] rounded-b-[2rem] p-5 pb-8" : "h-full p-6"
+              }`}
+              style={isCompact ? { paddingBottom: "max(2rem, env(safe-area-inset-bottom))" } : undefined}
             >
               <div className="mb-4 flex items-center justify-between gap-3">
-                <p className="text-xs uppercase tracking-[0.24em] text-slate-300/70">
-                  Detail panel
-                </p>
+                <div className="flex items-center gap-3">
+                  {isCompact && <div className="h-1.5 w-12 rounded-full bg-white/15" />}
+                  <p className="text-xs uppercase tracking-[0.24em] text-slate-300/70">
+                    Detail panel
+                  </p>
+                </div>
                 <button
                   type="button"
                   onClick={() => graph.setActiveNodeId(null)}
-                  className="rounded-full border border-white/15 px-3 py-1 text-xs text-white hover:bg-white/10"
+                  className="min-h-10 rounded-full border border-white/15 px-4 py-2 text-xs text-white hover:bg-white/10"
                 >
                   Close
                 </button>
@@ -560,19 +635,24 @@ export default function DesktopShell() {
           ) : (
             <motion.section
               key="panel-hint"
-              initial={{ opacity: 0, x: 18 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 12 }}
+              initial={isCompact ? { opacity: 0, y: 14 } : { opacity: 0, x: 18 }}
+              animate={isCompact ? { opacity: 1, y: 0 } : { opacity: 1, x: 0 }}
+              exit={isCompact ? { opacity: 0, y: 10 } : { opacity: 0, x: 12 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="pointer-events-auto rounded-3xl border border-white/10 bg-[rgba(5,5,16,0.95)] p-6 backdrop-blur-xl"
+              className={`pointer-events-auto rounded-3xl border border-white/10 bg-[rgba(5,5,16,0.95)] backdrop-blur-xl ${
+                isCompact ? "p-4" : "p-6"
+              }`}
             >
               <p className="text-xs uppercase tracking-[0.24em] text-slate-300/70">
                 Detail panel
               </p>
-              <h2 className="mt-2 text-2xl font-semibold text-white">Select a node</h2>
+              <h2 className="mt-2 text-2xl font-semibold text-white">
+                {isCompact ? "Tap a node" : "Select a node"}
+              </h2>
               <p className="mt-4 text-sm leading-6 text-slate-300/85">
-                The graph is now the full desktop surface. Click any non-central
-                node to open details.
+                {isCompact
+                  ? "The graph is fully interactive here too. Tap any non-central node to open a detail sheet."
+                  : "The graph is now the full desktop surface. Click any non-central node to open details."}
               </p>
             </motion.section>
           )}

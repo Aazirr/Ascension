@@ -86,9 +86,25 @@ export default function SearchModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 backdrop-blur-sm pt-32">
-      <div className="w-full max-w-xl rounded-xl border border-white/20 bg-[rgba(5,5,16,0.96)] shadow-2xl">
-        <div className="border-b border-white/10 p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm sm:items-start sm:pt-32"
+      onClick={onClose}
+    >
+      <div
+        className="max-h-[82vh] w-full overflow-hidden rounded-t-3xl border border-white/20 bg-[rgba(5,5,16,0.96)] shadow-2xl sm:max-h-[none] sm:max-w-xl sm:rounded-xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="border-b border-white/10 p-4 sm:p-4">
+          <div className="mb-3 flex items-center justify-between gap-3 sm:hidden">
+            <div className="mx-auto h-1.5 w-14 rounded-full bg-white/15" />
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-full border border-white/15 px-3 py-1 text-xs text-white"
+            >
+              Close
+            </button>
+          </div>
           <input
             ref={inputRef}
             type="text"
@@ -96,11 +112,11 @@ export default function SearchModal({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="w-full bg-transparent text-sm text-white placeholder-slate-400/50 outline-none"
+            className="w-full bg-transparent text-base text-white placeholder-slate-400/50 outline-none sm:text-sm"
           />
         </div>
 
-        <div className="max-h-[360px] overflow-y-auto">
+        <div className="max-h-[60vh] overflow-y-auto sm:max-h-[360px]">
           {results.length === 0 ? (
             <div className="p-8 text-center text-sm text-slate-400/70">
               No results found for &quot;{query}&quot;
@@ -114,7 +130,7 @@ export default function SearchModal({
                   onClose();
                 }}
                 onMouseEnter={() => setSelectedIndex(index)}
-                className={`w-full border-b border-white/5 px-4 py-3 text-left text-sm transition-colors ${
+                className={`w-full border-b border-white/5 px-4 py-4 text-left text-sm transition-colors sm:py-3 ${
                   index === selectedIndex
                     ? "bg-white/10 text-white"
                     : "text-slate-200/85 hover:bg-white/5"
@@ -129,7 +145,7 @@ export default function SearchModal({
           )}
         </div>
 
-        <div className="border-t border-white/10 px-4 py-2 text-right text-xs text-slate-500/50">
+        <div className="border-t border-white/10 px-4 py-3 text-right text-xs text-slate-500/50">
           {query && `${results.length} result${results.length !== 1 ? "s" : ""}`}
           {!query && `${searchableNodes.length} items`}
         </div>

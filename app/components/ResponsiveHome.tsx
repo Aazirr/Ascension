@@ -5,11 +5,15 @@ import MobileLayout from "./ui/MobileLayout";
 import { useDeviceCheck } from "@/hooks/useDeviceCheck";
 
 export default function ResponsiveHome() {
-  const { isFallback, isReady } = useDeviceCheck();
+  const { isFallback, isReady, isMobile } = useDeviceCheck();
 
-  if (!isReady || isFallback) {
+  if (!isReady) {
+    return <main className="h-screen w-screen bg-[#050510]" />;
+  }
+
+  if (isFallback) {
     return <MobileLayout />;
   }
 
-  return <DesktopShell />;
+  return <DesktopShell isCompact={isMobile} />;
 }

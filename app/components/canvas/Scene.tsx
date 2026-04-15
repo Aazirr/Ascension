@@ -20,6 +20,7 @@ interface SceneProps {
   backgroundPreset: CosmicBackgroundPreset;
   onBackgroundClick?: () => void;
   onCentralPitchRequest: () => void;
+  isCompact?: boolean;
 }
 
 const CENTRAL_NODE_SFX_PATH = "/sfx/node-central.wav";
@@ -30,6 +31,7 @@ export default function Scene({
   backgroundPreset,
   onBackgroundClick,
   onCentralPitchRequest,
+  isCompact = false,
 }: SceneProps) {
   const reducedMotion = useReducedMotion();
   const controlsRef = useRef<CameraControlsImpl | null>(null);
@@ -176,31 +178,31 @@ export default function Scene({
   const particleConfig = useMemo(() => {
     if (backgroundPreset === "clean") {
       return {
-        far: { count: 160, spread: 28, opacity: 0.18 },
-        near: { count: 16, spread: 24, opacity: 0.44 },
+        far: { count: isCompact ? 110 : 160, spread: 28, opacity: 0.18 },
+        near: { count: isCompact ? 10 : 16, spread: 24, opacity: 0.44 },
       };
     }
 
     if (backgroundPreset === "bright") {
       return {
-        far: { count: 270, spread: 24, opacity: 0.3 },
-        near: { count: 36, spread: 20, opacity: 0.64 },
+        far: { count: isCompact ? 180 : 270, spread: 24, opacity: 0.3 },
+        near: { count: isCompact ? 22 : 36, spread: 20, opacity: 0.64 },
       };
     }
 
     return {
-      far: { count: 240, spread: 26, opacity: 0.26 },
-      near: { count: 28, spread: 22, opacity: 0.56 },
+      far: { count: isCompact ? 160 : 240, spread: 26, opacity: 0.26 },
+      near: { count: isCompact ? 18 : 28, spread: 22, opacity: 0.56 },
     };
-  }, [backgroundPreset]);
+  }, [backgroundPreset, isCompact]);
 
   return (
     <div
       className={`cosmic-backdrop cosmic-backdrop--${backgroundPreset} h-screen w-screen overflow-hidden`}
     >
       <Canvas
-        camera={{ position: [0, 0, 14], fov: 48 }}
-        dpr={[1, 1.5]}
+        camera={{ position: [0, 0, isCompact ? 15.5 : 14], fov: isCompact ? 52 : 48 }}
+        dpr={isCompact ? [1, 1.15] : [1, 1.5]}
         gl={{ alpha: true, antialias: true }}
         onCreated={({ gl }) => {
           gl.setClearColor("#000000", 0);

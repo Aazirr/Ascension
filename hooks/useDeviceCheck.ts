@@ -37,7 +37,7 @@ export function useDeviceCheck(): DeviceCheckState {
         isMobile,
         supportsWebGL,
         reducedMotion,
-        isFallback: isMobile || !supportsWebGL || reducedMotion,
+        isFallback: !supportsWebGL || reducedMotion,
       });
     };
 
