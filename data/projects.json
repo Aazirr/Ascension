@@ -56,9 +56,9 @@
       "Uses typed data contracts for predictable rendering",
       "Deployed with repeatable CI and preview workflow"
     ],
-    "liveUrl": "",
+    "liveUrl": "https://daarkin.vercel.app/",
     "githubUrl": "https://github.com/Aazirr/Daarkin",
-    "screenshot": "https://daarkin.vercel.app/",
+    "screenshot": "/screenshots/daarkin.png",
     "nodePosition": [4.4, -0.9, -2.4]
   },
   {
