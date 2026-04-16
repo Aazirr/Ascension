@@ -124,7 +124,7 @@ export default function HireMeModal({
                   <p className="max-w-3xl text-lg leading-8 text-slate-100 sm:text-xl sm:leading-9">
                     I am a junior full-stack developer who gets excited about turning messy
                     real-world needs into software that feels clear, reliable, and genuinely useful.
-                    I love building things that are innovative — like this interactive 3D portfolio you're
+                    I love building things that are innovative — like this interactive 3D portfolio you&apos;re
                     exploring — and I aspire to become a successful game developer.
                   </p>
                   <p className="mt-4 max-w-3xl text-base leading-8 text-slate-300/88 sm:text-lg">
