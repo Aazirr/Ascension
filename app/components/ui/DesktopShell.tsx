@@ -47,6 +47,9 @@ interface DesktopShellProps {
   isCompact?: boolean;
 }
 
+const INTRO_SEEN_STORAGE_KEY = "ascension-seen-intro";
+const INTRO_GREETING_DURATION_MS = 2200;
+
 export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
   const graph = useNodeGraph();
   const activeNode = graph.activeNode;
@@ -58,6 +61,7 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
   const [backgroundPreset, setBackgroundPreset] =
     useState<CosmicBackgroundPreset>("cinematic");
   const introTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const introStepTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const projectMap = useMemo(
     () => new Map((projects as Project[]).map((project) => [project.id, project])),
@@ -390,24 +394,41 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    const clearIntroTimers = () => {
+      if (introStepTimeoutRef.current) {
+        clearTimeout(introStepTimeoutRef.current);
+        introStepTimeoutRef.current = null;
+      }
+      if (introTimeoutRef.current) {
+        clearTimeout(introTimeoutRef.current);
+        introTimeoutRef.current = null;
+      }
+    };
+
+    const hasSeenIntroLocal = localStorage.getItem(INTRO_SEEN_STORAGE_KEY) === "true";
+    if (hasSeenIntroLocal) {
+      setHasSeenIntro(false);
+      return clearIntroTimers;
+    }
+
     setHasSeenIntro(true);
     setIntroStep("greeting");
+    localStorage.setItem(INTRO_SEEN_STORAGE_KEY, "true");
 
-    const stepTimeout = setTimeout(() => {
+    const introGuideDurationMs = isCompact ? 6000 : 6400;
+
+    introStepTimeoutRef.current = setTimeout(() => {
       setIntroStep("guide");
-    }, 1200);
+    }, INTRO_GREETING_DURATION_MS);
 
     introTimeoutRef.current = setTimeout(() => {
       setHasSeenIntro(false);
-    }, isCompact ? 5200 : 5600);
+    }, INTRO_GREETING_DURATION_MS + introGuideDurationMs);
 
     return () => {
-      clearTimeout(stepTimeout);
-      if (introTimeoutRef.current) {
-        clearTimeout(introTimeoutRef.current);
-      }
+      clearIntroTimers();
     };
-  }, [isCompact]);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -438,6 +459,18 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
   const panelTransition = { duration: 0.28, ease: "easeOut" as const };
   const isPanelOpen = Boolean(selectedPanel);
 
+  const dismissIntro = () => {
+    if (introStepTimeoutRef.current) {
+      clearTimeout(introStepTimeoutRef.current);
+      introStepTimeoutRef.current = null;
+    }
+    if (introTimeoutRef.current) {
+      clearTimeout(introTimeoutRef.current);
+      introTimeoutRef.current = null;
+    }
+    setHasSeenIntro(false);
+  };
+
   return (
     <main className="relative h-screen w-screen overflow-hidden text-white">
       <Scene
@@ -461,29 +494,41 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
             transition={{ duration: 0.45, ease: "easeOut" }}
             className="absolute inset-0 z-40 flex items-center justify-center bg-black/22 px-6 backdrop-blur-md"
           >
-            <div className="mx-auto max-w-3xl text-center">
-              <AnimatePresence mode="wait">
-                {introStep === "greeting" ? (
-                  <motion.div
-                    key="intro-greeting"
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.35, ease: "easeOut" }}
-                  >
-                    <p className={`${isCompact ? "text-4xl" : "text-6xl"} font-bold text-white`}>
-                      Hi!
-                    </p>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="intro-guide"
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                    className="space-y-4"
-                  >
+            <button
+              type="button"
+              aria-label="Skip intro"
+              onClick={dismissIntro}
+              className="absolute right-5 top-5 rounded-full border border-white/30 bg-black/30 px-3 py-1 text-lg font-semibold leading-none text-white transition hover:bg-black/45"
+            >
+              X
+            </button>
+
+            <div className="mx-auto w-full max-w-3xl">
+              <div className="relative min-h-[200px]">
+                <motion.div
+                  initial={false}
+                  animate={{
+                    opacity: introStep === "greeting" ? 1 : 0,
+                    y: introStep === "greeting" ? 0 : -8,
+                  }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
+                  className="absolute inset-0 flex items-center justify-center text-center"
+                >
+                  <p className={`${isCompact ? "text-4xl" : "text-6xl"} font-bold text-white`}>
+                    Hi!
+                  </p>
+                </motion.div>
+
+                <motion.div
+                  initial={false}
+                  animate={{
+                    opacity: introStep === "guide" ? 1 : 0,
+                    y: introStep === "guide" ? 0 : 8,
+                  }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="absolute inset-0 flex items-center justify-center text-center"
+                >
+                  <div className="space-y-4">
                     <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
                       Welcome
                     </p>
@@ -495,9 +540,9 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
                         ? "Tap nodes to explore projects, skills, experience, and certifications. Use Search to jump faster, and tap HIRE ME for a recruiter-friendly summary."
                         : "Click nodes to explore projects, skills, experience, and certifications. Use Search to jump faster, and open HIRE ME for a recruiter-friendly summary."}
                     </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  </div>
+                </motion.div>
+              </div>
             </div>
           </motion.section>
         )}
@@ -543,6 +588,9 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
                   setIsHireMeOpen(false);
                   graph.setActiveNodeId(null);
                   graph.setHoveredNodeId(null);
+                  if (typeof window !== "undefined") {
+                    localStorage.removeItem(INTRO_SEEN_STORAGE_KEY);
+                  }
                 }}
                 className="min-h-10 rounded-full border border-white/15 px-4 py-2 text-xs font-medium text-white transition hover:bg-white/10"
               >
