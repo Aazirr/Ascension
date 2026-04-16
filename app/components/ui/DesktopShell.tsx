@@ -428,7 +428,7 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
     return () => {
       clearIntroTimers();
     };
-  }, []);
+  }, [isCompact]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
