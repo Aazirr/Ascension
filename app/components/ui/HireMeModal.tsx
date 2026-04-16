@@ -125,7 +125,7 @@ export default function HireMeModal({
                     I am a junior full-stack developer who gets excited about turning messy
                     real-world needs into software that feels clear, reliable, and genuinely useful.
                     I love building things that are innovative — like this interactive 3D portfolio you&apos;re
-                    exploring — and I aspire to become a successful game developer.
+                    exploring right now.
                   </p>
                   <p className="mt-4 max-w-3xl text-base leading-8 text-slate-300/88 sm:text-lg">
                     My best work happens where product thinking meets implementation:
@@ -240,9 +240,7 @@ export default function HireMeModal({
                     <p className="mt-4 text-base leading-8 text-slate-300/85 sm:text-lg">
                       If you need someone who can grow fast, communicate well, and help
                       build practical software with care, I am the kind of developer worth
-                    interviewing. I am also building toward a longer-term passion for game
-                    development, which drives my commitment to learning graphics, physics,
-                    and interactive systems — skills that make me better at full-stack work today.
+                      interviewing.
                     </p>
                   </div>
                 </section>
