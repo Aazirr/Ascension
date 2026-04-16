@@ -48,6 +48,7 @@ export default function HireMeModal({
   const rolePills = [
     "Product-minded",
     "Frontend + backend",
+    "Innovation-driven",
     "API integration",
     "Automation-friendly",
     "Remote-ready",
@@ -121,8 +122,10 @@ export default function HireMeModal({
               <div className="space-y-8 px-6 py-6">
                 <section className="rounded-[1.75rem] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(127,119,221,0.2),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(29,158,117,0.14),transparent_34%),rgba(255,255,255,0.04)] p-6">
                   <p className="max-w-3xl text-lg leading-8 text-slate-100 sm:text-xl sm:leading-9">
-                    I am a junior full-stack developer who likes turning messy real-world
-                    needs into software that feels clear, reliable, and genuinely useful.
+                    I am a junior full-stack developer who gets excited about turning messy
+                    real-world needs into software that feels clear, reliable, and genuinely useful.
+                    I love building things that are innovative — like this interactive 3D portfolio you're
+                    exploring — and I aspire to become a successful game developer.
                   </p>
                   <p className="mt-4 max-w-3xl text-base leading-8 text-slate-300/88 sm:text-lg">
                     My best work happens where product thinking meets implementation:
@@ -237,7 +240,9 @@ export default function HireMeModal({
                     <p className="mt-4 text-base leading-8 text-slate-300/85 sm:text-lg">
                       If you need someone who can grow fast, communicate well, and help
                       build practical software with care, I am the kind of developer worth
-                      interviewing.
+                    interviewing. I am also building toward a longer-term passion for game
+                    development, which drives my commitment to learning graphics, physics,
+                    and interactive systems — skills that make me better at full-stack work today.
                     </p>
                   </div>
                 </section>
