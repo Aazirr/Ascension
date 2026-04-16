@@ -53,6 +53,7 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isHireMeOpen, setIsHireMeOpen] = useState(false);
   const [hasSeenIntro, setHasSeenIntro] = useState(false);
+  const [introStep, setIntroStep] = useState<"greeting" | "guide">("greeting");
   const [isHeaderHovered, setIsHeaderHovered] = useState(false);
   const [backgroundPreset, setBackgroundPreset] =
     useState<CosmicBackgroundPreset>("cinematic");
@@ -389,17 +390,19 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const hasSeenIntroLocal = localStorage.getItem("ascension-seen-intro");
-    if (!hasSeenIntroLocal) {
-      setHasSeenIntro(true);
-      localStorage.setItem("ascension-seen-intro", "true");
+    setHasSeenIntro(true);
+    setIntroStep("greeting");
 
-      introTimeoutRef.current = setTimeout(() => {
-        setHasSeenIntro(false);
-      }, isCompact ? 3200 : 4000);
-    }
+    const stepTimeout = setTimeout(() => {
+      setIntroStep("guide");
+    }, 1200);
+
+    introTimeoutRef.current = setTimeout(() => {
+      setHasSeenIntro(false);
+    }, isCompact ? 5200 : 5600);
 
     return () => {
+      clearTimeout(stepTimeout);
       if (introTimeoutRef.current) {
         clearTimeout(introTimeoutRef.current);
       }
@@ -448,6 +451,57 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
           graph.setHoveredNodeId(null);
         }}
       />
+
+      <AnimatePresence>
+        {hasSeenIntro && (
+          <motion.section
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="absolute inset-0 z-40 flex items-center justify-center bg-black/22 px-6 backdrop-blur-md"
+          >
+            <div className="mx-auto max-w-3xl text-center">
+              <AnimatePresence mode="wait">
+                {introStep === "greeting" ? (
+                  <motion.div
+                    key="intro-greeting"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
+                  >
+                    <p className={`${isCompact ? "text-4xl" : "text-6xl"} font-bold text-white`}>
+                      Hi!
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="intro-guide"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="space-y-4"
+                  >
+                    <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
+                      Welcome
+                    </p>
+                    <h2 className={`${isCompact ? "text-3xl leading-tight" : "text-5xl"} font-semibold text-white`}>
+                      This is an interactive portfolio.
+                    </h2>
+                    <p className="mx-auto max-w-2xl text-base leading-8 text-slate-200/88 sm:text-lg">
+                      {isCompact
+                        ? "Tap nodes to explore projects, skills, experience, and certifications. Use Search to jump faster, and tap HIRE ME for a recruiter-friendly summary."
+                        : "Click nodes to explore projects, skills, experience, and certifications. Use Search to jump faster, and open HIRE ME for a recruiter-friendly summary."}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.section>
+        )}
+      </AnimatePresence>
 
       <section
         className={`pointer-events-none absolute z-20 ${
@@ -513,28 +567,6 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
           </AnimatePresence>
         </div>
 
-        <AnimatePresence>
-          {hasSeenIntro && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className={`mt-3 rounded-2xl border p-3 text-xs ${
-                isCompact
-                  ? "border-cyan-400/25 bg-cyan-900/20 text-cyan-100/90"
-                  : "border-green-400/30 bg-green-900/20 text-green-100/90"
-              }`}
-            >
-              {isCompact ? "Tap nodes to open details and drag the graph to explore." : (
-                <>
-                  Press <kbd className="rounded bg-black/30 px-1.5 py-0.5 font-mono text-[0.75em]">Ctrl+K</kbd> to search,{" "}
-                  <kbd className="rounded bg-black/30 px-1.5 py-0.5 font-mono text-[0.75em]">?</kbd> for shortcuts
-                </>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
       </section>
 
       {(!isCompact || !isPanelOpen) && (
