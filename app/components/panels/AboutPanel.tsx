@@ -1,3 +1,4 @@
+import { track } from "@/app/lib/analytics";
 import type { AboutData } from "@/types";
 
 interface AboutPanelProps {
@@ -26,13 +27,29 @@ export default function AboutPanel({ about }: AboutPanelProps) {
       </div>
 
       <div className="space-y-2 text-sm text-slate-300/85">
-        <a className="block break-all hover:text-white" href={`mailto:${about.contact.email}`}>
+        <a
+          className="block break-all hover:text-white"
+          href={`mailto:${about.contact.email}`}
+          onClick={() => track("email_clicked", { location: "about-panel" })}
+        >
           {about.contact.email}
         </a>
-        <a className="block break-all hover:text-white" href={about.contact.github} target="_blank" rel="noreferrer">
+        <a
+          className="block break-all hover:text-white"
+          href={about.contact.github}
+          target="_blank"
+          rel="noreferrer"
+          onClick={() => track("github_profile_clicked", { location: "about-panel" })}
+        >
           {about.contact.github}
         </a>
-        <a className="block break-all hover:text-white" href={about.contact.linkedin} target="_blank" rel="noreferrer">
+        <a
+          className="block break-all hover:text-white"
+          href={about.contact.linkedin}
+          target="_blank"
+          rel="noreferrer"
+          onClick={() => track("linkedin_clicked", { location: "about-panel" })}
+        >
           {about.contact.linkedin}
         </a>
       </div>
@@ -40,6 +57,7 @@ export default function AboutPanel({ about }: AboutPanelProps) {
       <a
         href="/resume.pdf"
         download
+        onClick={() => track("resume_clicked", { location: "about-panel" })}
         className="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-slate-200"
       >
         Download Resume

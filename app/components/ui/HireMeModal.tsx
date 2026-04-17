@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import TechIcon from "./TechIcon";
+import { track } from "@/app/lib/analytics";
 import type { AboutData } from "@/types";
 
 interface HireMeModalProps {
@@ -251,12 +252,14 @@ export default function HireMeModal({
                   <a
                     href="/resume.pdf"
                     download
+                    onClick={() => track("resume_clicked", { location: "hire-me-modal" })}
                     className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
                   >
                     Download Resume
                   </a>
                   <a
                     href={`mailto:${about.contact.email}`}
+                    onClick={() => track("email_clicked", { location: "hire-me-modal" })}
                     className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
                   >
                     Email Me
@@ -265,6 +268,7 @@ export default function HireMeModal({
                     href={about.contact.linkedin}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() => track("linkedin_clicked", { location: "hire-me-modal" })}
                     className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
                   >
                     LinkedIn

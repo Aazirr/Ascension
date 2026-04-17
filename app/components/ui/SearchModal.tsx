@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { track } from "@/app/lib/analytics";
 
 interface SearchResult {
   id: string;
@@ -76,6 +77,11 @@ export default function SearchModal({
       setSelectedIndex((i) => Math.max(i - 1, 0));
     } else if (e.key === "Enter" && results[selectedIndex]) {
       e.preventDefault();
+      track("search_result_selected", {
+        nodeId: results[selectedIndex].id,
+        section: results[selectedIndex].section,
+        label: results[selectedIndex].label,
+      });
       onSelect(results[selectedIndex].id);
       onClose();
     }
@@ -126,6 +132,11 @@ export default function SearchModal({
               <button
                 key={result.id}
                 onClick={() => {
+                  track("search_result_selected", {
+                    nodeId: result.id,
+                    section: result.section,
+                    label: result.label,
+                  });
                   onSelect(result.id);
                   onClose();
                 }}

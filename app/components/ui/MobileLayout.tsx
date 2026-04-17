@@ -1,7 +1,9 @@
 "use client";
 
 import { motion, type Transition } from "framer-motion";
+import { useEffect } from "react";
 import TechIcon from "./TechIcon";
+import { track, trackOncePerSession } from "@/app/lib/analytics";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import projects from "../../../data/projects.json";
 import skills from "../../../data/skills.json";
@@ -25,6 +27,10 @@ export default function MobileLayout() {
   const sectionTransition: Transition = reducedMotion
     ? { duration: 0 }
     : { duration: 0.45, ease: [0.16, 1, 0.3, 1] };
+
+  useEffect(() => {
+    trackOncePerSession("session-started", "session_started");
+  }, []);
 
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-6 text-white sm:px-6 lg:px-8">
@@ -65,6 +71,7 @@ export default function MobileLayout() {
             <a
               href="/resume.pdf"
               download
+              onClick={() => track("resume_clicked", { location: "mobile-layout" })}
               className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
             >
               Download Resume
@@ -73,6 +80,7 @@ export default function MobileLayout() {
               href={about.contact.github}
               target="_blank"
               rel="noreferrer"
+              onClick={() => track("github_profile_clicked", { location: "mobile-layout" })}
               className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               GitHub
@@ -81,6 +89,7 @@ export default function MobileLayout() {
               href={about.contact.linkedin}
               target="_blank"
               rel="noreferrer"
+              onClick={() => track("linkedin_clicked", { location: "mobile-layout" })}
               className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               LinkedIn
@@ -175,6 +184,11 @@ export default function MobileLayout() {
                           href={project.liveUrl}
                           target="_blank"
                           rel="noreferrer"
+                          onClick={() =>
+                            track("project_live_demo_clicked", {
+                              projectId: project.id,
+                              title: project.title,
+                            })}
                           className="rounded-full bg-[#7f77dd] px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110"
                         >
                           Live Demo
@@ -189,6 +203,11 @@ export default function MobileLayout() {
                           href={project.githubUrl}
                           target="_blank"
                           rel="noreferrer"
+                          onClick={() =>
+                            track("project_github_clicked", {
+                              projectId: project.id,
+                              title: project.title,
+                            })}
                           className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
                         >
                           GitHub
@@ -367,7 +386,11 @@ export default function MobileLayout() {
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
               <h3 className="text-lg font-semibold text-white">Contact</h3>
               <div className="mt-3 space-y-3 text-sm text-slate-300/85">
-                <a className="block break-all hover:text-white" href={`mailto:${about.contact.email}`}>
+                <a
+                  className="block break-all hover:text-white"
+                  href={`mailto:${about.contact.email}`}
+                  onClick={() => track("email_clicked", { location: "mobile-layout" })}
+                >
                   {about.contact.email}
                 </a>
                 <a
@@ -375,6 +398,7 @@ export default function MobileLayout() {
                   href={about.contact.github}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() => track("github_profile_clicked", { location: "mobile-layout" })}
                 >
                   GitHub profile
                 </a>
@@ -383,6 +407,7 @@ export default function MobileLayout() {
                   href={about.contact.linkedin}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() => track("linkedin_clicked", { location: "mobile-layout" })}
                 >
                   LinkedIn profile
                 </a>

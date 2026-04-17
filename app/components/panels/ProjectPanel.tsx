@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import TechIcon from "../ui/TechIcon";
+import { track } from "@/app/lib/analytics";
 import type { Project } from "@/types";
 
 interface ProjectPanelProps {
@@ -78,6 +79,11 @@ export default function ProjectPanel({ project }: ProjectPanelProps) {
             href={project.liveUrl}
             target="_blank"
             rel="noreferrer"
+            onClick={() =>
+              track("project_live_demo_clicked", {
+                projectId: project.id,
+                title: project.title,
+              })}
             className="rounded-full bg-[#7f77dd] px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110"
           >
             Live Demo
@@ -92,6 +98,11 @@ export default function ProjectPanel({ project }: ProjectPanelProps) {
             href={project.githubUrl}
             target="_blank"
             rel="noreferrer"
+            onClick={() =>
+              track("project_github_clicked", {
+                projectId: project.id,
+                title: project.title,
+              })}
             className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
           >
             GitHub

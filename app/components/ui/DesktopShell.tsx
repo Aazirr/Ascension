@@ -16,6 +16,7 @@ import SkillPanel from "../panels/SkillPanel";
 import Breadcrumb from "./Breadcrumb";
 import HireMeModal from "./HireMeModal";
 import SearchModal from "./SearchModal";
+import { track, trackOncePerSession } from "@/app/lib/analytics";
 import { useNodeGraph } from "@/hooks/useNodeGraph";
 import type {
   AboutData,
@@ -61,6 +62,7 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
   const [backgroundPreset, setBackgroundPreset] =
     useState<CosmicBackgroundPreset>("cinematic");
   const introTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastTrackedNodeIdRef = useRef<string | null>(null);
   const introStepTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const projectMap = useMemo(
@@ -313,6 +315,10 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
   }, [activeNode, certificationMap, experienceMap, isCompact, projectMap, skillMap]);
 
   useEffect(() => {
+    trackOncePerSession("session-started", "session_started");
+  }, []);
+
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const isMeta = event.metaKey || event.ctrlKey;
 
@@ -454,6 +460,74 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
 
     localStorage.setItem("ascension-cosmic-preset", backgroundPreset);
   }, [backgroundPreset]);
+
+  useEffect(() => {
+    if (isSearchOpen) {
+      track("search_opened");
+    }
+  }, [isSearchOpen]);
+
+  useEffect(() => {
+    if (isHireMeOpen) {
+      track("hire_me_opened");
+    }
+  }, [isHireMeOpen]);
+
+  useEffect(() => {
+    if (!activeNode || activeNode.id === "central-you") {
+      return;
+    }
+
+    if (lastTrackedNodeIdRef.current === activeNode.id) {
+      return;
+    }
+
+    lastTrackedNodeIdRef.current = activeNode.id;
+    trackOncePerSession("graph-interaction-started", "graph_interaction_started", {
+      interactionType: "node-select",
+    });
+
+    if (activeNode.kind === "category") {
+      track("section_opened", { section: activeNode.section });
+      return;
+    }
+
+    if (activeNode.id.startsWith("project-")) {
+      track("project_opened", {
+        projectId: activeNode.id.replace("project-", ""),
+        title: activeNode.label,
+      });
+      return;
+    }
+
+    if (activeNode.id.startsWith("skill-group-")) {
+      track("skill_group_opened", {
+        groupId: activeNode.id.replace("skill-group-", ""),
+        title: activeNode.label,
+      });
+      return;
+    }
+
+    if (activeNode.id.startsWith("experience-")) {
+      track("experience_opened", {
+        experienceId: activeNode.id.replace("experience-", ""),
+        title: activeNode.label,
+      });
+      return;
+    }
+
+    if (activeNode.id.startsWith("certification-")) {
+      track("certification_opened", {
+        certificationId: activeNode.id.replace("certification-", ""),
+        title: activeNode.label,
+      });
+      return;
+    }
+
+    if (activeNode.section === "about") {
+      track("about_opened", { title: activeNode.label });
+    }
+  }, [activeNode]);
 
   const showHeaderHint = isCompact || isHeaderHovered;
   const panelTransition = { duration: 0.28, ease: "easeOut" as const };
@@ -649,11 +723,14 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
                 { id: "bright", label: "Bright" },
               ] as const).map((preset) => (
                 <button
-                  key={preset.id}
-                  type="button"
-                  onClick={() => setBackgroundPreset(preset.id)}
-                  className={`min-h-9 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                    backgroundPreset === preset.id
+                key={preset.id}
+                type="button"
+                onClick={() => {
+                  setBackgroundPreset(preset.id);
+                  track("background_preset_changed", { preset: preset.id });
+                }}
+                className={`min-h-9 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                  backgroundPreset === preset.id
                       ? "border-white/35 bg-white/15 text-white"
                       : "border-white/10 bg-black/20 text-slate-300/80 hover:border-white/20 hover:bg-white/10"
                   }`}
