@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, type Transition } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import type { CertificationItem, ExperienceItem, Project, SkillCategory } from "@/types";
 import TechIcon from "./TechIcon";
 import { track, trackOncePerSession } from "@/app/lib/analytics";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -21,8 +22,26 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
+type MobileSectionKey =
+  | "projects"
+  | "skills"
+  | "experience"
+  | "certifications"
+  | "about";
+
 export default function MobileLayout() {
   const reducedMotion = useReducedMotion();
+  const [openSections, setOpenSections] = useState<Record<MobileSectionKey, boolean>>({
+    projects: false,
+    skills: false,
+    experience: false,
+    certifications: false,
+    about: false,
+  });
+  const [openProjectIds, setOpenProjectIds] = useState<Record<string, boolean>>({});
+  const [openSkillGroupIds, setOpenSkillGroupIds] = useState<Record<string, boolean>>({});
+  const [openExperienceIds, setOpenExperienceIds] = useState<Record<string, boolean>>({});
+  const [openCertificationIds, setOpenCertificationIds] = useState<Record<string, boolean>>({});
 
   const sectionTransition: Transition = reducedMotion
     ? { duration: 0 }
@@ -31,6 +50,97 @@ export default function MobileLayout() {
   useEffect(() => {
     trackOncePerSession("session-started", "session_started");
   }, []);
+
+  const toggleSection = (section: MobileSectionKey) => {
+    setOpenSections((current) => {
+      const nextValue = !current[section];
+
+      if (nextValue) {
+        if (section === "about") {
+          track("about_opened");
+        } else {
+          track("section_opened", { section });
+        }
+      }
+
+      return {
+        ...current,
+        [section]: nextValue,
+      };
+    });
+  };
+
+  const toggleProject = (project: Project) => {
+    setOpenProjectIds((current) => {
+      const nextValue = !current[project.id];
+
+      if (nextValue) {
+        track("project_opened", {
+          projectId: project.id,
+          title: project.title,
+        });
+      }
+
+      return {
+        ...current,
+        [project.id]: nextValue,
+      };
+    });
+  };
+
+  const toggleSkillGroup = (group: SkillCategory) => {
+    setOpenSkillGroupIds((current) => {
+      const nextValue = !current[group.id];
+
+      if (nextValue) {
+        track("skill_group_opened", {
+          groupId: group.id,
+          title: group.category,
+        });
+      }
+
+      return {
+        ...current,
+        [group.id]: nextValue,
+      };
+    });
+  };
+
+  const toggleExperience = (item: ExperienceItem) => {
+    setOpenExperienceIds((current) => {
+      const nextValue = !current[item.id];
+
+      if (nextValue) {
+        track("experience_opened", {
+          experienceId: item.id,
+          title: item.role,
+        });
+      }
+
+      return {
+        ...current,
+        [item.id]: nextValue,
+      };
+    });
+  };
+
+  const toggleCertification = (item: CertificationItem) => {
+    setOpenCertificationIds((current) => {
+      const nextValue = !current[item.id];
+
+      if (nextValue) {
+        track("certification_opened", {
+          certificationId: item.id,
+          title: item.name,
+        });
+      }
+
+      return {
+        ...current,
+        [item.id]: nextValue,
+      };
+    });
+  };
 
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-6 text-white sm:px-6 lg:px-8">
@@ -115,114 +225,137 @@ export default function MobileLayout() {
               </h2>
             </div>
             <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.2em] text-slate-300">
-              5 projects
+              {projects.length} projects
             </span>
           </div>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
-            {projects.map((project, index) => {
-              const hasLiveUrl = project.liveUrl.trim().length > 0;
-              const hasGithubUrl = project.githubUrl.trim().length > 0;
+          <button
+            type="button"
+            onClick={() => toggleSection("projects")}
+            className="mt-6 inline-flex items-center rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+          >
+            {openSections.projects ? "Hide projects" : "Open projects"}
+          </button>
 
-              return (
-                <motion.article
-                  key={project.id}
-                  className="overflow-hidden rounded-2xl border border-white/10 bg-white/5"
-                  variants={itemVariants}
-                  transition={{
-                    ...(reducedMotion ? { duration: 0 } : { duration: 0.35 }),
-                    delay: reducedMotion ? 0 : index * 0.06,
-                  }}
-                >
-                  <div className="relative aspect-[16/10] overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(127,119,221,0.28),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(29,158,117,0.18),transparent_36%),linear-gradient(135deg,rgba(8,8,24,0.98),rgba(18,17,39,0.96))]">
-                    <div className="absolute inset-0 flex flex-col justify-end p-5">
-                      <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
-                        Project preview
-                      </p>
-                      <h3 className="mt-2 text-xl font-semibold text-white">
-                        {project.title}
-                      </h3>
-                      <p className="mt-1 max-w-[18ch] text-sm text-slate-200/80">
-                        Screenshot placeholder until the final asset is added.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-4 p-5">
-                    <div>
-                      <h3 className="text-xl font-semibold text-white">
-                        {project.title}
-                      </h3>
-                      <p className="mt-1 text-sm italic text-slate-300/80">
-                        {project.tagline}
-                      </p>
-                    </div>
+          {openSections.projects ? (
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              {projects.map((project, index) => {
+                const hasLiveUrl = project.liveUrl.trim().length > 0;
+                const hasGithubUrl = project.githubUrl.trim().length > 0;
+                const isProjectOpen = Boolean(openProjectIds[project.id]);
 
-                    <div className="flex flex-wrap gap-2">
-                      {project.stack.map((tag) => (
-                        <span
-                          key={tag}
-                          className="inline-flex items-center gap-1.5 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 text-xs font-medium text-cyan-100"
-                        >
-                          <TechIcon name={tag} size={14} className="h-3.5 w-3.5" />
-                          {tag}
-                        </span>
-                      ))}
+                return (
+                  <motion.article
+                    key={project.id}
+                    className="overflow-hidden rounded-2xl border border-white/10 bg-white/5"
+                    variants={itemVariants}
+                    transition={{
+                      ...(reducedMotion ? { duration: 0 } : { duration: 0.35 }),
+                      delay: reducedMotion ? 0 : index * 0.06,
+                    }}
+                  >
+                    <div className="relative aspect-[16/10] overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(127,119,221,0.28),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(29,158,117,0.18),transparent_36%),linear-gradient(135deg,rgba(8,8,24,0.98),rgba(18,17,39,0.96))]">
+                      <div className="absolute inset-0 flex flex-col justify-end p-5">
+                        <p className="text-xs uppercase tracking-[0.28em] text-slate-300/70">
+                          Project preview
+                        </p>
+                        <h3 className="mt-2 text-xl font-semibold text-white">
+                          {project.title}
+                        </h3>
+                        <p className="mt-1 max-w-[18ch] text-sm text-slate-200/80">
+                          Screenshot placeholder until the final asset is added.
+                        </p>
+                      </div>
                     </div>
+                    <div className="space-y-4 p-5">
+                      <div>
+                        <h3 className="text-xl font-semibold text-white">
+                          {project.title}
+                        </h3>
+                        <p className="mt-1 text-sm italic text-slate-300/80">
+                          {project.tagline}
+                        </p>
+                      </div>
 
-                    <ul className="space-y-2 text-sm leading-6 text-slate-200/85">
-                      {project.bullets.map((bullet) => (
-                        <li key={bullet} className="flex gap-2">
-                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#7f77dd]" />
-                          <span>{bullet}</span>
-                        </li>
-                      ))}
-                    </ul>
+                      <button
+                        type="button"
+                        onClick={() => toggleProject(project)}
+                        className="inline-flex items-center rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+                      >
+                        {isProjectOpen ? "Hide details" : "Open project"}
+                      </button>
 
-                    <div className="flex flex-wrap gap-3">
-                      {hasLiveUrl ? (
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          onClick={() =>
-                            track("project_live_demo_clicked", {
-                              projectId: project.id,
-                              title: project.title,
-                            })}
-                          className="rounded-full bg-[#7f77dd] px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110"
-                        >
-                          Live Demo
-                        </a>
-                      ) : (
-                        <span className="cursor-not-allowed rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-500">
-                          Live Demo
-                        </span>
-                      )}
-                      {hasGithubUrl ? (
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          onClick={() =>
-                            track("project_github_clicked", {
-                              projectId: project.id,
-                              title: project.title,
-                            })}
-                          className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
-                        >
-                          GitHub
-                        </a>
-                      ) : (
-                        <span className="cursor-not-allowed rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-500">
-                          GitHub
-                        </span>
-                      )}
+                      {isProjectOpen ? (
+                        <>
+                          <div className="flex flex-wrap gap-2">
+                            {project.stack.map((tag) => (
+                              <span
+                                key={tag}
+                                className="inline-flex items-center gap-1.5 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 text-xs font-medium text-cyan-100"
+                              >
+                                <TechIcon name={tag} size={14} className="h-3.5 w-3.5" />
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+
+                          <ul className="space-y-2 text-sm leading-6 text-slate-200/85">
+                            {project.bullets.map((bullet) => (
+                              <li key={bullet} className="flex gap-2">
+                                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#7f77dd]" />
+                                <span>{bullet}</span>
+                              </li>
+                            ))}
+                          </ul>
+
+                          <div className="flex flex-wrap gap-3">
+                            {hasLiveUrl ? (
+                              <a
+                                href={project.liveUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                onClick={() =>
+                                  track("project_live_demo_clicked", {
+                                    projectId: project.id,
+                                    title: project.title,
+                                  })}
+                                className="rounded-full bg-[#7f77dd] px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110"
+                              >
+                                Live Demo
+                              </a>
+                            ) : (
+                              <span className="cursor-not-allowed rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-500">
+                                Live Demo
+                              </span>
+                            )}
+                            {hasGithubUrl ? (
+                              <a
+                                href={project.githubUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                onClick={() =>
+                                  track("project_github_clicked", {
+                                    projectId: project.id,
+                                    title: project.title,
+                                  })}
+                                className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+                              >
+                                GitHub
+                              </a>
+                            ) : (
+                              <span className="cursor-not-allowed rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-500">
+                                GitHub
+                              </span>
+                            )}
+                          </div>
+                        </>
+                      ) : null}
                     </div>
-                  </div>
-                </motion.article>
-              );
-            })}
-          </div>
+                  </motion.article>
+                );
+              })}
+            </div>
+          ) : null}
         </motion.section>
 
         <motion.section
@@ -242,32 +375,55 @@ export default function MobileLayout() {
             </h2>
           </div>
 
-          <div className="mt-6 space-y-6">
-            {skills.map((group) => (
-              <div key={group.id} className="space-y-3">
-                <h3 className="text-lg font-semibold text-white">
-                  {group.category}
-                </h3>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {group.skills.map((skill) => (
-                    <div
-                      key={skill.name}
-                      className="rounded-2xl border border-white/10 bg-black/20 p-4"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="font-medium text-white">
-                          {skill.name}
-                        </span>
-                      </div>
-                      <p className="mt-2 text-sm leading-6 text-slate-300/85">
-                        {skill.context}
-                      </p>
+          <button
+            type="button"
+            onClick={() => toggleSection("skills")}
+            className="mt-6 inline-flex items-center rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+          >
+            {openSections.skills ? "Hide skills" : "Open skills"}
+          </button>
+
+          {openSections.skills ? (
+            <div className="mt-6 space-y-6">
+              {skills.map((group) => {
+                const isGroupOpen = Boolean(openSkillGroupIds[group.id]);
+
+                return (
+                  <div key={group.id} className="space-y-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <h3 className="text-lg font-semibold text-white">
+                        {group.category}
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => toggleSkillGroup(group)}
+                        className="rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/10"
+                      >
+                        {isGroupOpen ? "Hide group" : "Open group"}
+                      </button>
                     </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+                    {isGroupOpen ? (
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {group.skills.map((skill) => (
+                          <div
+                            key={skill.name}
+                            className="rounded-2xl border border-white/10 bg-black/20 p-4"
+                          >
+                            <div className="flex items-center justify-between gap-3">
+                              <span className="font-medium text-white">{skill.name}</span>
+                            </div>
+                            <p className="mt-2 text-sm leading-6 text-slate-300/85">
+                              {skill.context}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
         </motion.section>
 
         <motion.section
@@ -287,41 +443,62 @@ export default function MobileLayout() {
             </h2>
           </div>
 
-          <div className="mt-6 space-y-4 border-l border-white/10 pl-5">
-            {experience.map((item) => (
-              <motion.article
-                key={item.id}
-                className="relative"
-                variants={itemVariants}
-                transition={sectionTransition}
-              >
-                <span className="absolute -left-[1.45rem] top-1 h-3 w-3 rounded-full border-2 border-[#7f77dd] bg-[#050510]" />
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">
-                        {item.role}
-                      </h3>
-                      <p className="text-sm text-slate-300/80">
-                        {item.company} · {item.location}
-                      </p>
+          <button
+            type="button"
+            onClick={() => toggleSection("experience")}
+            className="mt-6 inline-flex items-center rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+          >
+            {openSections.experience ? "Hide experience" : "Open experience"}
+          </button>
+
+          {openSections.experience ? (
+            <div className="mt-6 space-y-4 border-l border-white/10 pl-5">
+              {experience.map((item) => {
+                const isItemOpen = Boolean(openExperienceIds[item.id]);
+
+                return (
+                  <motion.article
+                    key={item.id}
+                    className="relative"
+                    variants={itemVariants}
+                    transition={sectionTransition}
+                  >
+                    <span className="absolute -left-[1.45rem] top-1 h-3 w-3 rounded-full border-2 border-[#7f77dd] bg-[#050510]" />
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">{item.role}</h3>
+                          <p className="text-sm text-slate-300/80">
+                            {item.company} · {item.location}
+                          </p>
+                        </div>
+                        <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">
+                          {item.dates}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => toggleExperience(item)}
+                        className="mt-4 inline-flex items-center rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+                      >
+                        {isItemOpen ? "Hide role details" : "Open role details"}
+                      </button>
+                      {isItemOpen ? (
+                        <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-200/85">
+                          {item.bullets.map((bullet) => (
+                            <li key={bullet} className="flex gap-2">
+                              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#d85a30]" />
+                              <span>{bullet}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
                     </div>
-                    <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">
-                      {item.dates}
-                    </span>
-                  </div>
-                  <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-200/85">
-                    {item.bullets.map((bullet) => (
-                      <li key={bullet} className="flex gap-2">
-                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#d85a30]" />
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </motion.article>
-            ))}
-          </div>
+                  </motion.article>
+                );
+              })}
+            </div>
+          ) : null}
         </motion.section>
 
         <motion.section
@@ -341,20 +518,41 @@ export default function MobileLayout() {
             </h2>
           </div>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            {certifications.map((cert) => (
-              <div
-                key={cert.id}
-                className="rounded-2xl border border-white/10 bg-black/20 p-4"
-              >
-                <h3 className="text-base font-semibold text-white">
-                  {cert.name}
-                </h3>
-                <p className="mt-1 text-sm text-slate-300/80">{cert.issuer}</p>
-                <p className="mt-3 text-sm text-slate-200/85">{cert.date}</p>
-              </div>
-            ))}
-          </div>
+          <button
+            type="button"
+            onClick={() => toggleSection("certifications")}
+            className="mt-6 inline-flex items-center rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+          >
+            {openSections.certifications ? "Hide certifications" : "Open certifications"}
+          </button>
+
+          {openSections.certifications ? (
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              {certifications.map((cert) => {
+                const isCertificationOpen = Boolean(openCertificationIds[cert.id]);
+
+                return (
+                  <div
+                    key={cert.id}
+                    className="rounded-2xl border border-white/10 bg-black/20 p-4"
+                  >
+                    <h3 className="text-base font-semibold text-white">{cert.name}</h3>
+                    <p className="mt-1 text-sm text-slate-300/80">{cert.issuer}</p>
+                    <button
+                      type="button"
+                      onClick={() => toggleCertification(cert)}
+                      className="mt-4 inline-flex items-center rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+                    >
+                      {isCertificationOpen ? "Hide credential" : "Open credential"}
+                    </button>
+                    {isCertificationOpen ? (
+                      <p className="mt-3 text-sm text-slate-200/85">{cert.date}</p>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
         </motion.section>
 
         <motion.section
@@ -374,46 +572,56 @@ export default function MobileLayout() {
             </h2>
           </div>
 
-          <div className="mt-5 grid gap-6 md:grid-cols-[1.3fr_0.9fr]">
-            <div className="space-y-4 text-slate-200/85">
-              <p className="leading-7">{about.gamingCommunity}</p>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-6 text-slate-300/90">
-                Competitive work benefits from the same habits as game prep:
-                pattern recognition, iteration, and calm execution.
-              </div>
-            </div>
+          <button
+            type="button"
+            onClick={() => toggleSection("about")}
+            className="mt-5 inline-flex items-center rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+          >
+            {openSections.about ? "Hide about" : "Open about"}
+          </button>
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <h3 className="text-lg font-semibold text-white">Contact</h3>
-              <div className="mt-3 space-y-3 text-sm text-slate-300/85">
-                <a
-                  className="block break-all hover:text-white"
-                  href={`mailto:${about.contact.email}`}
-                  onClick={() => track("email_clicked", { location: "mobile-layout" })}
-                >
-                  {about.contact.email}
-                </a>
-                <a
-                  className="block break-all hover:text-white"
-                  href={about.contact.github}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={() => track("github_profile_clicked", { location: "mobile-layout" })}
-                >
-                  GitHub profile
-                </a>
-                <a
-                  className="block break-all hover:text-white"
-                  href={about.contact.linkedin}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={() => track("linkedin_clicked", { location: "mobile-layout" })}
-                >
-                  LinkedIn profile
-                </a>
+          {openSections.about ? (
+            <div className="mt-5 grid gap-6 md:grid-cols-[1.3fr_0.9fr]">
+              <div className="space-y-4 text-slate-200/85">
+                <p className="leading-7">{about.gamingCommunity}</p>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-6 text-slate-300/90">
+                  Competitive work benefits from the same habits as game prep:
+                  pattern recognition, iteration, and calm execution.
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <h3 className="text-lg font-semibold text-white">Contact</h3>
+                <div className="mt-3 space-y-3 text-sm text-slate-300/85">
+                  <a
+                    className="block break-all hover:text-white"
+                    href={`mailto:${about.contact.email}`}
+                    onClick={() => track("email_clicked", { location: "mobile-layout" })}
+                  >
+                    {about.contact.email}
+                  </a>
+                  <a
+                    className="block break-all hover:text-white"
+                    href={about.contact.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => track("github_profile_clicked", { location: "mobile-layout" })}
+                  >
+                    GitHub profile
+                  </a>
+                  <a
+                    className="block break-all hover:text-white"
+                    href={about.contact.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => track("linkedin_clicked", { location: "mobile-layout" })}
+                  >
+                    LinkedIn profile
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
+          ) : null}
         </motion.section>
       </div>
     </main>
