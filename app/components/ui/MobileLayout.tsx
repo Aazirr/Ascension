@@ -31,6 +31,10 @@ type MobileSectionKey =
 
 export default function MobileLayout() {
   const reducedMotion = useReducedMotion();
+  const projectItems = projects as Project[];
+  const skillGroups = skills as SkillCategory[];
+  const experienceItems = experience as ExperienceItem[];
+  const certificationItems = certifications as CertificationItem[];
   const [openSections, setOpenSections] = useState<Record<MobileSectionKey, boolean>>({
     projects: false,
     skills: false,
@@ -225,7 +229,7 @@ export default function MobileLayout() {
               </h2>
             </div>
             <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.2em] text-slate-300">
-              {projects.length} projects
+              {projectItems.length} projects
             </span>
           </div>
 
@@ -237,9 +241,9 @@ export default function MobileLayout() {
             {openSections.projects ? "Hide projects" : "Open projects"}
           </button>
 
-          {openSections.projects ? (
+            {openSections.projects ? (
             <div className="mt-6 grid gap-4 md:grid-cols-2">
-              {projects.map((project, index) => {
+              {projectItems.map((project, index) => {
                 const hasLiveUrl = project.liveUrl.trim().length > 0;
                 const hasGithubUrl = project.githubUrl.trim().length > 0;
                 const isProjectOpen = Boolean(openProjectIds[project.id]);
@@ -385,7 +389,7 @@ export default function MobileLayout() {
 
           {openSections.skills ? (
             <div className="mt-6 space-y-6">
-              {skills.map((group) => {
+              {skillGroups.map((group) => {
                 const isGroupOpen = Boolean(openSkillGroupIds[group.id]);
 
                 return (
@@ -453,7 +457,7 @@ export default function MobileLayout() {
 
           {openSections.experience ? (
             <div className="mt-6 space-y-4 border-l border-white/10 pl-5">
-              {experience.map((item) => {
+              {experienceItems.map((item) => {
                 const isItemOpen = Boolean(openExperienceIds[item.id]);
 
                 return (
@@ -528,7 +532,7 @@ export default function MobileLayout() {
 
           {openSections.certifications ? (
             <div className="mt-6 grid gap-4 md:grid-cols-3">
-              {certifications.map((cert) => {
+              {certificationItems.map((cert) => {
                 const isCertificationOpen = Boolean(openCertificationIds[cert.id]);
 
                 return (

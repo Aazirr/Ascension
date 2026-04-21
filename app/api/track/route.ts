@@ -112,7 +112,7 @@ async function forwardEvent(payload: Record<string, unknown>) {
       metadata: payload.metadata,
     };
 
-    await Promise.all([
+    const [sessionResponse, eventResponse] = await Promise.all([
       fetch(`${supabaseUrl}/rest/v1/rpc/touch_analytics_session`, {
         method: "POST",
         headers,
@@ -126,6 +126,12 @@ async function forwardEvent(payload: Record<string, unknown>) {
         cache: "no-store",
       }),
     ]);
+
+    if (!sessionResponse.ok || !eventResponse.ok) {
+      throw new Error(
+        `Supabase analytics write failed (session=${sessionResponse.status}, event=${eventResponse.status})`,
+      );
+    }
 
     return;
   }
@@ -146,12 +152,16 @@ async function forwardEvent(payload: Record<string, unknown>) {
     headers.Authorization = `Bearer ${process.env.ANALYTICS_FORWARD_TOKEN}`;
   }
 
-  await fetch(forwardUrl, {
+  const response = await fetch(forwardUrl, {
     method: "POST",
     headers,
     body: JSON.stringify(payload),
     cache: "no-store",
   });
+
+  if (!response.ok) {
+    throw new Error(`Analytics forward failed with status ${response.status}`);
+  }
 }
 
 export async function POST(request: Request) {
@@ -165,7 +175,8 @@ export async function POST(request: Request) {
 
     await forwardEvent(payload);
     return NextResponse.json({ ok: true }, { status: 202 });
-  } catch {
-    return NextResponse.json({ ok: false, error: "Unable to process analytics event" }, { status: 400 });
+  } catch (error) {
+    console.error("[analytics.track] ingestion failure", error);
+    return NextResponse.json({ ok: false, error: "Unable to process analytics event" }, { status: 500 });
   }
 }
