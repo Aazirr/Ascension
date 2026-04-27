@@ -460,4 +460,3 @@ Realistically 1.5–2 weekends of focused work if you're doing this alongside ap
 
 ---
 
-*Keep applications going while you build this. Don't let the portfolio block the job search.*
