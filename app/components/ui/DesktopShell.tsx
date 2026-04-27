@@ -57,6 +57,7 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isHireMeOpen, setIsHireMeOpen] = useState(false);
   const [hasSeenIntro, setHasSeenIntro] = useState(false);
+  const [isIntroCheckComplete, setIsIntroCheckComplete] = useState(false);
   const [introStep, setIntroStep] = useState<"greeting" | "guide">("greeting");
   const [isHeaderHovered, setIsHeaderHovered] = useState(false);
   const [backgroundPreset, setBackgroundPreset] =
@@ -64,6 +65,7 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
   const introTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastTrackedNodeIdRef = useRef<string | null>(null);
   const introStepTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hasAutoOpenedHireMeRef = useRef(false);
 
   const projectMap = useMemo(
     () => new Map((projects as Project[]).map((project) => [project.id, project])),
@@ -414,11 +416,13 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
     const hasSeenIntroLocal = localStorage.getItem(INTRO_SEEN_STORAGE_KEY) === "true";
     if (hasSeenIntroLocal) {
       setHasSeenIntro(false);
+      setIsIntroCheckComplete(true);
       return clearIntroTimers;
     }
 
     setHasSeenIntro(true);
     setIntroStep("greeting");
+    setIsIntroCheckComplete(true);
     localStorage.setItem(INTRO_SEEN_STORAGE_KEY, "true");
 
     const introGuideDurationMs = isCompact ? 6000 : 6400;
@@ -472,6 +476,15 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
       track("hire_me_opened");
     }
   }, [isHireMeOpen]);
+
+  useEffect(() => {
+    if (!isIntroCheckComplete || hasSeenIntro || hasAutoOpenedHireMeRef.current) {
+      return;
+    }
+
+    hasAutoOpenedHireMeRef.current = true;
+    setIsHireMeOpen(true);
+  }, [hasSeenIntro, isIntroCheckComplete]);
 
   useEffect(() => {
     if (!activeNode || activeNode.id === "central-you") {
@@ -543,6 +556,7 @@ export default function DesktopShell({ isCompact = false }: DesktopShellProps) {
       introTimeoutRef.current = null;
     }
     setHasSeenIntro(false);
+    setIsHireMeOpen(true);
   };
 
   return (
