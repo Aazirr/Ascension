@@ -26,17 +26,17 @@ export default function HireMeModal({
   const summaryCards = [
     {
       label: "Role Fit",
-      value: "Junior full-stack / frontend",
+      value: "Junior full-stack / frontend developer",
       tone: "from-cyan-400/18 to-transparent",
     },
     {
       label: "Strongest Value",
-      value: "Turning unclear needs into usable systems",
+      value: "Building deployed web apps, API integrations, and automation workflows",
       tone: "from-emerald-400/18 to-transparent",
     },
     {
       label: "Working Style",
-      value: "Fast iteration, clean execution, strong ownership",
+      value: "Practical problem solving, clear communication, and quick learning",
       tone: "from-amber-400/18 to-transparent",
     },
     {
@@ -47,26 +47,26 @@ export default function HireMeModal({
   ];
 
   const rolePills = [
-    "Product-minded",
-    "Frontend + backend",
-    "Innovation-driven",
-    "API integration",
-    "Automation-friendly",
-    "Remote-ready",
+    "Junior full-stack",
+    "React / Next.js",
+    "Node / Express",
+    "PostgreSQL",
+    "API integrations",
+    "Automation workflows",
   ];
 
   const highlights = [
     {
-      title: "I build for actual use",
-      body: "I care about software that reduces friction, improves workflows, and feels dependable after launch, not just during demos.",
+      title: "I build around real workflows",
+      body: "I like turning real operational problems into usable tools, from apartment billing and SMS reminders to dashboard workflows, bots, and API integrations.",
     },
     {
       title: "I can move across the stack",
-      body: "I am comfortable switching between UI work, backend logic, integrations, and deployment when a project needs end-to-end momentum.",
+      body: "I am comfortable working on UI, backend logic, database structure, integrations, and deployment when a project needs end-to-end momentum.",
     },
     {
-      title: "I am early-career, not low-ownership",
-      body: "I learn fast, communicate clearly, and like taking responsibility for getting a feature over the line instead of waiting to be told every next step.",
+      title: "I take ownership while learning fast",
+      body: "I ask questions early, communicate progress clearly, and take responsibility for moving work forward instead of waiting for every next step.",
     },
   ];
 
@@ -74,7 +74,7 @@ export default function HireMeModal({
     "Understand the problem clearly",
     "Design the simplest useful solution",
     "Build with speed and structure",
-    "Ship something people can actually use",
+    "Ship, test, and improve based on real use",
   ];
 
   return (
@@ -85,7 +85,7 @@ export default function HireMeModal({
           animate={{ opacity: 1, backdropFilter: "blur(6px)" }}
           exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
           transition={{ duration: 0.24, ease: "easeOut" }}
-          className="absolute inset-0 z-40 flex items-center justify-center bg-black/45 px-4"
+          className="fixed inset-0 z-40 flex items-center justify-center bg-black/45 px-4"
           onClick={onClose}
         >
           <motion.div
@@ -106,8 +106,11 @@ export default function HireMeModal({
                     <p className="text-xs uppercase tracking-[0.24em] text-slate-300/70">
                       Recruiter Summary
                     </p>
-                    <h2 id="hire-me-title" className="mt-2 text-3xl font-semibold text-white sm:text-4xl">
-                      Why hire me
+                    <h2
+                      id="hire-me-title"
+                      className="mt-2 text-3xl font-semibold text-white sm:text-4xl"
+                    >
+                      Recruiter snapshot
                     </h2>
                   </div>
                   <button
@@ -123,15 +126,19 @@ export default function HireMeModal({
               <div className="space-y-8 px-6 py-6">
                 <section className="rounded-[1.75rem] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(127,119,221,0.2),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(29,158,117,0.14),transparent_34%),rgba(255,255,255,0.04)] p-6">
                   <p className="max-w-3xl text-lg leading-8 text-slate-100 sm:text-xl sm:leading-9">
-                    I am a junior full-stack developer who gets excited about turning messy
-                    real-world needs into software that feels clear, reliable, and genuinely useful.
-                    I love building things that are innovative — like this interactive 3D portfolio you&apos;re
-                    exploring right now.
+                    I am a junior full-stack developer focused on building
+                    practical web applications, automation tools, and
+                    API-integrated systems. My projects cover dashboard
+                    interfaces, authentication, databases, bots, webhooks, SMS
+                    workflows, and deployment.
                   </p>
+
                   <p className="mt-4 max-w-3xl text-base leading-8 text-slate-300/88 sm:text-lg">
-                    My best work happens where product thinking meets implementation:
-                    understanding the problem, choosing the right level of complexity,
-                    and shipping something people can actually use with confidence.
+                    My best work happens when I can understand a real problem,
+                    choose a practical solution, and turn it into software that
+                    is clear enough to use and structured enough to maintain.
+                    This interactive portfolio reflects the kind of product
+                    experience I enjoy building: useful, visual, and memorable.
                   </p>
 
                   <div className="mt-5 flex flex-wrap gap-2.5">
@@ -188,6 +195,7 @@ export default function HireMeModal({
                   <p className="text-xs uppercase tracking-[0.22em] text-slate-400/70">
                     What I Bring
                   </p>
+
                   {highlights.map((item, index) => (
                     <article
                       key={item.title}
@@ -198,7 +206,9 @@ export default function HireMeModal({
                           0{index + 1}
                         </div>
                         <div>
-                          <h3 className="text-lg font-medium text-white">{item.title}</h3>
+                          <h3 className="text-lg font-medium text-white">
+                            {item.title}
+                          </h3>
                           <p className="mt-2 text-base leading-8 text-slate-300/85">
                             {item.body}
                           </p>
@@ -221,7 +231,9 @@ export default function HireMeModal({
                         <p className="text-xs uppercase tracking-[0.16em] text-slate-400/70">
                           Step {index + 1}
                         </p>
-                        <p className="mt-2 text-base leading-7 text-white">{step}</p>
+                        <p className="mt-2 text-base leading-7 text-white">
+                          {step}
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -233,15 +245,15 @@ export default function HireMeModal({
                   </p>
                   <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-5">
                     <p className="text-base leading-8 text-slate-200/90 sm:text-lg">
-                      I am still early in my career, but I do not think of that as a
-                      limitation. It means I bring urgency, adaptability, and a real
-                      willingness to learn quickly while contributing across whatever part
-                      of the product needs momentum most.
+                      I am early in my career, but I already enjoy working on
+                      real product problems: understanding the workflow,
+                      building the system, integrating services, and improving
+                      the experience after testing.
                     </p>
                     <p className="mt-4 text-base leading-8 text-slate-300/85 sm:text-lg">
-                      If you need someone who can grow fast, communicate well, and help
-                      build practical software with care, I am the kind of developer worth
-                      interviewing.
+                      I am looking for a junior developer role where I can
+                      contribute to real product work, keep improving through
+                      feedback, and grow into a dependable full-stack engineer.
                     </p>
                   </div>
                 </section>
@@ -252,14 +264,18 @@ export default function HireMeModal({
                   <a
                     href="/resume.pdf"
                     download
-                    onClick={() => track("resume_clicked", { location: "hire-me-modal" })}
+                    onClick={() =>
+                      track("resume_clicked", { location: "hire-me-modal" })
+                    }
                     className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
                   >
                     Download Resume
                   </a>
                   <a
                     href={`mailto:${about.contact.email}`}
-                    onClick={() => track("email_clicked", { location: "hire-me-modal" })}
+                    onClick={() =>
+                      track("email_clicked", { location: "hire-me-modal" })
+                    }
                     className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
                   >
                     Email Me
@@ -268,7 +284,9 @@ export default function HireMeModal({
                     href={about.contact.linkedin}
                     target="_blank"
                     rel="noreferrer"
-                    onClick={() => track("linkedin_clicked", { location: "hire-me-modal" })}
+                    onClick={() =>
+                      track("linkedin_clicked", { location: "hire-me-modal" })
+                    }
                     className="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
                   >
                     LinkedIn
