@@ -93,8 +93,8 @@
   {
     "id": "dark-ops",
     "title": "D.ARK+ OPS",
-    "tagline": "Employee operations platform covering time tracking, leave management, and Google Sheets payroll sync",
-    "status": "in-progress",
+    "tagline": "Full-stack employee operations platform with time tracking, leave management, and a built-in payroll calculation engine",
+    "status": "shipped",
     "stack": [
       "Next.js",
       "TypeScript",
@@ -106,11 +106,11 @@
       "Playwright"
     ],
     "bullets": [
-      "Replaces manual spreadsheet data entry with a full operations platform — employees log time and leave through a mobile-first interface, admins review and approve through a desktop console, and payslips are generated as PDFs with deductions applied",
-      "Syncs approved payroll data back to a live Google Sheets payroll spreadsheet via the Sheets API, preserving the team's existing workflow while eliminating manual re-entry errors",
-      "Built with Next.js App Router, Auth.js authentication, Neon-hosted PostgreSQL, and Playwright E2E tests — hardened with RBAC, audit logging, soft deletes, and database migrations from day one"
+      "Covers the full employee operations lifecycle — time entry submission with per-entry overtime splitting, SIL and unpaid leave with balance tracking, payroll-period locking, holiday calendar management, and a live admin ops feed, all under a role-based access system with audit logging throughout",
+      "Built-in payroll calculation engine handles cutoff-based pay periods, government deductions (SSS, PhilHealth, Pag-IBIG, withholding tax), regular and probationary employee pay types, holiday pay rules across three categories, and exports print-ready payslip PDFs generated server-side via headless Chromium",
+      "Admin console features a full time-review workflow with batch approval, sticky filters, and a row-detail drawer; project and task hour reports with period comparison and CSV export; an audit log viewer with before/after diff modals; and production hardening including rate limiting, security headers, JWT lifetime controls, and Playwright E2E tests deployed to Vercel"
     ],
-    "liveUrl": "",
+    "liveUrl": "https://d-ark-ops.vercel.app",
     "githubUrl": "https://github.com/Aazirr/D.ARK-OPS",
     "screenshot": "/screenshots/dark-ops.png",
     "nodePosition": [3.2, 2.1, -1.4]
