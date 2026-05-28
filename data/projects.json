@@ -91,6 +91,31 @@
     "nodePosition": [3.8, -1.6, -0.9]
   },
   {
+    "id": "dark-ops",
+    "title": "D.ARK+ OPS",
+    "tagline": "Employee operations platform covering time tracking, leave management, and Google Sheets payroll sync",
+    "status": "in-progress",
+    "stack": [
+      "Next.js",
+      "TypeScript",
+      "React",
+      "PostgreSQL",
+      "Tailwind CSS",
+      "Auth.js",
+      "Google Sheets API",
+      "Playwright"
+    ],
+    "bullets": [
+      "Replaces manual spreadsheet data entry with a full operations platform — employees log time and leave through a mobile-first interface, admins review and approve through a desktop console, and payslips are generated as PDFs with deductions applied",
+      "Syncs approved payroll data back to a live Google Sheets payroll spreadsheet via the Sheets API, preserving the team's existing workflow while eliminating manual re-entry errors",
+      "Built with Next.js App Router, Auth.js authentication, Neon-hosted PostgreSQL, and Playwright E2E tests — hardened with RBAC, audit logging, soft deletes, and database migrations from day one"
+    ],
+    "liveUrl": "",
+    "githubUrl": "https://github.com/Aazirr/D.ARK-OPS",
+    "screenshot": "/screenshots/dark-ops.png",
+    "nodePosition": [3.2, 2.1, -1.4]
+  },
+  {
     "id": "speakforge",
     "title": "SpeakForge",
     "tagline": "Language and communication tool focused on iterative learning",

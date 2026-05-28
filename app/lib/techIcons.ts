@@ -31,6 +31,8 @@ const aliases: Record<string, string> = {
   "rest apis": "restapi",
   "google apps script": "googleappsscript",
   "framer motion": "framermotion",
+  "google sheets api": "googleappsscript",
+  "google sheets": "googleappsscript",
 };
 
 const skillGroupIconMap: Record<string, string> = {
