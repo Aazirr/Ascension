@@ -102,12 +102,11 @@
       "PostgreSQL",
       "Tailwind CSS",
       "Auth.js",
-      "Google Sheets API",
       "Playwright"
     ],
     "bullets": [
       "Covers the full employee operations lifecycle — time entry submission with per-entry overtime splitting, SIL and unpaid leave with balance tracking, payroll-period locking, holiday calendar management, and a live admin ops feed, all under a role-based access system with audit logging throughout",
-      "Built-in payroll calculation engine handles cutoff-based pay periods, government deductions (SSS, PhilHealth, Pag-IBIG, withholding tax), regular and probationary employee pay types, holiday pay rules across three categories, and exports print-ready payslip PDFs generated server-side via headless Chromium",
+      "Runs semimonthly payroll for 9 employees across two pay dates per month, with cutoff-based calculations, government deductions, additions, and server-generated PDF payslips",
       "Admin console features a full time-review workflow with batch approval, sticky filters, and a row-detail drawer; project and task hour reports with period comparison and CSV export; an audit log viewer with before/after diff modals; and production hardening including rate limiting, security headers, JWT lifetime controls, and Playwright E2E tests deployed to Vercel"
     ],
     "liveUrl": "https://d-ark-ops.vercel.app",

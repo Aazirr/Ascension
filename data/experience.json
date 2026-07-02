@@ -17,12 +17,11 @@
     "role": "Freelance Google Apps Script Developer",
     "company": "Independent",
     "location": "Remote",
-    "dates": "2024 - Present",
+    "dates": "Jun 2025 - Jul 2025",
     "nodePosition": [-5.3, -0.7, 2.0],
     "bullets": [
-      "Built lightweight automations to reduce repetitive admin work",
-      "Integrated Sheets-based workflows with custom scripts",
-      "Delivered practical solutions with fast feedback loops"
+      "Automated Google Sheets workflows to eliminate repetitive manual data entry and improve consistency",
+      "Built scripts to extract, transform, and synchronize external API data into spreadsheet-based business processes"
     ]
   }
 ]
