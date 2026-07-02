@@ -7,9 +7,21 @@
     "dates": "May 2026 - Present",
     "nodePosition": [-4.5, 1.5, 2.0],
     "bullets": [
-      "Completed the core D.ARK+ OPS MVP within the first month and continue to deliver operator-requested workflow and quality-of-life improvements",
+      "Delivered the core D.ARK+ OPS MVP within the first month; the system is now in maintenance with targeted operator-requested improvements",
       "Built a semimonthly workforce and payroll platform supporting 9 employees across two pay dates per month, including employee PDF payslips",
       "Currently developing the company's separate Next.js marketing website with responsive project pages and interactive React Three Fiber architectural showcases"
+    ]
+  },
+  {
+    "id": "true-nest-freelance",
+    "role": "Freelance Full-Stack Developer",
+    "company": "True Nest Home Care",
+    "location": "Remote",
+    "dates": "Jul 2026 - Present",
+    "nodePosition": [-5.8, 0.4, 2.7],
+    "bullets": [
+      "Leading early discovery for an SEO-focused marketing website and an internal platform covering employee, client/patient, scheduling, and billing workflows",
+      "Defining user roles, data models, APIs, and phased delivery using Next.js, TypeScript, NestJS, PostgreSQL, and Prisma"
     ]
   },
   {
