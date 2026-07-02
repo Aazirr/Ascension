@@ -16,6 +16,8 @@ This checklist is the current progress source for Ascension. Detailed implementa
 
 - [x] Replace the stale public resume with the current two-page PDF.
 - [x] Add the verified D.ARK+ OPS scale: 9 employees and two pay dates per month.
+- [x] Reclassify paid D.ARK+ development as ongoing freelance professional experience from May 2026.
+- [x] Include both D.ARK+ OPS and the separate company marketing website under the freelance role.
 - [x] Align freelance experience dates with the current resume.
 - [x] Remove the retired Google Sheets API claim from D.ARK+ OPS.
 - [x] Replace the scaffold README with project-specific documentation.

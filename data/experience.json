@@ -1,5 +1,18 @@
 [
   {
+    "id": "dark-plus-freelance",
+    "role": "Freelance Full-Stack Developer",
+    "company": "D.ARK+",
+    "location": "Remote",
+    "dates": "May 2026 - Present",
+    "nodePosition": [-4.5, 1.5, 2.0],
+    "bullets": [
+      "Completed the core D.ARK+ OPS MVP within the first month and continue to deliver operator-requested workflow and quality-of-life improvements",
+      "Built a semimonthly workforce and payroll platform supporting 9 employees across two pay dates per month, including employee PDF payslips",
+      "Currently developing the company's separate Next.js marketing website with responsive project pages and interactive React Three Fiber architectural showcases"
+    ]
+  },
+  {
     "id": "ollopa-corporation",
     "role": "IT Intern (OJT)",
     "company": "Ollopa Corporation",

@@ -163,6 +163,7 @@ YOU (central)
 │   ├── Integrations (Telegram, Discord.js, PokeAPI, Anthropic)
 │   └── Tooling   (Railway, Vercel, GitHub, Google Apps Script)
 ├── Experience
+│   ├── D.ARK+ (Freelance Full-Stack Developer)
 │   ├── Ollopa Corporation (OJT)
 │   └── Freelance GAS Developer
 ├── Certifications
@@ -459,4 +460,3 @@ import { Analytics } from "@vercel/analytics/react"
 Realistically 1.5–2 weekends of focused work if you're doing this alongside applications.
 
 ---
-
