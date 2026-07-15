@@ -24,6 +24,10 @@ This checklist is the current progress source for Ascension. Detailed implementa
 - [x] Remove the retired Google Sheets API claim from D.ARK+ OPS.
 - [x] Replace the scaffold README with project-specific documentation.
 - [x] Keep the resume download path at `/resume.pdf`.
+- [x] Refresh resume spacing and visual hierarchy for more consistent line and section rhythm.
+- [x] Condense selected-project bullets to improve two-page scanability.
+- [x] Update D.ARK+ wording to reflect ongoing improvements and production hardening.
+- [x] Update True Nest experience from discovery-only wording to delivered marketing-site and platform-foundation work.
 
 ## Phase 7 - Final Polish and Release Validation
 
