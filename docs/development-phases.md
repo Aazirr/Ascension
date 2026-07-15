@@ -18,8 +18,8 @@ This checklist is the current progress source for Ascension. Detailed implementa
 - [x] Add the verified D.ARK+ OPS scale: 9 employees and two pay dates per month.
 - [x] Reclassify paid D.ARK+ development as ongoing freelance professional experience from May 2026.
 - [x] Include both D.ARK+ OPS and the separate company marketing website under the freelance role.
-- [x] Mark D.ARK+ OPS as delivered and in maintenance while the company marketing site remains active.
-- [x] Add the paid True Nest Home Care engagement as early-stage freelance experience from July 2026.
+- [x] Mark the D.ARK+ OPS core MVP as delivered while ongoing OPS improvements and the company marketing site remain active.
+- [x] Add the paid True Nest Home Care engagement as active freelance development from July 2026.
 - [x] Align freelance experience dates with the current resume.
 - [x] Remove the retired Google Sheets API claim from D.ARK+ OPS.
 - [x] Replace the scaffold README with project-specific documentation.
@@ -28,6 +28,9 @@ This checklist is the current progress source for Ascension. Detailed implementa
 - [x] Condense selected-project bullets to improve two-page scanability.
 - [x] Update D.ARK+ wording to reflect ongoing improvements and production hardening.
 - [x] Update True Nest experience from discovery-only wording to delivered marketing-site and platform-foundation work.
+- [x] Remove private D.ARK+ OPS and True Nest repository links from the resume and portfolio.
+- [x] Use the public D.ARK+ company website for the D.ARK+ portfolio link.
+- [x] Present True Nest as active development rather than planned work.
 
 ## Phase 7 - Final Polish and Release Validation
 

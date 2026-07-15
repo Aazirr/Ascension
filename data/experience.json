@@ -21,7 +21,7 @@
     "nodePosition": [-5.8, 0.4, 2.7],
     "bullets": [
       "Built the initial responsive marketing site in Next.js with service content, inquiry paths, SEO metadata, and structured-data foundations",
-      "Scaffolded a monorepo with Next.js, NestJS, shared packages, API modules, and a Prisma schema for planned employee, client/patient, scheduling, and billing workflows"
+      "Actively developing a monorepo-based internal platform with Next.js, NestJS, PostgreSQL, Prisma, and shared packages for employee, client/patient, scheduling, and billing workflows"
     ]
   },
   {

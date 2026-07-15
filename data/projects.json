@@ -109,8 +109,7 @@
       "Runs semimonthly payroll for 9 employees across two pay dates per month, with cutoff-based calculations, government deductions, additions, and server-generated PDF payslips",
       "Admin console features a full time-review workflow with batch approval, sticky filters, and a row-detail drawer; project and task hour reports with period comparison and CSV export; an audit log viewer with before/after diff modals; and production hardening including rate limiting, security headers, JWT lifetime controls, and Playwright E2E tests deployed to Vercel"
     ],
-    "liveUrl": "https://d-ark-ops.vercel.app",
-    "githubUrl": "https://github.com/Aazirr/D.ARK-OPS",
+    "liveUrl": "https://www.darkplus.studio/",
     "screenshot": "/screenshots/dark-ops.png",
     "nodePosition": [3.2, 2.1, -1.4]
   },
