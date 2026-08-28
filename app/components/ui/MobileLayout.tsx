@@ -244,8 +244,8 @@ export default function MobileLayout() {
             {openSections.projects ? (
             <div className="mt-6 grid gap-4 md:grid-cols-2">
               {projectItems.map((project, index) => {
-                const hasLiveUrl = project.liveUrl.trim().length > 0;
-                const hasGithubUrl = project.githubUrl.trim().length > 0;
+                const hasLiveUrl = (project.liveUrl ?? "").trim().length > 0;
+                const hasGithubUrl = (project.githubUrl ?? "").trim().length > 0;
                 const isProjectOpen = Boolean(openProjectIds[project.id]);
 
                 return (

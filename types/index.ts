@@ -5,8 +5,8 @@ export interface Project {
   status?: "in-progress" | "shipped";
   stack: string[];
   bullets: string[];
-  liveUrl: string;
-  githubUrl: string;
+  liveUrl?: string;
+  githubUrl?: string;
   screenshot: string;
   nodePosition: [number, number, number];
 }

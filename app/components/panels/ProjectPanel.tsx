@@ -11,9 +11,9 @@ interface ProjectPanelProps {
 }
 
 export default function ProjectPanel({ project }: ProjectPanelProps) {
-  const hasLiveUrl = project.liveUrl.trim().length > 0;
-  const hasGithubUrl = project.githubUrl.trim().length > 0;
-  const hasScreenshot = project.screenshot.trim().length > 0;
+  const hasLiveUrl = (project.liveUrl ?? "").trim().length > 0;
+  const hasGithubUrl = (project.githubUrl ?? "").trim().length > 0;
+  const hasScreenshot = (project.screenshot ?? "").trim().length > 0;
   const [imageFailed, setImageFailed] = useState(false);
   const isInProgress = project.status === "in-progress";
 

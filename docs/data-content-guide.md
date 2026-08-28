@@ -28,8 +28,8 @@ Required fields per project:
 - [x] `tagline`: string
 - [x] `stack`: string[]
 - [x] `bullets`: string[] (recommended exactly 3)
-- [x] `liveUrl`: string
-- [x] `githubUrl`: string
+- [x] `liveUrl`: string (optional; omit or use `""` to disable the Live Demo button)
+- [x] `githubUrl`: string (optional; omit or use `""` for private repos — the GitHub button renders disabled)
 - [x] `screenshot`: string (`/screenshots/...`)
 - [x] `nodePosition`: [number, number, number]
 
